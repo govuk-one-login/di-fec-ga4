@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Reusable GA4 package for GDS One Login",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\""
@@ -26,6 +27,9 @@
   },
   "homepage": "https://github.com/govuk-one-login/di-fec-ga4#readme",
   "devDependencies": {
+    "eslint": "^8.52.0",
+		"eslint-config-airbnb": "^19.0.4",
+		"eslint-config-prettier": "^9.0.0",
     "husky": "^8.0.3",
     "prettier": "^3.0.3"
   },

@@ -1,4 +1,5 @@
 function formTracker() {
+  console.log('running formTracker');
   return '';
 }
 

@@ -1,4 +1,5 @@
 function pageViewTracker() {
+  console.log('running pageViewTracker');
   return "";
 }
 
