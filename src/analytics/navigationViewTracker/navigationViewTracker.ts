@@ -1,6 +1,6 @@
 function navigationViewTracker() {
-    console.log('running navigationViewTracker');
-    return "";
-  }
-  
-  export default navigationViewTracker;
+  console.log("running navigationViewTracker");
+  return "";
+}
+
+export default navigationViewTracker;

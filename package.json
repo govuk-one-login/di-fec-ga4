@@ -7,7 +7,8 @@
   "scripts": {
     "start": "npx ts-node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\""
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
+    "precommit": "npm run prettier && git add ."
   },
   "repository": {
     "type": "git",
@@ -29,22 +30,16 @@
   "homepage": "https://github.com/govuk-one-login/di-fec-ga4#readme",
   "devDependencies": {
     "eslint": "^8.52.0",
-		"eslint-config-airbnb": "^19.0.4",
-		"eslint-config-prettier": "^9.0.0",
-    "husky": "^8.0.3",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.0.0",
+    "husky": "^4.3.8",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
-		"typescript": "^5.2.2"
+    "typescript": "^5.2.2"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run precommit"
     }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,md}": [
-      "npm run prettier",
-      "git add"
-    ]
   }
 }

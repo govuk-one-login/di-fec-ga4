@@ -4,4 +4,5 @@ import navigationViewTracker from "./src/analytics/navigationViewTracker/navigat
 
 pageViewTracker();
 formTracker();
-console.log('running');
+navigationViewTracker();
+console.log("running");
