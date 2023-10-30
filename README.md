@@ -7,3 +7,9 @@ Frontend Capability Team repository for GA4 integration
 ```bash
 npm start
 ```
+
+# How to build
+
+```bash
+npm run build
+```

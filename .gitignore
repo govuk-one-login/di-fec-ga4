@@ -3,4 +3,4 @@ node_modules/
 # Ignore PR template to prevent any automated changes persisting
 pull_request_template.md
 
-build
+dist/
