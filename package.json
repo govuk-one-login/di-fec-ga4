@@ -1,0 +1,45 @@
+{
+  "name": "one-login-ga4",
+  "version": "1.0.0",
+  "description": "Reusable GA4 package for GDS One Login",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "npx ts-node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
+    "precommit": "npm run prettier && git add ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/govuk-one-login/di-fec-ga4.git"
+  },
+  "keywords": [
+    "one-login",
+    "gds",
+    "ga4",
+    "google analytics 4",
+    "onelogin",
+    "one login"
+  ],
+  "author": "DI Frontend Capability Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/govuk-one-login/di-fec-ga4/issues"
+  },
+  "homepage": "https://github.com/govuk-one-login/di-fec-ga4#readme",
+  "devDependencies": {
+    "eslint": "^8.52.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.0.0",
+    "husky": "^4.3.8",
+    "prettier": "^3.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
+  }
+}

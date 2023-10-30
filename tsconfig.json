@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./",
+        "module": "CommonJS",
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "node",
+		"lib": ["esnext", "dom"],
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"declaration": true,
+		"outDir": "./dist",
+		"strict": true,
+		"newLine": "lf"
+	},
+    "ts-node": {
+        "esm": true
+    }
+	//"include": ["src/**/*.ts", "src/**/*.d.ts"],
+	//"exclude": ["node_modules", "**/*.spec.ts"]
+}

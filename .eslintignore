@@ -1,0 +1,4 @@
+# Ignore node_modules directory
+node_modules/
+
+pull_request_template
