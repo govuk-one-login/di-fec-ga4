@@ -1,16 +1,17 @@
 {
   "name": "one-login-ga4",
-  "version": "1.0.0",
+  "version": "0.0.16-dev",
   "description": "Reusable GA4 package for GDS One Login",
-  "main": "src/index.js",
+  "main": "lib/analytics.js",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/lib/analytics.js"
   },
   "scripts": {
     "build": "npm run prettier && webpack --config webpack.config.js --mode production",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
     "precommit": "npm run prettier && git add .",
+    "pub": "cp package.json dist && cd dist && npm publish --access public",
     "start": "node --loader ts-node/esm ./src/index.js",
     "test": "jest"
   },
@@ -18,6 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/govuk-one-login/di-fec-ga4.git"
   },
+  "files": ["lib"],
   "keywords": [
     "one-login",
     "gds",

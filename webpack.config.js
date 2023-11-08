@@ -6,8 +6,8 @@ const __dirname = path.dirname(__filename);
 const config = {
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "index.js",
+    path: path.resolve(__dirname, "dist/lib"),
+    filename: "analytics.js",
   },
   module: {
     rules: [
