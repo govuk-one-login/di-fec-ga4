@@ -1,8 +1,11 @@
-import pageViewTracker from "./analytics/pageViewTracker/pageViewTracker.ts";
-import formTracker from "./analytics/formTracker/formTracker.ts";
-import navigationViewTracker from "./analytics/navigationViewTracker/navigationViewTracker.ts";
+import { Analytics } from "./analytics/core/core.ts";
 
-pageViewTracker();
-formTracker();
-navigationViewTracker();
-console.log("running");
+window.DI = window.DI || {};
+(function (DI) {
+  "use strict";
+  function initAnalytics({ ga4ContainerId }) {
+    console.log("initAnalytics", ga4ContainerId);
+    window.DI.analyticsGa4 = new Analytics(ga4ContainerId);
+  }
+  DI.appInit = initAnalytics;
+})(window.DI);
