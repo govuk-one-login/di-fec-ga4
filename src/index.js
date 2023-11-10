@@ -4,7 +4,6 @@ window.DI = window.DI || {};
 (function (DI) {
   "use strict";
   function initAnalytics({ ga4ContainerId }) {
-    console.log("initAnalytics", ga4ContainerId);
     window.DI.analyticsGa4 = new Analytics(ga4ContainerId);
   }
   DI.appInit = initAnalytics;
