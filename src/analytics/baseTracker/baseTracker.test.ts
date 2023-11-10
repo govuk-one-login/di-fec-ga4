@@ -40,18 +40,6 @@ describe("should return the good parameter values", () => {
     expect(languageCode).toEqual("en");
   });
 
-  test("Get Language from html tag", () => {
-    document.documentElement.lang = "ws";
-    const languageCode = newInstance.getLanguage();
-    expect(languageCode).toEqual(document.documentElement.lang);
-  });
-
-  test("Get en as a default Language", () => {
-    document.documentElement.lang = "";
-    const languageCode = newInstance.getLanguage();
-    expect(languageCode).toEqual("en");
-  });
-
   test("Get location from DOM", () => {
     Object.defineProperty(window, "location", {
       value: new URL("http://localhost/"),

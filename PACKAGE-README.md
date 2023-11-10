@@ -85,7 +85,7 @@ This package enables GOV UK LOGIN frontend Node.js applications to use Google Ta
 Page view tracking allows us to see which pages are most visited, where your visitors are coming from, etc.
 It can be called by using the method trackOnPageLoad of the object pageViewTracker stored into the analytics library (analyticsGa4)
 
-It takes as unique parameter an object define by :
+It takes as a unique parameter an object define by :
 
 - statusCode: number
 - englishPageTitle: string
@@ -96,10 +96,10 @@ Example:
 
 ```js
 window.DI.analyticsGa4.pageViewTracker.trackOnPageLoad({
-  statsCode: 200,
+  statusCode: 200,
   englishPageTitle: "english version of the page title",
   taxonomy_level1: "test tax1",
-  taxotaxonomy_level2: "test tax2",
+  taxonomy_level2: "test tax2",
 });
 ```
 
