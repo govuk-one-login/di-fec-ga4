@@ -80,4 +80,27 @@ This package enables GOV UK LOGIN frontend Node.js applications to use Google Ta
    ```
    [!NOTE] window.DI.appInit is a function loaded from analytics.js. That will create a new instance of our analytics library and store into window.DI.analyticsGa4 [!NOTE]
 
+### Page View Tracker
+
+Page view tracking allows us to see which pages are most visited, where your visitors are coming from, etc.
+It can be called by using the method trackOnPageLoad of the object pageViewTracker stored into the analytics library (analyticsGa4)
+
+It takes as a unique parameter an object define by :
+
+- statusCode: number
+- englishPageTitle: string
+- taxonomy_level1: string
+- taxonomy_level2: string
+
+Example:
+
+```js
+window.DI.analyticsGa4.pageViewTracker.trackOnPageLoad({
+  statusCode: 200,
+  englishPageTitle: "english version of the page title",
+  taxonomy_level1: "test tax1",
+  taxonomy_level2: "test tax2",
+});
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
