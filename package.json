@@ -1,6 +1,6 @@
 {
   "name": "one-login-ga4",
-  "version": "0.0.18-dev",
+  "version": "0.0.19-dev",
   "description": "Reusable GA4 package for GDS One Login",
   "main": "lib/analytics.js",
   "type": "module",
@@ -12,7 +12,6 @@
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
     "precommit": "npm run prettier && git add .",
     "pub": "cp PACKAGE-README.md dist/README.md && cp package.json dist && cd dist && npm publish --access public",
-    "start": "node --loader ts-node/esm ./src/index.js",
     "test": "jest"
   },
   "repository": {

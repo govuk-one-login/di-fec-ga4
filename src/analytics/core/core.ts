@@ -16,10 +16,11 @@ export class Analytics {
   }
 
   /**
-   * Loads the Google Tag Manager script.
+   * Loads the Google Tag Manager script asynchronously and appends it to the document body.
    *
+   * @return {boolean} Returns true if the script was successfully loaded and appended, otherwise false.
    */
-  loadGtmScript() {
+  loadGtmScript(): boolean {
     const googleSrc =
       "https://www.googletagmanager.com/gtm.js?id=" + this.gtmId;
     const newScript = document.createElement("script");

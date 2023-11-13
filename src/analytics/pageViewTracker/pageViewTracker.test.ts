@@ -2,7 +2,7 @@ import { describe, expect, jest, test } from "@jest/globals";
 import { PageViewTracker } from "./pageViewTracker";
 import {
   PageViewParametersInterface,
-  PageViewTrackerInterface,
+  PageViewEventInterface,
 } from "./pageViewTracker.interface";
 
 describe("pageViewTracker", () => {
@@ -22,7 +22,7 @@ describe("pageViewTracker", () => {
   });
 
   test("pushToDataLayer is called with the good data", () => {
-    const dataLayerEvent: PageViewTrackerInterface = {
+    const dataLayerEvent: PageViewEventInterface = {
       event: newInstance.eventName,
       page_view: {
         language: newInstance.getLanguage(),
