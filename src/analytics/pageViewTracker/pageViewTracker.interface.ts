@@ -1,4 +1,4 @@
-export interface PageViewTrackerInterface {
+export interface PageViewEventInterface {
   event: string; // page_view_ga4
   page_view: {
     language: string;

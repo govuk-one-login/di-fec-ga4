@@ -1,11 +1,11 @@
 import { describe, expect, test } from "@jest/globals";
 import { BaseTracker } from "./baseTracker";
-import { PageViewTrackerInterface } from "../pageViewTracker/pageViewTracker.interface";
+import { PageViewEventInterface } from "../pageViewTracker/pageViewTracker.interface";
 
 describe("should push to dataLayer", () => {
   const newInstance = new BaseTracker();
   test("Push", () => {
-    const pageViewTrackerDataLayerEvent: PageViewTrackerInterface = {
+    const pageViewTrackerDataLayerEvent: PageViewEventInterface = {
       event: "page_view_ga4",
       page_view: {
         language: "en",

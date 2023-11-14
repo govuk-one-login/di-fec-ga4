@@ -1,5 +1,8 @@
 import { BaseTracker } from "../baseTracker/baseTracker";
-import { PageViewParametersInterface } from "./pageViewTracker.interface";
+import {
+  PageViewParametersInterface,
+  PageViewEventInterface,
+} from "./pageViewTracker.interface";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
@@ -8,9 +11,15 @@ export class PageViewTracker extends BaseTracker {
     super();
   }
 
-  trackOnPageLoad(parameters: PageViewParametersInterface): void {
+  /**
+   * Tracks the page load event and sends the relevant data to the data layer.
+   *
+   * @param {PageViewParametersInterface} parameters - The parameters for the page view event.
+   * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
+   */
+  trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
     console.log("running trackOnPageLoad");
-    this.pushToDataLayer({
+    const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,
       page_view: {
         language: this.getLanguage(),
@@ -23,6 +32,14 @@ export class PageViewTracker extends BaseTracker {
         taxonomy_level1: parameters.taxonomy_level1,
         taxonomy_level2: parameters.taxonomy_level2,
       },
-    });
+    };
+
+    try {
+      this.pushToDataLayer(pageViewTrackerEvent);
+      return true;
+    } catch (err) {
+      console.error("Error in trackOnPageLoad", err);
+      return false;
+    }
   }
 }
