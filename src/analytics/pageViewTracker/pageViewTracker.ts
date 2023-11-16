@@ -18,7 +18,6 @@ export class PageViewTracker extends BaseTracker {
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
   trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
-    console.log("running trackOnPageLoad");
     const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,
       page_view: {
