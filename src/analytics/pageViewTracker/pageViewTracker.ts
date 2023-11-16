@@ -3,6 +3,7 @@ import {
   PageViewParametersInterface,
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
+import validateParameter from "../../utils/validateParameter";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
@@ -26,10 +27,10 @@ export class PageViewTracker extends BaseTracker {
         organisations: this.organisations,
         primary_publishing_organisation: this.primary_publishing_organisation,
         referrer: this.getReferrer(),
-        status_code: parameters.statusCode.toString(),
-        title: parameters.englishPageTitle,
-        taxonomy_level1: parameters.taxonomy_level1,
-        taxonomy_level2: parameters.taxonomy_level2,
+        status_code: validateParameter(parameters.statusCode.toString(), 3),
+        title: validateParameter(parameters.englishPageTitle, 300),
+        taxonomy_level1: validateParameter(parameters.taxonomy_level1, 100),
+        taxonomy_level2: validateParameter(parameters.taxonomy_level2, 100),
       },
     };
 
