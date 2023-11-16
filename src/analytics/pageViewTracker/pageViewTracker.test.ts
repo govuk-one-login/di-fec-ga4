@@ -11,7 +11,7 @@ describe("pageViewTracker", () => {
 
   const parameters: PageViewParametersInterface = {
     statusCode: 200,
-    englishPageTitle: "Home",
+    englishPageTitle: "home",
     taxonomy_level1: "taxo1",
     taxonomy_level2: "taxo2",
   };

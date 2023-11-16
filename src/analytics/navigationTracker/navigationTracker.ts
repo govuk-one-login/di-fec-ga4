@@ -1,6 +1,6 @@
-import { EmbeddedMetadata } from "typeorm/metadata/EmbeddedMetadata";
 import { BaseTracker } from "../baseTracker/baseTracker";
 import { NavigationEventInterface } from "./navigationTracker.interface";
+import { validateParameter } from "../../utils/validateParameter";
 
 export class NavigationTracker extends BaseTracker {
   eventName: string = "event_data";
@@ -40,8 +40,10 @@ export class NavigationTracker extends BaseTracker {
       event_data: {
         event_name: "navigation",
         type: this.getLinkType(element),
-        url: element.href ? element.href.toLocaleLowerCase() : "undefined",
-        text: element.innerHTML ? element.innerHTML.toLowerCase() : "undefined",
+        url: element.href ? validateParameter(element.href, 100) : "undefined",
+        text: element.innerHTML
+          ? validateParameter(element.innerHTML, 100)
+          : "undefined",
         section: "undefined",
         action: "undefined",
         external: this.isExternalLink(element.href) ? "true" : "false",

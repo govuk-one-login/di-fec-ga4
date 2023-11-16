@@ -1,9 +1,9 @@
 import { describe, expect, test } from "@jest/globals";
-import validateParameter from "./validateParameter";
+import { validateParameter } from "./validateParameter";
 
 describe("validateParameter", () => {
   test("parameter of type string and allowed length should be returned", () => {
-    const parameter = "Hello world";
+    const parameter = "hello world";
     const validatedParameter = validateParameter(parameter, 100);
     expect(validatedParameter).toEqual(parameter);
   });
@@ -11,7 +11,7 @@ describe("validateParameter", () => {
   test("invalid types should be replaced by an error message", () => {
     const parameter = 1234;
     const validatedParameter = validateParameter(parameter, 100);
-    expect(validatedParameter).toEqual("Invalid type provided");
+    expect(validatedParameter).toEqual("invalid type provided");
   });
 
   test("parameters with invalid lengths should be truncated", () => {
@@ -23,6 +23,6 @@ describe("validateParameter", () => {
   test("empty parameters should be replaced with error message", () => {
     const parameter = "";
     const validatedParameter = validateParameter(parameter, 100);
-    expect(validatedParameter).toEqual("No parameter provided");
+    expect(validatedParameter).toEqual("no parameter provided");
   });
 });

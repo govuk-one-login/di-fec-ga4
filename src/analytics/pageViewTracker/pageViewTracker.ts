@@ -3,7 +3,7 @@ import {
   PageViewParametersInterface,
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
-import validateParameter from "../../utils/validateParameter";
+import { validateParameter } from "../../utils/validateParameter";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
