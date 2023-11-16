@@ -7,7 +7,6 @@
 <div align="center">
   
 <h3 align="center">GOV UK One Login GA4 Implementation</h3>
-
   <p align="center">
     This package enables GOV UK LOGIN frontend Node.js applications to use Google Tag Manager and Google Analytics 4.
     <br />
@@ -42,7 +41,11 @@
 
 ## About The Project
 
-This package enables GOV UK LOGIN frontend Node.js applications to use Google Tag Manager and Google Analytics 4.
+The GDS One Login GA4 (Google Analytics 4) node package is a shared, reusable solution created to facilitate the upgrade from GAU to GA4 across the One Login programme as GAU is being retired mid 2024.
+
+The purpose of this package is to make it as easy as possible for the various pods that make up the One Login journey to upgrade their analytics while having as minimal an impact as possible on the dev teams time and effort.
+
+The package is owned by the DI Frontend Capability team, part of the development of this tool involves ongoing discovery with the pods responsible for maintaining the frontend repositories that make up the One Login journey. As more information is collated, the package and documentation will be updated. As such, it is considered a WIP and the pods will be notified when a stable release is ready.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -102,5 +105,17 @@ window.DI.analyticsGa4.pageViewTracker.trackOnPageLoad({
   taxonomy_level2: "test tax2",
 });
 ```
+
+### Navigation Tracker
+
+Navigation tracking allows us to see exactly how often each navigation link is used. It's triggered by a listener on the click event.
+
+We are tracking different types of link:
+
+- Generic Inbound Links: When a user clicks on a link and it is an inbound link which is defined as any links that point to a domain that does match the domain of the current page
+- Generic Inbound Button: When a user clicks on a button and it is an inbound link which is defined as any links that point to a domain that does match the domain of the current page
+- Generic Outbound Links: When a user clicks on a link and it is an outbound link, which is defined as any links that point to a domain that does not match the domain of the current page.
+- Header Menu Bar: When a user clicks on a link in the header menu
+- Footer links: When a user clicks on a link within the footer
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
