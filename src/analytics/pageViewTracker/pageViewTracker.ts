@@ -3,7 +3,7 @@ import {
   PageViewParametersInterface,
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
-import validateParameter from "../../utils/validateParameter";
+import { validateParameter } from "../../utils/validateParameter";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
@@ -19,7 +19,6 @@ export class PageViewTracker extends BaseTracker {
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
   trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
-    console.log("running trackOnPageLoad");
     const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,
       page_view: {

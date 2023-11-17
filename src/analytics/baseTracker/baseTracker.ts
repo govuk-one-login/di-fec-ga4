@@ -1,4 +1,5 @@
 import { PageViewEventInterface } from "../pageViewTracker/pageViewTracker.interface";
+import { NavigationEventInterface } from "../navigationTracker/navigationTracker.interface";
 
 declare global {
   interface Window {
@@ -17,7 +18,9 @@ export class BaseTracker {
    * @param {PageViewEventInterface} event - The event to be pushed to the data layer.
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
-  pushToDataLayer(event: PageViewEventInterface): boolean {
+  pushToDataLayer(
+    event: PageViewEventInterface | NavigationEventInterface,
+  ): boolean {
     console.log("running pushToDataLayer");
     window.dataLayer = window.dataLayer || [];
     try {

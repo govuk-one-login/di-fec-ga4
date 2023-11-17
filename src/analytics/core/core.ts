@@ -1,8 +1,10 @@
+import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
 
 export class Analytics {
   gtmId: string;
   pageViewTracker: PageViewTracker;
+  navigationTracker: NavigationTracker;
 
   /**
    * Initializes a new instance of the class.
@@ -12,6 +14,7 @@ export class Analytics {
   constructor(gtmId: string) {
     this.gtmId = gtmId;
     this.pageViewTracker = new PageViewTracker();
+    this.navigationTracker = new NavigationTracker();
     this.loadGtmScript();
   }
 
