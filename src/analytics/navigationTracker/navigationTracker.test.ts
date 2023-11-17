@@ -1,8 +1,7 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import { NavigationTracker } from "./navigationTracker";
-import { NavigationEventInterface } from "./navigationTracker.interface";
 
-describe("pageViewTracker", () => {
+describe("navigationTracker", () => {
   const newInstance = new NavigationTracker();
   const action = new MouseEvent("click", {
     view: window,
