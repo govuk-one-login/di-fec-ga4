@@ -34,15 +34,19 @@ export class NavigationTracker extends BaseTracker {
     if (element.tagName !== "A" && element.tagName !== "BUTTON") {
       return false;
     }
+    // Ignore links that don't have an href
+    if (!element.href || !element.href.length || element.href === "#") {
+      return false;
+    }
 
     const navigationTrackerEvent: NavigationEventInterface = {
       event: this.eventName,
       event_data: {
         event_name: "navigation",
         type: this.getLinkType(element),
-        url: element.href ? validateParameter(element.href, 100) : "undefined",
-        text: element.innerHTML
-          ? validateParameter(element.innerHTML, 100)
+        url: validateParameter(element.href, 100),
+        text: element.textContent
+          ? validateParameter(element.textContent.trim(), 100)
           : "undefined",
         section: "undefined",
         action: "undefined",
