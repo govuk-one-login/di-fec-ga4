@@ -35,7 +35,7 @@ export class NavigationTracker extends BaseTracker {
       return false;
     }
     // Ignore links that don't have an href
-    if (!element.href || element.href === "") {
+    if (!element.href || !element.href.length || element.href === "#") {
       return false;
     }
 
