@@ -42,13 +42,12 @@ describe("navigationTracker", () => {
   });
 
   //test trackNavigation accept link
-  test("trackNavigation should return true if a button", () => {
-    const href = document.createElement("BUTTON");
+  test("trackNavigation should return false if a link without href", () => {
+    const href = document.createElement("A");
     href.className = "govuk-footer__link";
     href.innerHTML = "Link to GOV.UK";
-    href.setAttribute("href", "http://localhost");
     href.addEventListener("click", (event) => {
-      expect(newInstance.trackNavigation(event)).toBe(true);
+      expect(newInstance.trackNavigation(event)).toBe(false);
     });
     href.dispatchEvent(action);
   });
