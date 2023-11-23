@@ -17,6 +17,7 @@ export class Analytics {
     this.cookie = new Cookie();
     this.pageViewTracker = new PageViewTracker();
     this.navigationTracker = new NavigationTracker();
+
     if (this.cookie.consent) {
       this.loadGtmScript();
     }

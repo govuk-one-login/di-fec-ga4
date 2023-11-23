@@ -1,6 +1,8 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import { NavigationTracker } from "./navigationTracker";
 
+window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
 describe("navigationTracker", () => {
   const newInstance = new NavigationTracker();
   const action = new MouseEvent("click", {

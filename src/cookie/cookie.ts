@@ -26,11 +26,11 @@ export class Cookie {
       this.hideElement(this.cookieBannerContainer[0] as HTMLElement);
     } else {
       //add event listerners
-      this.acceptCookies[0].addEventListener(
+      this.acceptCookies[0]?.addEventListener(
         "click",
         this.handleAcceptClickEvent.bind(this),
       );
-      this.rejectCookies[0].addEventListener(
+      this.rejectCookies[0]?.addEventListener(
         "click",
         this.handleRejectClickEvent.bind(this),
       );

@@ -5,6 +5,8 @@ import {
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
 
+window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
 describe("pageViewTracker", () => {
   const newInstance = new PageViewTracker();
   const spy = jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");

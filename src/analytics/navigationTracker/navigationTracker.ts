@@ -17,11 +17,7 @@ export class NavigationTracker extends BaseTracker {
    * @return {type} None
    */
   initialiseEventListener() {
-    document.body.addEventListener(
-      "click",
-      this.trackNavigation.bind(this),
-      false,
-    );
+    document.addEventListener("click", this.trackNavigation.bind(this), false);
   }
 
   /**
