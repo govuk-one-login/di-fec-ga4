@@ -1,6 +1,6 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import { FormResponseTracker } from "./formTracker";
-import { FormField } from "./formTracker.interface";
+import { FormEventInterface, FormField } from "./formTracker.interface";
 
 describe("FormResponseTracker", () => {
   //const newInstance = new FormResponseTracker();
@@ -115,7 +115,7 @@ describe("form with input checkbox", () => {
       "</form>";
     document.dispatchEvent(action);
 
-    const dataLayerEvent = {
+    const dataLayerEvent: FormEventInterface = {
       event: "event_data",
       event_data: {
         event_name: "form_response",
@@ -148,7 +148,7 @@ describe("form with input text", () => {
       "</form>";
     document.dispatchEvent(action);
 
-    const dataLayerEvent = {
+    const dataLayerEvent: FormEventInterface = {
       event: "event_data",
       event_data: {
         event_name: "form_response",
@@ -182,7 +182,7 @@ describe("form with input textarea", () => {
       "</form>";
     document.dispatchEvent(action);
 
-    const dataLayerEvent = {
+    const dataLayerEvent: FormEventInterface = {
       event: "event_data",
       event_data: {
         event_name: "form_response",
@@ -216,7 +216,7 @@ describe("form with dropdown", () => {
       "</form>";
     document.dispatchEvent(action);
 
-    const dataLayerEvent = {
+    const dataLayerEvent: FormEventInterface = {
       event: "event_data",
       event_data: {
         event_name: "form_response",

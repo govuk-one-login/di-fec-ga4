@@ -18,7 +18,6 @@ export class Analytics {
     this.pageViewTracker = new PageViewTracker();
     this.navigationTracker = new NavigationTracker();
     this.formResponseTracker = new FormResponseTracker();
-    //this.formResponseTracker.trackFormResponse({});
     this.loadGtmScript();
   }
 
