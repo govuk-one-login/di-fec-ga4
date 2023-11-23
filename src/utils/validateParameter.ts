@@ -3,7 +3,7 @@
  */
 
 export function validateParameter(parameter: any, maxLength: number) {
-  let validatedParameter = parameter || "No parameter provided";
+  let validatedParameter = parameter || "undefined";
   const length = parameter.length;
   const type = typeof parameter;
 
@@ -11,7 +11,7 @@ export function validateParameter(parameter: any, maxLength: number) {
     console.error(
       `GA4: Invalid data type found, ${parameter} should be a string but instead found a ${type}`,
     );
-    validatedParameter = "Invalid type provided";
+    validatedParameter = "undefined";
   } else if (length > maxLength) {
     console.error(
       `GA4: ${parameter} should not be more than ${maxLength} characters, it is currently ${length} characters long`,

@@ -1,4 +1,6 @@
+import { validateParameter } from "../../utils/validateParameter";
 import { BaseTracker } from "../baseTracker/baseTracker";
+import { FormEventInterface, FormField } from "./formTracker.interface";
 
 export class FormResponseTracker extends BaseTracker {
   eventName: string = "form_response";
@@ -9,6 +11,10 @@ export class FormResponseTracker extends BaseTracker {
     this.initialiseEventListener();
   }
 
+  /**
+   * Initialise the event listener for the document.
+   *
+   */
   initialiseEventListener() {
     document.addEventListener(
       "submit",
@@ -18,88 +24,159 @@ export class FormResponseTracker extends BaseTracker {
   }
 
   trackFormResponse(event: SubmitEvent): boolean {
-    event.preventDefault();
-
     const form = document.forms[0];
-    console.log("form action", form.action);
-    console.log("fieldset", form.elements[0]);
-    console.log("event type", event.target);
+    let fields: FormField[] = [];
 
-    console.log("form button label", event.submitter?.textContent?.trim());
-    event.currentTarget;
-    const data = new FormData(event.target as any);
-    //console.log('data action',event.currentTarget)
-    console.log("data entries", data.keys());
-    data.forEach((value, key) => {
-      console.log("key", key);
-      console.log("value", value);
-    });
+    if (form && form.elements) {
+      fields = this.getFields(form);
+    } else {
+      return false;
+    }
 
-    const value = Object.fromEntries(data.entries());
-    console.log("value", { value });
-    //this.getFieldLabel();
-    this.getFieldType(form);
+    if (!fields.length) {
+      console.log("form or fields not found");
+      return false;
+    }
 
-    //console.log("form elements", form.elements);
-    //this.getFormElements(form.elements as any);
-    //remove fields type hidden
-
-    //console.log("button", form.);
-
-    const formResponseTrackerEvent: any = {
+    const formResponseTrackerEvent: FormEventInterface = {
       event: this.eventType,
       event_data: {
         event_name: this.eventName,
-        type: this.getFieldType(form),
-        url: this.getLocation(),
-        text: this.getFieldValue(form),
-        section: this.getFieldLabel(),
-        action: event.submitter?.textContent
-          ? event.submitter.textContent.trim()
-          : "undefined",
+        type: validateParameter(this.getFieldType(fields), 100),
+        url: "undefined",
+        text: validateParameter(this.getFieldValue(fields), 100),
+        section: validateParameter(this.getFieldLabel(), 100),
+        action: validateParameter(this.getButtonLabel(event), 100),
         external: "undefined",
       },
     };
 
-    /*try {
+    try {
       this.pushToDataLayer(formResponseTrackerEvent);
       return true;
     } catch (err) {
       console.error("Error in trackFormResponses", err);
       return false;
-    }*/
-    return false;
-  }
-
-  getFieldType(form: HTMLFormElement): string {
-    const inputs = form.getElementsByTagName("input");
-    if (!inputs.length) {
-      return "undefined";
     }
-    console.log("input type", inputs[0].type);
-    return inputs[0].type;
   }
 
+  /**
+   * Retrieves the selected fields from an HTML form.
+   *
+   * @param {HTMLFormElement} form - The HTML form element.
+   * @return {FormField[]} An array of selected form fields.
+   */
+  getFields(form: HTMLFormElement): FormField[] {
+    const selectedFields: FormField[] = [];
+    for (let i = 0; i < form.elements.length; i++) {
+      const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
+
+      if (
+        element.type === "hidden" ||
+        element.type === "fieldset" ||
+        element.type === "submit"
+      ) {
+        continue;
+      }
+
+      if (
+        (element.type === "radio" || element.type === "checkbox") &&
+        element.checked
+      ) {
+        selectedFields.push({
+          id: element.id,
+          name: element.name,
+          value: document.querySelector(`label[for="${element.id}"]`)
+            ?.textContent
+            ? document
+                .querySelector(`label[for="${element.id}"]`)
+                ?.textContent?.trim()
+            : "undefined",
+          type: element.type,
+        });
+      } else if (element.type === "textarea" || element.type === "text") {
+        selectedFields.push({
+          id: element.id,
+          name: element.name,
+          value: element.value,
+          type: element.type,
+        });
+      } else if (element.type === "select-one") {
+        const selectedElement = form.elements[i] as HTMLSelectElement;
+        selectedFields.push({
+          id: selectedElement.id,
+          name: selectedElement.name,
+          value: selectedElement.options[selectedElement.selectedIndex].text,
+          type: selectedElement.type,
+        });
+      }
+    }
+    return selectedFields;
+  }
+
+  /**
+   * Returns the field type based on the given FormField array.
+   *
+   * @param {FormField[]} elements - An array of FormField objects.
+   * @return {string} The field type based on the elements.
+   */
+  getFieldType(elements: FormField[]): string {
+    if (elements[0].type === "textarea" || elements[0].type === "text") {
+      return "free text field";
+    } else if (elements[0].type === "select-one") {
+      return "drop-down list";
+    } else {
+      return elements[0].type;
+    }
+  }
+
+  /**
+   * Retrieves the label of a field.
+   *
+   * @return {string} The label of the field.
+   */
   getFieldLabel(): string {
-    const labels: HTMLCollectionOf<HTMLLegendElement> =
+    let labels: HTMLCollectionOf<HTMLLegendElement | HTMLLabelElement> =
       document.getElementsByTagName("legend");
     if (!labels.length) {
-      return "undefined";
+      labels = document.getElementsByTagName("label");
     }
     let label: string = "";
     for (let i = 0; i < labels.length; i++) {
       if (labels[i].textContent) {
-        label += labels[i]?.textContent?.trim() + " ";
+        label += labels[i]?.textContent?.trim();
+        if (i > 1 && i < labels.length - 1) {
+          label += ", ";
+        }
       }
     }
     return label;
   }
 
-  getFieldValue(form: HTMLFormElement): string {
-    return "field value";
+  /**
+   * Retrieves the field value from an array of form fields.
+   *
+   * @param {FormField[]} elements - The array of form fields.
+   * @return {string} The concatenated field values separated by a comma (if there is more than one field).
+   */
+  getFieldValue(elements: FormField[]): string {
+    let value = "";
+    const separator = elements.length > 1 ? ", " : "";
+    elements.forEach((element) => {
+      value += element.value + separator;
+    });
+    return value;
   }
 
-  getButtonLabel(form: HTMLFormElement): string {
-    return "button label";
+  /**
+   * Retrieves the label of a button from a SubmitEvent.
+   *
+   * @param {SubmitEvent} event - The SubmitEvent object containing the button.
+   * @return {string} The label of the button, or "undefined" if it is not found.
+   */
+  getButtonLabel(event: SubmitEvent): string {
+    return event.submitter?.textContent
+      ? event.submitter.textContent.trim()
+      : "undefined";
   }
 }
