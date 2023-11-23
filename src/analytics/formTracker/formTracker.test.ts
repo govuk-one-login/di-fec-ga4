@@ -20,18 +20,6 @@ describe("FormResponseTracker", () => {
     expect(instance.initialiseEventListener).toBeCalled();
   });
 
-  /*
-    BUG: This test fails because it returns an error: "ReferenceError: SubmitEvent is not defined"
-    JIRA Ticket: https://jira.atlassian.com/browse/DFC-129
-    */
-  /*test("getButtonLabel should return button label", () => {
-        const instance = new FormResponseTracker();
-        const button = document.createElement("button");
-        button.textContent = "test";
-        const submitEvent = new SubmitEvent("submit",{ submitter: button});
-        expect(instance.getButtonLabel(submitEvent)).toBe("test");
-    });*/
-
   test("getFields should return a list of fields objects", () => {
     const instance = new FormResponseTracker();
     const form = document.createElement("form");
