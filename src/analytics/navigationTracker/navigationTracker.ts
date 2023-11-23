@@ -17,7 +17,11 @@ export class NavigationTracker extends BaseTracker {
    * @return {type} None
    */
   initialiseEventListener() {
-    document.addEventListener("click", this.trackNavigation.bind(this), false);
+    document.body.addEventListener(
+      "click",
+      this.trackNavigation.bind(this),
+      false,
+    );
   }
 
   /**
@@ -27,6 +31,10 @@ export class NavigationTracker extends BaseTracker {
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
   trackNavigation(event: Event): boolean {
+    if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
+
     const element: HTMLLinkElement = event.target as HTMLLinkElement;
     /**
      * Navigation tracker is only for links and buttons
@@ -34,8 +42,13 @@ export class NavigationTracker extends BaseTracker {
     if (element.tagName !== "A" && element.tagName !== "BUTTON") {
       return false;
     }
-    // Ignore links that don't have an href
-    if (!element.href || !element.href.length || element.href === "#") {
+    // Ignore links that don't have an inbound or outbound href
+    if (
+      !element.href ||
+      !element.href.length ||
+      element.href === "#" ||
+      element.href === window.location.href + "#"
+    ) {
       return false;
     }
 

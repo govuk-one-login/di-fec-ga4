@@ -1,3 +1,4 @@
+import { Cookie } from "../../cookie/cookie";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
 
@@ -5,7 +6,7 @@ export class Analytics {
   gtmId: string;
   pageViewTracker: PageViewTracker;
   navigationTracker: NavigationTracker;
-
+  cookie: Cookie;
   /**
    * Initializes a new instance of the class.
    *
@@ -13,9 +14,12 @@ export class Analytics {
    */
   constructor(gtmId: string) {
     this.gtmId = gtmId;
+    this.cookie = new Cookie();
     this.pageViewTracker = new PageViewTracker();
     this.navigationTracker = new NavigationTracker();
-    this.loadGtmScript();
+    if (this.cookie.consent) {
+      this.loadGtmScript();
+    }
   }
 
   /**
@@ -24,6 +28,7 @@ export class Analytics {
    * @return {boolean} Returns true if the script was successfully loaded and appended, otherwise false.
    */
   loadGtmScript(): boolean {
+    console.log("loadGtmScript");
     const googleSrc =
       "https://www.googletagmanager.com/gtm.js?id=" + this.gtmId;
     const newScript = document.createElement("script");

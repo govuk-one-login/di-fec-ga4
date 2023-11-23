@@ -19,6 +19,10 @@ export class PageViewTracker extends BaseTracker {
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
   trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
+    if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
+
     const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,
       page_view: {
