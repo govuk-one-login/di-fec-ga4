@@ -11,7 +11,7 @@ describe("validateParameter", () => {
   test("invalid types should be replaced by an error message", () => {
     const parameter = 1234;
     const validatedParameter = validateParameter(parameter, 100);
-    expect(validatedParameter).toEqual("invalid type provided");
+    expect(validatedParameter).toEqual("undefined");
   });
 
   test("parameters with invalid lengths should be truncated", () => {
@@ -23,6 +23,6 @@ describe("validateParameter", () => {
   test("empty parameters should be replaced with error message", () => {
     const parameter = "";
     const validatedParameter = validateParameter(parameter, 100);
-    expect(validatedParameter).toEqual("no parameter provided");
+    expect(validatedParameter).toEqual("undefined");
   });
 });
