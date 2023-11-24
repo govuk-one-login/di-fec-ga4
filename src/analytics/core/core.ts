@@ -29,7 +29,6 @@ export class Analytics {
    * @return {boolean} Returns true if the script was successfully loaded and appended, otherwise false.
    */
   loadGtmScript(): boolean {
-    console.log("loadGtmScript");
     const googleSrc =
       "https://www.googletagmanager.com/gtm.js?id=" + this.gtmId;
     const newScript = document.createElement("script");

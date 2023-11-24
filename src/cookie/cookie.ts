@@ -55,7 +55,6 @@ export class Cookie {
     this.setBannerCookieConsent(true, window.location.hostname);
     this.consent = true;
     window.DI.analyticsGa4.loadGtmScript();
-    //this.parent.loadGtmScript();
   }
 
   /**
