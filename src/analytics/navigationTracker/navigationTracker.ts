@@ -1,7 +1,6 @@
 import { BaseTracker } from "../baseTracker/baseTracker";
 import { NavigationEventInterface } from "./navigationTracker.interface";
 import { validateParameter } from "../../utils/validateParameter";
-import { EmbeddedMetadata } from "typeorm/metadata/EmbeddedMetadata";
 
 export class NavigationTracker extends BaseTracker {
   eventName: string = "event_data";
