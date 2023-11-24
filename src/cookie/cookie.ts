@@ -1,15 +1,15 @@
 export class Cookie {
   public consent: boolean = false;
   public COOKIES_PREFERENCES_SET = "cookies_preferences_set";
-  private cookiesAccepted = document.getElementById("cookies-accepted");
-  private cookiesRejected = document.getElementById("cookies-rejected");
-  private hideCookieBanner =
+  public cookiesAccepted = document.getElementById("cookies-accepted");
+  public cookiesRejected = document.getElementById("cookies-rejected");
+  public hideCookieBanner =
     document.getElementsByClassName("cookie-hide-button");
-  private cookieBannerContainer: HTMLCollectionOf<Element> =
+  public cookieBannerContainer: HTMLCollectionOf<Element> =
     document.getElementsByClassName("govuk-cookie-banner");
-  private cookieBanner = document.getElementById("cookies-banner-main");
-  private acceptCookies = document.getElementsByName("cookiesAccept");
-  private rejectCookies = document.getElementsByName("cookiesReject");
+  public cookieBanner = document.getElementById("cookies-banner-main");
+  public acceptCookies = document.getElementsByName("cookiesAccept");
+  public rejectCookies = document.getElementsByName("cookiesReject");
 
   constructor() {
     this.initialise();
@@ -189,7 +189,9 @@ export class Cookie {
    * @param {HTMLElement} element - The HTML element to be hidden.
    */
   hideElement(element: HTMLElement): void {
-    element.style.display = "none";
+    if (element && element.style) {
+      element.style.display = "none";
+    }
   }
 
   /**
@@ -198,6 +200,8 @@ export class Cookie {
    * @param {HTMLElement} element - The element to be shown.
    */
   showElement(element: HTMLElement): void {
-    element.style.display = "block";
+    if (element && element.style) {
+      element.style.display = "block";
+    }
   }
 }
