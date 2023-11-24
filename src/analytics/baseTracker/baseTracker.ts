@@ -41,7 +41,7 @@ export class BaseTracker {
     const languageCode =
       document.querySelector("html") &&
       document.querySelector("html")?.getAttribute("lang");
-    return languageCode?.toLowerCase() || "en";
+    return languageCode?.toLowerCase() || "undefined";
   }
 
   /**

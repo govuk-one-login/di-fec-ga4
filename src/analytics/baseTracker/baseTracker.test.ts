@@ -37,7 +37,7 @@ describe("should return the good parameter values", () => {
   test("Get en as a default Language", () => {
     document.documentElement.lang = "";
     const languageCode = newInstance.getLanguage();
-    expect(languageCode).toEqual("en");
+    expect(languageCode).toEqual("undefined");
   });
 
   test("Get location from DOM", () => {
