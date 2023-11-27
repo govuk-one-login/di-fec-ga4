@@ -17,3 +17,7 @@ export interface FormField {
   value: string | undefined;
   type: string;
 }
+
+export interface formTrackerOptionsInterface {
+  disableFreeTextTracking?: boolean;
+}

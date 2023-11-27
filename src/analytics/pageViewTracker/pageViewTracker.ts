@@ -7,9 +7,10 @@ import { validateParameter } from "../../utils/validateParameter";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
-
-  constructor() {
+  disableGa4Tracking: boolean = false;
+  constructor(options: { disableGa4Tracking?: boolean } = {}) {
     super();
+    this.disableGa4Tracking = options.disableGa4Tracking || false;
   }
 
   /**
@@ -19,6 +20,10 @@ export class PageViewTracker extends BaseTracker {
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
   trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
+    if (this.disableGa4Tracking) {
+      return false;
+    }
+
     const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,
       page_view: {
