@@ -1,6 +1,8 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import { NavigationTracker } from "./navigationTracker";
 
+window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
 describe("navigationTracker", () => {
   const newInstance = new NavigationTracker();
   const action = new MouseEvent("click", {
@@ -87,6 +89,15 @@ describe("navigationTracker", () => {
     });
     href.dispatchEvent(action);
     expect(newInstance.pushToDataLayer).toBeCalled();
+  });
+});
+
+describe("Cookie Management", () => {
+  const spy = jest.spyOn(NavigationTracker.prototype, "trackNavigation");
+  test("trackNavigation should return false if not cookie consent", () => {
+    window.DI.analyticsGa4.cookie.consent = false;
+    const instance = new NavigationTracker();
+    expect(instance.trackNavigation).toReturnWith(false);
   });
 });
 

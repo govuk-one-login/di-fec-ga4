@@ -1,3 +1,4 @@
+import { Cookie } from "../../cookie/cookie";
 import { FormResponseTracker } from "../formTracker/formTracker";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
@@ -6,6 +7,7 @@ export class Analytics {
   gtmId: string;
   pageViewTracker: PageViewTracker;
   navigationTracker: NavigationTracker;
+  cookie: Cookie;
   formResponseTracker: FormResponseTracker;
 
   /**
@@ -15,10 +17,14 @@ export class Analytics {
    */
   constructor(gtmId: string) {
     this.gtmId = gtmId;
+    this.cookie = new Cookie();
     this.pageViewTracker = new PageViewTracker();
     this.navigationTracker = new NavigationTracker();
     this.formResponseTracker = new FormResponseTracker();
-    this.loadGtmScript();
+
+    if (this.cookie.consent) {
+      this.loadGtmScript();
+    }
   }
 
   /**
