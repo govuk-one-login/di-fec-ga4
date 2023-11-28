@@ -106,6 +106,16 @@ window.DI.appInit(
 
 [!NOTE] window.DI.appInit is a function loaded from analytics.js. That will create a new instance of our analytics library and store into window.DI.analyticsGa4 [!NOTE]
 
+### Analytics Cookie Consent
+
+The Cookie class is responsible for managing cookies consent about analytics. It provides methods and fields to handle cookie-related operations:
+
+- Set the cookie when the visitor decides to accept or reject any analytics tracking
+- Hide the cookie banner that displays a message when the visitor has decided if he rejects or accepts the analytics tracking
+- Show the element that displays a message when consent is not given
+- Show the element that displays a message when consent is given
+- Hide the cookie banner when the visitor wants to hide the accepted or rejected message
+
 ### Page View Tracker
 
 Page view tracking allows us to see which pages are most visited, where your visitors are coming from, etc.

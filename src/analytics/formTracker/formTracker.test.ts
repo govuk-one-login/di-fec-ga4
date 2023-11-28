@@ -2,6 +2,8 @@ import { describe, expect, jest, test } from "@jest/globals";
 import { FormResponseTracker } from "./formTracker";
 import { FormEventInterface, FormField } from "./formTracker.interface";
 
+window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
 describe("FormResponseTracker", () => {
   const action = new Event("submit", {
     bubbles: true,
@@ -249,5 +251,27 @@ describe("form with dropdown", () => {
       },
     };
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+  });
+});
+
+describe("Cookie Management", () => {
+  const action = new Event("submit", {
+    bubbles: true,
+    cancelable: true,
+  });
+  const spy = jest.spyOn(FormResponseTracker.prototype, "trackFormResponse");
+  const instance = new FormResponseTracker();
+
+  test("trackFormResponse should return false if not cookie consent", () => {
+    window.DI.analyticsGa4.cookie.consent = false;
+    document.body.innerHTML =
+      '<form action="/test-url" method="post">' +
+      '  <label for="username">test label username</label>' +
+      '  <select id="username" name="username"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
+      '  <button id="button" type="submit">submit</button>' +
+      "</form>";
+    document.dispatchEvent(action);
+
+    expect(instance.trackFormResponse).toReturnWith(false);
   });
 });

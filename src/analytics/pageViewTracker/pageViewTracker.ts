@@ -23,6 +23,9 @@ export class PageViewTracker extends BaseTracker {
     if (this.disableGa4Tracking) {
       return false;
     }
+    if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
 
     const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,

@@ -1,3 +1,4 @@
+import { Cookie } from "../../cookie/cookie";
 import { FormResponseTracker } from "../formTracker/formTracker";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
@@ -7,6 +8,7 @@ export class Analytics {
   gtmId: string;
   pageViewTracker: PageViewTracker | undefined;
   navigationTracker: NavigationTracker | undefined;
+  cookie: Cookie | undefined;
   formResponseTracker: FormResponseTracker | undefined;
 
   /**
@@ -19,12 +21,18 @@ export class Analytics {
     this.pageViewTracker = new PageViewTracker({
       disableGa4Tracking: options.disableGa4Tracking,
     });
+
     if (!options.disableGa4Tracking) {
       this.navigationTracker = new NavigationTracker();
       this.formResponseTracker = new FormResponseTracker({
         disableFreeTextTracking: options.disableFormFreeTextTracking,
       });
-      this.loadGtmScript();
+      this.cookie = new Cookie();
+      this.navigationTracker = new NavigationTracker();
+
+      if (this.cookie.consent) {
+        this.loadGtmScript();
+      }
     }
   }
 

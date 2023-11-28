@@ -33,6 +33,10 @@ export class FormResponseTracker extends BaseTracker {
   }
 
   trackFormResponse(event: SubmitEvent): boolean {
+    if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
+
     const form = document.forms[0];
     let fields: FormField[] = [];
 
