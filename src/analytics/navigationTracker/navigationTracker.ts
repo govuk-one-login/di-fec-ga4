@@ -4,6 +4,7 @@ import { validateParameter } from "../../utils/validateParameter";
 
 export class NavigationTracker extends BaseTracker {
   eventName: string = "event_data";
+  section: string = "undefined";
 
   constructor() {
     super();
@@ -31,7 +32,11 @@ export class NavigationTracker extends BaseTracker {
       return false;
     }
 
-    const element: HTMLLinkElement = event.target as HTMLLinkElement;
+    let element: HTMLLinkElement = event.target as HTMLLinkElement;
+    element = this.getParentElementIfSpecificClass(element, [
+      "govuk-header__logotype",
+    ]);
+
     /**
      * Navigation tracker is only for links and buttons
      */
@@ -57,7 +62,7 @@ export class NavigationTracker extends BaseTracker {
         text: element.textContent
           ? validateParameter(element.textContent.trim(), 100)
           : "undefined",
-        section: "undefined",
+        section: this.section,
         action: "undefined",
         external: this.isExternalLink(element.href) ? "true" : "false",
       },
@@ -70,6 +75,27 @@ export class NavigationTracker extends BaseTracker {
       console.error("Error in trackNavigation", err);
       return false;
     }
+  }
+
+  /**
+   * Returns the parent element of the given HTMLLinkElement if it has a specific class.
+   *
+   * @param {HTMLLinkElement} element - The HTMLLinkElement to check for a specific class.
+   * @param {string[]} classes - An array of classes to check against the parent element's class.
+   * @return {HTMLLinkElement} - The parent element of the parent element of the given HTMLLinkElement if it has a specific class, otherwise returns the original element.
+   */
+  getParentElementIfSpecificClass(
+    element: HTMLLinkElement,
+    classes: string[],
+  ): HTMLLinkElement {
+    if (
+      element.parentElement &&
+      classes.includes(element.parentElement.className) &&
+      element.parentElement.parentElement?.tagName === "A"
+    ) {
+      return element.parentElement.parentElement as HTMLLinkElement;
+    }
+    return element;
   }
 
   /**
@@ -97,9 +123,9 @@ export class NavigationTracker extends BaseTracker {
    */
   getLinkType(element: HTMLLinkElement): string {
     if (element.tagName === "A") {
-      if (this.isFooterLink(element.className)) {
+      if (this.isFooterLink(element)) {
         return "footer";
-      } else if (this.isHeaderMenuBarLink(element.className)) {
+      } else if (this.isHeaderMenuBarLink(element)) {
         return "header menu bar";
       }
       return "generic link";
@@ -115,8 +141,9 @@ export class NavigationTracker extends BaseTracker {
    * @param {string} className - The class name to check.
    * @return {boolean} Returns true if the class name contains "govuk-footer__link", otherwise returns false.
    */
-  isFooterLink(className: string): boolean {
-    return className.includes("govuk-footer__link");
+  isFooterLink(element: HTMLElement): boolean {
+    const footer = document.getElementsByTagName("footer")[0];
+    return footer.contains(element);
   }
 
   /**
@@ -125,7 +152,8 @@ export class NavigationTracker extends BaseTracker {
    * @param {string} className - The class name to check.
    * @return {boolean} Returns true if the class name includes "header__navigation", false otherwise.
    */
-  isHeaderMenuBarLink(className: string): boolean {
-    return className.includes("header__navigation");
+  isHeaderMenuBarLink(element: HTMLElement): boolean {
+    const header = document.getElementsByTagName("header")[0];
+    return header.contains(element);
   }
 }
