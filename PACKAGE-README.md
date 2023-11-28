@@ -90,10 +90,13 @@ It can be called by using the method trackOnPageLoad of the object pageViewTrack
 
 It takes as a unique parameter an object define by :
 
-- statusCode: number
-- englishPageTitle: string
-- taxonomy_level1: string
-- taxonomy_level2: string
+- statusCode (number): Content ID is a unique ID for each front end display on a given page.
+- englishPageTitle (string): English version of the page title.
+- taxonomy_level1 (string): Taxonomies are hierarchical tool that allows us to filter data for reporting and insights purposes.
+- taxonomy_level2 (string): Taxonomies are hierarchical tool that allows us to filter data for reporting and insights purposes.
+- content_id (string): Content ID is a unique ID for each front end display on a given page.
+- logged_in_status (boolean): Whether a user is logged in or logged out.
+- dynamic (boolean): This parameter indicates whether the page has multiple versions and uses the same URL.
 
 Example:
 
@@ -103,6 +106,9 @@ window.DI.analyticsGa4.pageViewTracker.trackOnPageLoad({
   englishPageTitle: "english version of the page title",
   taxonomy_level1: "test tax1",
   taxonomy_level2: "test tax2",
+  content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
+  logged_in_status: true,
+  dynamic: true,
 });
 ```
 

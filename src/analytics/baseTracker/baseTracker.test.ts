@@ -18,6 +18,12 @@ describe("should push to dataLayer", () => {
         title: "Home",
         taxonomy_level1: "taxo1",
         taxonomy_level2: "taxo2",
+        content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
+        logged_in_status: "logged in",
+        dynamic: "true",
+        first_published_at: "2022-09-01T00:00:00.000Z",
+        updated_at: "2022-09-01T00:00:00.000Z",
+        relying_party: "Relying Party",
       },
     };
     newInstance.pushToDataLayer(pageViewTrackerDataLayerEvent);
