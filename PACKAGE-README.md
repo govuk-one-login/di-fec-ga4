@@ -90,7 +90,7 @@ It can be called by using the method trackOnPageLoad of the object pageViewTrack
 
 It takes as a unique parameter an object define by :
 
-- statusCode (number): Content ID is a unique ID for each front end display on a given page.
+- statusCode (number): Status code of the page.
 - englishPageTitle (string): English version of the page title.
 - taxonomy_level1 (string): Taxonomies are hierarchical tool that allows us to filter data for reporting and insights purposes.
 - taxonomy_level2 (string): Taxonomies are hierarchical tool that allows us to filter data for reporting and insights purposes.

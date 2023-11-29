@@ -86,7 +86,7 @@ describe("pageViewTracker", () => {
     expect(updatedAt).toBe("undefined");
   });
 
-  test("getFirstPublishedAt returns the good data if updated-at tag exists", () => {
+  test("getUpdatedAt returns the good data if updated-at tag exists", () => {
     const newTag = document.createElement("meta");
     newTag.setAttribute("name", "govuk:updated-at");
     newTag.setAttribute("content", "2022-09-02T00:00:00.000Z");
