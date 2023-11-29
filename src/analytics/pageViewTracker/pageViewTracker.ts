@@ -39,6 +39,12 @@ export class PageViewTracker extends BaseTracker {
         title: validateParameter(parameters.englishPageTitle, 300),
         taxonomy_level1: validateParameter(parameters.taxonomy_level1, 100),
         taxonomy_level2: validateParameter(parameters.taxonomy_level2, 100),
+        content_id: validateParameter(parameters.content_id, 100),
+        logged_in_status: this.getLoggedInStatus(parameters.logged_in_status),
+        dynamic: parameters.dynamic.toString(),
+        first_published_at: this.getFirstPublishedAt(),
+        updated_at: this.getUpdatedAt(),
+        relying_party: this.getRelyingParty(),
       },
     };
 
@@ -49,5 +55,50 @@ export class PageViewTracker extends BaseTracker {
       console.error("Error in trackOnPageLoad", err);
       return false;
     }
+  }
+
+  /**
+   * Returns a string representing the logged in status.
+   *
+   * @param {boolean} loggedInStatus - The logged in status.
+   * @return {string} The string representation of the logged in status.
+   */
+  getLoggedInStatus(loggedInStatus: boolean): string {
+    return loggedInStatus ? "logged in" : "logged out";
+  }
+
+  /**
+   * Returns the value of the 'govuk:first-published-at' meta tag attribute, if it exists.
+   *
+   * @return {string} The value of the 'govuk:first-published-at' meta tag attribute, or "undefined" if it does not exist.
+   */
+  getFirstPublishedAt(): string {
+    return (
+      document
+        .querySelector('meta[name="govuk:first-published-at"]')
+        ?.getAttribute("content") ?? "undefined"
+    );
+  }
+
+  /**
+   * Retrieves the value of the 'govuk:updated-at' meta tag attribute from the document.
+   *
+   * @return {string} The value of the 'govuk:updated-at' meta tag attribute, or "undefined" if it is not found.
+   */
+  getUpdatedAt(): string {
+    return (
+      document
+        .querySelector('meta[name="govuk:updated-at"]')
+        ?.getAttribute("content") ?? "undefined"
+    );
+  }
+
+  /**
+   * Returns the hostname of the current document location.
+   *
+   * @return {string} The hostname of the current document location.
+   */
+  getRelyingParty(): string {
+    return document.location.hostname;
   }
 }
