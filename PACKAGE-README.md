@@ -75,13 +75,46 @@ The package is owned by the DI Frontend Capability team, part of the development
 [!NOTE] Different methods exist if you want to set this variable. Some projects use a middleware, some will prefer to use another method. [!NOTE]
 
 4. Add this block of code into your base nunjucks template:
+
    ```js
     <script src="/ga4-assets/analytics.js"></script>
     <script>
     window.DI.appInit({ga4ContainerId: "{{ga4ContainerId}}"})
     </script>
    ```
-   [!NOTE] window.DI.appInit is a function loaded from analytics.js. That will create a new instance of our analytics library and store into window.DI.analyticsGa4 [!NOTE]
+
+   window.DI.appInit can take another parameter: an object of settings. That can be used if you want to disable some options. This is the property of this settings object:
+
+   - disableGa4Tracking (boolean): disable GA4 trackers
+   - disableUaTracking (boolean): disable Universal Analytics tracker
+   - disableAnalyticsCookie (boolean): disable analytics cookie logic within the analytics library
+   - disableFormFreeTextTracking (boolean): disable free text field tracking within the form response tracker.
+
+Example of call:
+
+```js
+window.DI.appInit(
+  { ga4ContainerId: "{{ga4ContainerId}}" },
+  {
+    disabldisableGa4Tracking: true,
+    disableUaTracking: true,
+    disableAnalyticsCookie: false,
+    disableFormFreeTextTracking: true,
+  },
+);
+```
+
+[!NOTE] window.DI.appInit is a function loaded from analytics.js. That will create a new instance of our analytics library and store into window.DI.analyticsGa4 [!NOTE]
+
+### Analytics Cookie Consent
+
+The Cookie class is responsible for managing cookies consent about analytics. It provides methods and fields to handle cookie-related operations:
+
+- Set the cookie when the visitor decides to accept or reject any analytics tracking
+- Hide the cookie banner that displays a message when the visitor has decided if he rejects or accepts the analytics tracking
+- Show the element that displays a message when consent is not given
+- Show the element that displays a message when consent is given
+- Hide the cookie banner when the visitor wants to hide the accepted or rejected message
 
 ### Page View Tracker
 

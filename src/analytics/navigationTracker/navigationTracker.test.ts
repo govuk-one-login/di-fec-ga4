@@ -1,6 +1,8 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import { NavigationTracker } from "./navigationTracker";
 
+window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
 describe("navigationTracker", () => {
   const newInstance = new NavigationTracker();
   const action = new MouseEvent("click", {
@@ -9,6 +11,10 @@ describe("navigationTracker", () => {
     cancelable: true,
   });
   const spy = jest.spyOn(NavigationTracker.prototype, "pushToDataLayer");
+  const spyTrackNavigation = jest.spyOn(
+    NavigationTracker.prototype,
+    "trackNavigation",
+  );
   const constructorSpy = jest.spyOn(
     NavigationTracker.prototype,
     "initialiseEventListener",
@@ -17,6 +23,27 @@ describe("navigationTracker", () => {
   test("new instance should call initialiseEventListener", () => {
     const instance = new NavigationTracker();
     expect(newInstance.initialiseEventListener).toBeCalled();
+  });
+
+  test("click should call trackNavigation", () => {
+    const href = document.createElement("A");
+    href.className = "govuk-footer__link";
+    href.innerHTML = "Link to GOV.UK";
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackNavigation).toBeCalled();
+    });
+  });
+
+  test("should push data into data layer if click on logo icon", () => {
+    const element = document.createElement("span");
+    element.className = "govuk-header__logotype";
+    document.body.innerHTML = "<header></header>";
+    const header = document.getElementsByTagName("header")[0];
+    header.appendChild(element);
+    element.dispatchEvent(action);
+    element.addEventListener("click", (event) => {
+      expect(newInstance.pushToDataLayer).toBeCalled();
+    });
   });
 
   //test trackNavigation doesn't accept anything except button or link
@@ -31,6 +58,7 @@ describe("navigationTracker", () => {
 
   //test trackNavigation accept button
   test("trackNavigation should return true if a link", () => {
+    document.body.innerHTML = "<header></header><footer></footer>";
     const href = document.createElement("A");
     href.className = "govuk-footer__link";
     href.innerHTML = "Link to GOV.UK";
@@ -64,6 +92,15 @@ describe("navigationTracker", () => {
   });
 });
 
+describe("Cookie Management", () => {
+  const spy = jest.spyOn(NavigationTracker.prototype, "trackNavigation");
+  test("trackNavigation should return false if not cookie consent", () => {
+    window.DI.analyticsGa4.cookie.consent = false;
+    const instance = new NavigationTracker();
+    expect(instance.trackNavigation).toReturnWith(false);
+  });
+});
+
 describe("getLinkType", () => {
   const newInstance = new NavigationTracker();
   const action = new MouseEvent("click", {
@@ -72,27 +109,34 @@ describe("getLinkType", () => {
     cancelable: true,
   });
 
-  test('should return "footer" when the element is an <a> tag with footer link class', () => {
+  test('should return "footer" when the element is an <a> tag within the footer tag', () => {
     const href = document.createElement("A");
     href.className = "govuk-footer__link";
     href.dispatchEvent(action);
+    document.body.innerHTML = "<header></header><footer></footer>";
+    const footer = document.getElementsByTagName("footer")[0];
+    footer.appendChild(href);
     const element = action.target as HTMLLinkElement;
     expect(newInstance.getLinkType(element)).toBe("footer");
   });
 
-  test('should return "header menu bar" when the element is an <a> tag with header menu bar link class', () => {
+  test('should return "header menu bar" when the element is an <a> tag within the header tag', () => {
     const href = document.createElement("A");
     href.className = "header__navigation";
     href.dispatchEvent(action);
+    document.body.innerHTML = "<header></header><footer></footer>";
+    const header = document.getElementsByTagName("header")[0];
+    header.appendChild(href);
     const element = action.target as HTMLLinkElement;
     expect(newInstance.getLinkType(element)).toBe("header menu bar");
   });
 
-  test('should return "generic link" when the element is an <a> tag without footer or header menu bar link class', () => {
+  test('should return "generic link" when the element is an <a> tag which is not inside the footer or header tags', () => {
     const href = document.createElement("A");
     href.className = "other-link";
     href.dispatchEvent(action);
     const element = action.target as HTMLLinkElement;
+    document.body.innerHTML = "<header></header><footer></footer>";
     expect(newInstance.getLinkType(element)).toBe("generic link");
   });
 
@@ -122,49 +166,31 @@ describe("isExternalLink", () => {
 describe("isHeaderMenuBarLink", () => {
   const newInstance = new NavigationTracker();
 
-  test('should return true if the class name includes "header__navigation"', () => {
-    expect(newInstance.isHeaderMenuBarLink("header__navigation")).toBe(true);
+  test("should return true if link is inside the header tag", () => {
+    document.body.innerHTML = `<header><a id="testLink">Link to GOV.UK</a></header>`;
+    const element = document.getElementById("testLink") as HTMLElement;
+    expect(newInstance.isHeaderMenuBarLink(element)).toBe(true);
   });
 
-  test('should return false if the class name does not include "header__navigation"', () => {
-    expect(newInstance.isHeaderMenuBarLink("header__logo")).toBe(false);
-  });
-
-  test('should return true if the class name includes "header__navigation" along with other classes', () => {
-    expect(
-      newInstance.isHeaderMenuBarLink("header__navigation header__logo"),
-    ).toBe(true);
-  });
-
-  test("should return false if the class name is an empty string", () => {
-    expect(newInstance.isHeaderMenuBarLink("")).toBe(false);
+  test("should return false if link is not inside the header tag", () => {
+    document.body.innerHTML = `<header></header><a id="testLink">Link to GOV.UK</a>`;
+    const element = document.getElementById("testLink") as HTMLElement;
+    expect(newInstance.isHeaderMenuBarLink(element)).toBe(false);
   });
 });
 
 describe("isFooterLink", () => {
   const newInstance = new NavigationTracker();
 
-  test("should return true if the class name contains 'govuk-footer__link'", () => {
-    expect(newInstance.isFooterLink("govuk-footer__link")).toBe(true);
+  test("should return true if link is inside the footer tag", () => {
+    document.body.innerHTML = `<footer><a id="testLink2">Link to GOV.UK</a></footer>`;
+    const element = document.getElementById("testLink2") as HTMLElement;
+    expect(newInstance.isFooterLink(element)).toBe(true);
   });
 
-  test("should return false if the class name does not contain 'govuk-footer__link'", () => {
-    expect(newInstance.isFooterLink("some-other-class")).toBe(false);
-  });
-
-  test("should return true if the class name contains 'govuk-footer__link' along with other classes", () => {
-    expect(
-      newInstance.isFooterLink("govuk-footer__link some-other-class"),
-    ).toBe(true);
-  });
-
-  test("should return true if the class name contains 'govuk-footer__link' as a substring", () => {
-    expect(newInstance.isFooterLink("some-class-govuk-footer__link")).toBe(
-      true,
-    );
-  });
-
-  test("should return false if the class name is an empty string", () => {
-    expect(newInstance.isFooterLink("")).toBe(false);
+  test("should return true if link is not inside the footer tag", () => {
+    document.body.innerHTML = `<footer></footer><a id="testLink2">Link to GOV.UK</a>`;
+    const element = document.getElementById("testLink2") as HTMLElement;
+    expect(newInstance.isFooterLink(element)).toBe(false);
   });
 });

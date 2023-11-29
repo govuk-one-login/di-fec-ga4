@@ -1,24 +1,39 @@
+import { Cookie } from "../../cookie/cookie";
 import { FormResponseTracker } from "../formTracker/formTracker";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
+import { OptionsInterface } from "./core.interface";
 
 export class Analytics {
   gtmId: string;
-  pageViewTracker: PageViewTracker;
-  navigationTracker: NavigationTracker;
-  formResponseTracker: FormResponseTracker;
+  pageViewTracker: PageViewTracker | undefined;
+  navigationTracker: NavigationTracker | undefined;
+  cookie: Cookie | undefined;
+  formResponseTracker: FormResponseTracker | undefined;
 
   /**
    * Initializes a new instance of the class.
    *
    * @param {string} gtmId - The GTM ID for the instance.
    */
-  constructor(gtmId: string) {
+  constructor(gtmId: string, options: OptionsInterface = {}) {
     this.gtmId = gtmId;
-    this.pageViewTracker = new PageViewTracker();
-    this.navigationTracker = new NavigationTracker();
-    this.formResponseTracker = new FormResponseTracker();
-    this.loadGtmScript();
+    this.pageViewTracker = new PageViewTracker({
+      disableGa4Tracking: options.disableGa4Tracking,
+    });
+
+    if (!options.disableGa4Tracking) {
+      this.navigationTracker = new NavigationTracker();
+      this.formResponseTracker = new FormResponseTracker({
+        disableFreeTextTracking: options.disableFormFreeTextTracking,
+      });
+      this.cookie = new Cookie();
+      this.navigationTracker = new NavigationTracker();
+
+      if (this.cookie.consent) {
+        this.loadGtmScript();
+      }
+    }
   }
 
   /**

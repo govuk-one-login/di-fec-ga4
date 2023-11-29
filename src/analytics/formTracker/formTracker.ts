@@ -1,13 +1,22 @@
 import { validateParameter } from "../../utils/validateParameter";
 import { BaseTracker } from "../baseTracker/baseTracker";
-import { FormEventInterface, FormField } from "./formTracker.interface";
+import {
+  FormEventInterface,
+  FormField,
+  formTrackerOptionsInterface,
+} from "./formTracker.interface";
 
 export class FormResponseTracker extends BaseTracker {
   eventName: string = "form_response";
   eventType: string = "event_data";
+  disableFreeTextTracking: boolean = false;
+  FREE_TEXT_FIELD_TYPE = "free text field";
+  DROPDOWN_FIELD_TYPE = "drop-down list";
 
-  constructor() {
+  constructor(formTrackerOptions: formTrackerOptionsInterface = {}) {
     super();
+    this.disableFreeTextTracking =
+      formTrackerOptions.disableFreeTextTracking || false;
     this.initialiseEventListener();
   }
 
@@ -24,6 +33,10 @@ export class FormResponseTracker extends BaseTracker {
   }
 
   trackFormResponse(event: SubmitEvent): boolean {
+    if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
+
     const form = document.forms[0];
     let fields: FormField[] = [];
 
@@ -50,6 +63,14 @@ export class FormResponseTracker extends BaseTracker {
         external: "undefined",
       },
     };
+
+    //don't track free text if disableFreeTextTracking is set
+    if (
+      this.disableFreeTextTracking &&
+      formResponseTrackerEvent.event_data.type === this.FREE_TEXT_FIELD_TYPE
+    ) {
+      return false;
+    }
 
     try {
       this.pushToDataLayer(formResponseTrackerEvent);
@@ -122,9 +143,9 @@ export class FormResponseTracker extends BaseTracker {
    */
   getFieldType(elements: FormField[]): string {
     if (elements[0].type === "textarea" || elements[0].type === "text") {
-      return "free text field";
+      return this.FREE_TEXT_FIELD_TYPE;
     } else if (elements[0].type === "select-one") {
-      return "drop-down list";
+      return this.DROPDOWN_FIELD_TYPE;
     } else {
       return elements[0].type;
     }
