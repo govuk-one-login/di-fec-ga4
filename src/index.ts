@@ -1,4 +1,7 @@
-import { AppConfigInterface } from "./analytics/core/core.interface";
+import {
+  AppConfigInterface,
+  OptionsInterface,
+} from "./analytics/core/core.interface";
 import { Analytics } from "./analytics/core/core";
 
 declare global {
@@ -7,9 +10,12 @@ declare global {
   }
 }
 
-const appInit = function (settings: AppConfigInterface): boolean {
+const appInit = function (
+  settings: AppConfigInterface,
+  options: OptionsInterface,
+): boolean {
   try {
-    window.DI.analyticsGa4 = new Analytics(settings.ga4ContainerId);
+    window.DI.analyticsGa4 = new Analytics(settings.ga4ContainerId, options);
     return true;
   } catch (err) {
     console.error(err);

@@ -42,6 +42,22 @@ describe("pageViewTracker", () => {
     newInstance.trackOnPageLoad(parameters);
     expect(newInstance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
   });
+
+  describe("pageViewTracker test disable ga4 tracking option", () => {
+    const spy = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
+    const parameters: PageViewParametersInterface = {
+      statusCode: 200,
+      englishPageTitle: "home",
+      taxonomy_level1: "taxo1",
+      taxonomy_level2: "taxo2",
+    };
+
+    test("pushToDataLayer should not be called", () => {
+      const instance = new PageViewTracker({ disableGa4Tracking: true });
+      instance.trackOnPageLoad(parameters);
+      expect(instance.trackOnPageLoad).toReturnWith(false);
+    });
+  });
 });
 
 describe("Cookie Management", () => {

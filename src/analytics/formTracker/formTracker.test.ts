@@ -5,7 +5,6 @@ import { FormEventInterface, FormField } from "./formTracker.interface";
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
 describe("FormResponseTracker", () => {
-  //const newInstance = new FormResponseTracker();
   const action = new Event("submit", {
     bubbles: true,
     cancelable: true,
@@ -51,7 +50,7 @@ describe("FormResponseTracker", () => {
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "text" },
     ];
-    expect(instance.getFieldType(fields)).toBe("free text field");
+    expect(instance.getFieldType(fields)).toBe(instance.FREE_TEXT_FIELD_TYPE);
   });
 
   test("getFieldType should return free text field if type is textarea", () => {
@@ -59,7 +58,7 @@ describe("FormResponseTracker", () => {
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "textarea" },
     ];
-    expect(instance.getFieldType(fields)).toBe("free text field");
+    expect(instance.getFieldType(fields)).toBe(instance.FREE_TEXT_FIELD_TYPE);
   });
 
   test("getFieldType should return drop-down list if type is select-one", () => {
@@ -154,7 +153,7 @@ describe("form with input text", () => {
       event: "event_data",
       event_data: {
         event_name: "form_response",
-        type: "free text field",
+        type: instance.FREE_TEXT_FIELD_TYPE,
         url: "undefined",
         text: "test value",
         section: "test label username",
@@ -163,6 +162,27 @@ describe("form with input text", () => {
       },
     };
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+  });
+});
+
+describe("test disable free text tracking option", () => {
+  const action = new Event("submit", {
+    bubbles: true,
+    cancelable: true,
+  });
+
+  const spy = jest.spyOn(FormResponseTracker.prototype, "trackFormResponse");
+
+  test("pushToDataLayer should not be called with free text value", () => {
+    const instance = new FormResponseTracker({ disableFreeTextTracking: true });
+    document.body.innerHTML =
+      '<form action="/test-url" method="post">' +
+      '  <label for="username">test label username</label>' +
+      '  <input type="text" id="username" name="username" value="test no value"/>' +
+      '  <button id="button" type="submit">submit</button>' +
+      "</form>";
+    document.dispatchEvent(action);
+    expect(instance.trackFormResponse).toReturnWith(false);
   });
 });
 
@@ -188,7 +208,7 @@ describe("form with input textarea", () => {
       event: "event_data",
       event_data: {
         event_name: "form_response",
-        type: "free text field",
+        type: instance.FREE_TEXT_FIELD_TYPE,
         url: "undefined",
         text: "test value",
         section: "test label username",
