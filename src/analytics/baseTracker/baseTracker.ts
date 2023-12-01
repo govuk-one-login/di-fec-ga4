@@ -1,6 +1,5 @@
 import { PageViewEventInterface } from "../pageViewTracker/pageViewTracker.interface";
 import { NavigationEventInterface } from "../navigationTracker/navigationTracker.interface";
-import { FormField } from "../formTracker/formTracker.interface";
 
 declare global {
   interface Window {

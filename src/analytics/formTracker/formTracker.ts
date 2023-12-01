@@ -87,7 +87,7 @@ export class FormResponseTracker extends BaseTracker {
    * @param {HTMLFormElement} form - The HTML form element.
    * @return {FormField[]} An array of selected form fields.
    */
-  public getFormFields(form: HTMLFormElement): FormField[] {
+  getFormFields(form: HTMLFormElement): FormField[] {
     const selectedFields: FormField[] = [];
     for (let i = 0; i < form.elements.length; i++) {
       const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
