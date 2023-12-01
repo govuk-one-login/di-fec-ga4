@@ -1,5 +1,6 @@
 import { PageViewEventInterface } from "../pageViewTracker/pageViewTracker.interface";
 import { NavigationEventInterface } from "../navigationTracker/navigationTracker.interface";
+import { FormField } from "../formTracker/formTracker.interface";
 
 declare global {
   interface Window {
@@ -62,5 +63,28 @@ export class BaseTracker {
     return document.referrer.length
       ? document.referrer?.toLowerCase()
       : "undefined";
+  }
+
+  /**
+   * Retrieves the label of a field.
+   *
+   * @return {string} The label of the field.
+   */
+  getFieldLabel(): string {
+    let labels: HTMLCollectionOf<HTMLLegendElement | HTMLLabelElement> =
+      document.getElementsByTagName("legend");
+    if (!labels.length) {
+      labels = document.getElementsByTagName("label");
+    }
+    let label: string = "";
+    for (let i = 0; i < labels.length; i++) {
+      if (labels[i].textContent) {
+        label += labels[i]?.textContent?.trim();
+        if (i > 1 && i < labels.length - 1) {
+          label += ", ";
+        }
+      }
+    }
+    return label;
   }
 }
