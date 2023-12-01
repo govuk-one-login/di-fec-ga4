@@ -51,7 +51,6 @@ export class PageViewTracker extends BaseTracker {
 
     //trigger form change tracking
     if (document.location.href.includes("edit=true")) {
-      console.log("edit triggered");
       const formChangeTracker = new FormChangeTracker();
       formChangeTracker.trackFormChange();
     }
