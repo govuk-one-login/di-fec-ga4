@@ -27,7 +27,7 @@ describe("FormResponseTracker", () => {
     form.innerHTML =
       '<input id="test" name="test" value="test value" type="text"/>';
     document.body.appendChild(form);
-    expect(instance.getFields(form)).toEqual([
+    expect(instance.getFormFields(form)).toEqual([
       {
         id: "test",
         name: "test",

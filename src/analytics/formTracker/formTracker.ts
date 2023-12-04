@@ -24,7 +24,7 @@ export class FormResponseTracker extends BaseTracker {
    * Initialise the event listener for the document.
    *
    */
-  initialiseEventListener() {
+  initialiseEventListener(): void {
     document.addEventListener(
       "submit",
       this.trackFormResponse.bind(this),
@@ -41,7 +41,7 @@ export class FormResponseTracker extends BaseTracker {
     let fields: FormField[] = [];
 
     if (form && form.elements) {
-      fields = this.getFields(form);
+      fields = this.getFormFields(form);
     } else {
       return false;
     }
@@ -76,7 +76,7 @@ export class FormResponseTracker extends BaseTracker {
       this.pushToDataLayer(formResponseTrackerEvent);
       return true;
     } catch (err) {
-      console.error("Error in trackFormResponses", err);
+      console.error("Error in trackFormResponse", err);
       return false;
     }
   }
@@ -87,11 +87,10 @@ export class FormResponseTracker extends BaseTracker {
    * @param {HTMLFormElement} form - The HTML form element.
    * @return {FormField[]} An array of selected form fields.
    */
-  getFields(form: HTMLFormElement): FormField[] {
+  getFormFields(form: HTMLFormElement): FormField[] {
     const selectedFields: FormField[] = [];
     for (let i = 0; i < form.elements.length; i++) {
       const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
-
       if (
         element.type === "hidden" ||
         element.type === "fieldset" ||
@@ -149,29 +148,6 @@ export class FormResponseTracker extends BaseTracker {
     } else {
       return elements[0].type;
     }
-  }
-
-  /**
-   * Retrieves the label of a field.
-   *
-   * @return {string} The label of the field.
-   */
-  getFieldLabel(): string {
-    let labels: HTMLCollectionOf<HTMLLegendElement | HTMLLabelElement> =
-      document.getElementsByTagName("legend");
-    if (!labels.length) {
-      labels = document.getElementsByTagName("label");
-    }
-    let label: string = "";
-    for (let i = 0; i < labels.length; i++) {
-      if (labels[i].textContent) {
-        label += labels[i]?.textContent?.trim();
-        if (i > 1 && i < labels.length - 1) {
-          label += ", ";
-        }
-      }
-    }
-    return label;
   }
 
   /**

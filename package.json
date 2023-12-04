@@ -1,6 +1,6 @@
 {
   "name": "one-login-ga4",
-  "version": "0.0.20",
+  "version": "0.0.22",
   "description": "Reusable GA4 package for GDS One Login",
   "main": "lib/analytics.js",
   "type": "module",

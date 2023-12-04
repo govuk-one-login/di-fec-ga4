@@ -4,6 +4,7 @@ import {
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
 import { validateParameter } from "../../utils/validateParameter";
+import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
@@ -47,6 +48,12 @@ export class PageViewTracker extends BaseTracker {
         relying_party: this.getRelyingParty(),
       },
     };
+
+    //trigger form change tracking
+    if (document.location.href.includes("edit=true")) {
+      const formChangeTracker = new FormChangeTracker();
+      formChangeTracker.trackFormChange();
+    }
 
     try {
       this.pushToDataLayer(pageViewTrackerEvent);

@@ -157,4 +157,18 @@ We are tracking different types of link:
 - Header Menu Bar: When a user clicks on a link in the header menu
 - Footer links: When a user clicks on a link within the footer
 
+### Form Response Tracker
+
+Trigger by the submission of any form, this tracker will send to GA4 some data about the form details:
+
+- Type of field
+- Label of the field
+- Submit Button text
+- Value of the field
+
+### Form Change Tracker
+
+Form Change Tracker is triggered when a user clicks on a link that allows them to change a previous form they had completed and loads the form page correctly. The URL needs to contain an edit parameter equal to true (example: /my-form-page?edit=true).
+We are tracking only the label of the field, the submit button text.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
