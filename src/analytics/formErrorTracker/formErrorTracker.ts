@@ -19,7 +19,6 @@ export class FormErrorTracker extends FormTracker {
    * @return {boolean} Returns true if the form error tracking is successful, otherwise false.
    */
   trackFormError(): boolean {
-    console.log("trackFormError");
     if (!window.DI.analyticsGa4.cookie.consent) {
       return false;
     }
@@ -45,7 +44,6 @@ export class FormErrorTracker extends FormTracker {
         external: "undefined",
       },
     };
-    console.log("formErrorTrackerEvent", formErrorTrackerEvent);
 
     try {
       this.pushToDataLayer(formErrorTrackerEvent);

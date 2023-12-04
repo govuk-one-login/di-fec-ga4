@@ -19,7 +19,7 @@ export class FormTracker extends BaseTracker {
     const selectedFields: FormField[] = [];
     for (let i = 0; i < form.elements.length; i++) {
       const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
-      console.log("element", element);
+
       if (
         element.type === "hidden" ||
         element.type === "fieldset" ||
