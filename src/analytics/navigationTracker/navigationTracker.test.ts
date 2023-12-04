@@ -140,9 +140,9 @@ describe("getLinkType", () => {
     expect(newInstance.getLinkType(element)).toBe("generic link");
   });
 
-  test('should return "generic button" when the element is a <button> tag', () => {
-    const button = document.createElement("BUTTON");
-    button.className = "other-link";
+  test('should return "generic button" when the element is a has a tag and button classname', () => {
+    const button = document.createElement("A");
+    button.className = "govuk-button";
     button.dispatchEvent(action);
     const element = action.target as HTMLLinkElement;
     expect(newInstance.getLinkType(element)).toBe("generic button");
