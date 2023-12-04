@@ -5,6 +5,7 @@ import {
 } from "./pageViewTracker.interface";
 import { validateParameter } from "../../utils/validateParameter";
 import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
+import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
@@ -53,6 +54,13 @@ export class PageViewTracker extends BaseTracker {
     if (document.location.href.includes("edit=true")) {
       const formChangeTracker = new FormChangeTracker();
       formChangeTracker.trackFormChange();
+    }
+
+    //trigger form error tracking
+    const errorTrigger = document.getElementsByClassName("govuk-error-message");
+    if (errorTrigger.length) {
+      const formErrorTracker = new FormErrorTracker();
+      formErrorTracker.trackFormError();
     }
 
     try {

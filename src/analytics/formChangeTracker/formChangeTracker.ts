@@ -1,8 +1,8 @@
 import { validateParameter } from "../../utils/validateParameter";
-import { BaseTracker } from "../baseTracker/baseTracker";
+import { FormTracker } from "../formTracker/formTracker";
 import { FormEventInterface } from "../formTracker/formTracker.interface";
 
-export class FormChangeTracker extends BaseTracker {
+export class FormChangeTracker extends FormTracker {
   eventName: string = "form_change_response";
   eventType: string = "event_data";
 

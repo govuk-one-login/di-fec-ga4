@@ -1,84 +1,12 @@
-import { validateParameter } from "../../utils/validateParameter";
 import { BaseTracker } from "../baseTracker/baseTracker";
-import {
-  FormEventInterface,
-  FormField,
-  formTrackerOptionsInterface,
-} from "./formTracker.interface";
+import { FormField } from "./formTracker.interface";
 
-export class FormResponseTracker extends BaseTracker {
-  eventName: string = "form_response";
-  eventType: string = "event_data";
-  disableFreeTextTracking: boolean = false;
+export class FormTracker extends BaseTracker {
   FREE_TEXT_FIELD_TYPE = "free text field";
   DROPDOWN_FIELD_TYPE = "drop-down list";
 
-  constructor(formTrackerOptions: formTrackerOptionsInterface = {}) {
+  constructor() {
     super();
-    this.disableFreeTextTracking =
-      formTrackerOptions.disableFreeTextTracking || false;
-    this.initialiseEventListener();
-  }
-
-  /**
-   * Initialise the event listener for the document.
-   *
-   */
-  initialiseEventListener(): void {
-    document.addEventListener(
-      "submit",
-      this.trackFormResponse.bind(this),
-      false,
-    );
-  }
-
-  trackFormResponse(event: SubmitEvent): boolean {
-    if (!window.DI.analyticsGa4.cookie.consent) {
-      return false;
-    }
-
-    const form = document.forms[0];
-    let fields: FormField[] = [];
-
-    if (form && form.elements) {
-      fields = this.getFormFields(form);
-    } else {
-      return false;
-    }
-
-    if (!fields.length) {
-      console.log("form or fields not found");
-      return false;
-    }
-
-    const formResponseTrackerEvent: FormEventInterface = {
-      event: this.eventType,
-      event_data: {
-        event_name: this.eventName,
-        type: validateParameter(this.getFieldType(fields), 100),
-        url: "undefined",
-        text: validateParameter(this.getFieldValue(fields), 100),
-        section: validateParameter(this.getFieldLabel(), 100),
-        action: validateParameter(this.getButtonLabel(event), 100),
-        external: "undefined",
-      },
-    };
-
-    //don't track free text if disableFreeTextTracking is set
-    if (
-      this.disableFreeTextTracking &&
-      formResponseTrackerEvent.event_data.type === this.FREE_TEXT_FIELD_TYPE
-    ) {
-      return false;
-    }
-
-    try {
-      this.pushToDataLayer(formResponseTrackerEvent);
-      return true;
-    } catch (err) {
-      console.error("Error in trackFormResponse", err);
-      return false;
-    }
   }
 
   /**
@@ -87,10 +15,11 @@ export class FormResponseTracker extends BaseTracker {
    * @param {HTMLFormElement} form - The HTML form element.
    * @return {FormField[]} An array of selected form fields.
    */
-  getFormFields(form: HTMLFormElement): FormField[] {
+  public getFormFields(form: HTMLFormElement): FormField[] {
     const selectedFields: FormField[] = [];
     for (let i = 0; i < form.elements.length; i++) {
       const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
+      console.log("element", element);
       if (
         element.type === "hidden" ||
         element.type === "fieldset" ||
@@ -166,14 +95,25 @@ export class FormResponseTracker extends BaseTracker {
   }
 
   /**
-   * Retrieves the label of a button from a SubmitEvent.
+   * Retrieves the label of a field.
    *
-   * @param {SubmitEvent} event - The SubmitEvent object containing the button.
-   * @return {string} The label of the button, or "undefined" if it is not found.
+   * @return {string} The label of the field.
    */
-  getButtonLabel(event: SubmitEvent): string {
-    return event.submitter?.textContent
-      ? event.submitter.textContent.trim()
-      : "undefined";
+  getFieldLabel(): string {
+    let labels: HTMLCollectionOf<HTMLLegendElement | HTMLLabelElement> =
+      document.getElementsByTagName("legend");
+    if (!labels.length) {
+      labels = document.getElementsByTagName("label");
+    }
+    let label: string = "";
+    for (let i = 0; i < labels.length; i++) {
+      if (labels[i].textContent) {
+        label += labels[i]?.textContent?.trim();
+        if (i > 1 && i < labels.length - 1) {
+          label += ", ";
+        }
+      }
+    }
+    return label;
   }
 }

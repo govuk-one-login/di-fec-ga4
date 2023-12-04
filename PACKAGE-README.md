@@ -169,6 +169,11 @@ Trigger by the submission of any form, this tracker will send to GA4 some data a
 ### Form Change Tracker
 
 Form Change Tracker is triggered when a user clicks on a link that allows them to change a previous form they had completed and loads the form page correctly. The URL needs to contain an edit parameter equal to true (example: /my-form-page?edit=true).
-We are tracking only the label of the field, the submit button text.
+We are tracking the label of the field and the submit button text.
+
+### Form Error Tracker
+
+Form Error Tracker is triggered when a page loads and when the page displays any form errors.
+We are tracking the label of the field and the error message.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
