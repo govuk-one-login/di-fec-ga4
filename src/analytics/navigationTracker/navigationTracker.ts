@@ -38,9 +38,9 @@ export class NavigationTracker extends BaseTracker {
     ]);
 
     /**
-     * Navigation tracker is only for links and buttons
+     * Navigation tracker is only for links
      */
-    if (element.tagName !== "A" && element.tagName !== "BUTTON") {
+    if (element.tagName !== "A") {
       return false;
     }
     // Ignore links that don't have an inbound or outbound href
@@ -119,7 +119,7 @@ export class NavigationTracker extends BaseTracker {
    * Returns the type of link based on the given HTML link element.
    *
    * @param {HTMLLinkElement} element - The HTML link element to get the type of.
-   * @return {string} The type of link: "footer", "header menu bar", "generic link", "generic button", or "undefined".
+   * @return {string} The type of link: "footer", "header menu bar", "generic link", or "undefined".
    */
   getLinkType(element: HTMLLinkElement): string {
     if (element.tagName === "A") {
@@ -127,10 +127,10 @@ export class NavigationTracker extends BaseTracker {
         return "footer";
       } else if (this.isHeaderMenuBarLink(element)) {
         return "header menu bar";
+      } else if (element.classList.contains("govuk-button")) {
+        return "generic button";
       }
       return "generic link";
-    } else if (element.tagName === "BUTTON") {
-      return "generic button";
     }
     return "undefined"; // generic button
   }
