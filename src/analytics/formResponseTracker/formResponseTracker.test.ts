@@ -31,7 +31,7 @@ describe("form with input checkbox", () => {
 
   test("datalayer event should be defined", () => {
     const instance = new FormResponseTracker();
-    document.body.innerHTML = "";
+
     document.body.innerHTML =
       '<form action="/test-url" method="post">' +
       "  <legend>test label questions</legend>" +
