@@ -40,5 +40,6 @@ describe("should initialize the ga4 class", () => {
     const newInstance = new Analytics(gtmId, { disableGa4Tracking: true });
     expect(newInstance.navigationTracker).toEqual(undefined);
     expect(newInstance.formResponseTracker).toEqual(undefined);
+    expect(newInstance.cookie).toEqual(undefined);
   });
 });

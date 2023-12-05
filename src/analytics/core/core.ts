@@ -1,5 +1,5 @@
 import { Cookie } from "../../cookie/cookie";
-import { FormResponseTracker } from "../formTracker/formTracker";
+import { FormResponseTracker } from "../formResponseTracker/formResponseTracker";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
 import { OptionsInterface } from "./core.interface";
@@ -23,7 +23,6 @@ export class Analytics {
     });
 
     if (!options.disableGa4Tracking) {
-      this.navigationTracker = new NavigationTracker();
       this.formResponseTracker = new FormResponseTracker({
         disableFreeTextTracking: options.disableFormFreeTextTracking,
       });

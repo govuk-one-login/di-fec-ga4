@@ -4,22 +4,24 @@ import {
   PageViewParametersInterface,
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
+import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
+import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
+const parameters: PageViewParametersInterface = {
+  statusCode: 200,
+  englishPageTitle: "home",
+  taxonomy_level1: "taxo1",
+  taxonomy_level2: "taxo2",
+  content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
+  logged_in_status: true,
+  dynamic: true,
+};
 
 describe("pageViewTracker", () => {
   const newInstance = new PageViewTracker();
   const spy = jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
-
-  const parameters: PageViewParametersInterface = {
-    statusCode: 200,
-    englishPageTitle: "home",
-    taxonomy_level1: "taxo1",
-    taxonomy_level2: "taxo2",
-    content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
-    logged_in_status: true,
-    dynamic: true,
-  };
 
   test("pushToDataLayer is called", () => {
     newInstance.trackOnPageLoad(parameters);
@@ -100,15 +102,6 @@ describe("pageViewTracker", () => {
 
 describe("pageViewTracker test disable ga4 tracking option", () => {
   const spy = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
-  const parameters: PageViewParametersInterface = {
-    statusCode: 200,
-    englishPageTitle: "home",
-    taxonomy_level1: "taxo1",
-    taxonomy_level2: "taxo2",
-    content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
-    logged_in_status: true,
-    dynamic: true,
-  };
 
   test("pushToDataLayer should not be called", () => {
     const instance = new PageViewTracker({ disableGa4Tracking: true });
@@ -119,15 +112,7 @@ describe("pageViewTracker test disable ga4 tracking option", () => {
 
 describe("Cookie Management", () => {
   const spy = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
-  const parameters: PageViewParametersInterface = {
-    statusCode: 200,
-    englishPageTitle: "home",
-    taxonomy_level1: "taxo1",
-    taxonomy_level2: "taxo2",
-    content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
-    logged_in_status: true,
-    dynamic: true,
-  };
+
   test("trackOnPageLoad should return false if not cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
     const instance = new PageViewTracker();
@@ -156,5 +141,29 @@ describe("Cookie Management", () => {
     };
     instance.trackOnPageLoad(parameters);
     expect(instance.trackOnPageLoad).toReturnWith(false);
+  });
+});
+
+describe("Form Change Tracker Trigger", () => {
+  const spy = jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
+
+  test("FormChange tracker is not triggered", () => {
+    const instance = new PageViewTracker();
+    const formChangeTracker = new FormChangeTracker();
+
+    instance.trackOnPageLoad(parameters);
+    expect(formChangeTracker.trackFormChange).not.toHaveBeenCalled();
+  });
+});
+
+describe("Form Error Tracker Trigger", () => {
+  const spy = jest.spyOn(FormErrorTracker.prototype, "trackFormError");
+
+  test("FormError tracker is not triggered", () => {
+    const instance = new PageViewTracker();
+    const formErrorTracker = new FormErrorTracker();
+
+    instance.trackOnPageLoad(parameters);
+    expect(formErrorTracker.trackFormError).not.toHaveBeenCalled();
   });
 });
