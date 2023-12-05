@@ -65,7 +65,7 @@ describe("FormErrorTracker", () => {
     expect(instance.getErrorMessage()).toEqual("Error: Select one option");
   });
 
-  test("getErrorMessage should return error message", () => {
+  test("getType should return the type", () => {
     const instance = new FormErrorTracker();
     document.body.innerHTML =
       '<form action="/test-url" method="post">' +
@@ -77,7 +77,6 @@ describe("FormErrorTracker", () => {
       '  <input type="checkbox" id="question-2" name="question-2" value="test value"/>' +
       '  <button id="button" type="submit">submit</button>' +
       "</form>";
-
     const form = document.forms[0];
     expect(instance.getType(form)).toEqual("checkbox");
   });
