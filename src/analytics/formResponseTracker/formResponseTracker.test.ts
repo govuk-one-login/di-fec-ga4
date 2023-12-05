@@ -21,6 +21,43 @@ describe("FormResponseTracker", () => {
   });
 });
 
+describe("form with radio buttons", () => {
+  const action = new Event("submit", {
+    bubbles: true,
+    cancelable: true,
+  });
+
+  const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
+
+  test("datalayer event should be defined", () => {
+    const instance = new FormResponseTracker();
+    document.body.innerHTML =
+      '<form action="/test-url" method="post">' +
+      "  <legend>test label questions</legend>" +
+      '  <label for="male">test label male</label>' +
+      '  <input type="radio" id="male" name="male" value="Male" checked/>' +
+      '  <label for="female">test label female</label>' +
+      '  <input type="radio" id="female" name="female" value="Male"/>' +
+      '  <button id="button" type="submit">submit</button>' +
+      "</form>";
+    document.dispatchEvent(action);
+
+    const dataLayerEvent: FormEventInterface = {
+      event: "event_data",
+      event_data: {
+        event_name: "form_response",
+        type: "radio",
+        url: "undefined",
+        text: "test label male",
+        section: "test label questions",
+        action: "undefined",
+        external: "undefined",
+      },
+    };
+    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+  });
+});
+
 describe("form with input checkbox", () => {
   const action = new Event("submit", {
     bubbles: true,
