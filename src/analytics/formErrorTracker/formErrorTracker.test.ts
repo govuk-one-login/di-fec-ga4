@@ -21,7 +21,6 @@ describe("FormErrorTracker", () => {
   test("datalayer event should be defined", () => {
     window.DI.analyticsGa4.cookie.consent = true;
     const instance = new FormErrorTracker();
-    document.body.innerHTML = "";
     document.body.innerHTML =
       '<form action="/test-url" method="post">' +
       "  <legend>test label questions</legend>" +
