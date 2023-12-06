@@ -17,8 +17,8 @@ const appInit = function (
   try {
     window.DI.analyticsGa4 = new Analytics(settings.ga4ContainerId, options);
 
-    if (!options.disableUaTracking) {
-      window.DI.analytics.vars.uaContainerId = settings.uaContainerId;
+    if (options && !options.disableUaTracking) {
+      window.DI.analyticsGa4.uaContainerId = settings.uaContainerId;
       window.DI.analyticsUa.init();
     }
 
