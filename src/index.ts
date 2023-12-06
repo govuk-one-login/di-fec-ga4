@@ -16,6 +16,12 @@ const appInit = function (
 ): boolean {
   try {
     window.DI.analyticsGa4 = new Analytics(settings.ga4ContainerId, options);
+
+    if (!options.disableUaTracking) {
+      window.DI.analytics.vars.uaContainerId = settings.uaContainerId;
+      window.DI.analyticsUa.init();
+    }
+
     return true;
   } catch (err) {
     console.error(err);

@@ -18,6 +18,9 @@ export class Analytics {
    */
   constructor(gtmId: string, options: OptionsInterface = {}) {
     this.gtmId = gtmId;
+
+    this.cookie = new Cookie();
+
     this.pageViewTracker = new PageViewTracker({
       disableGa4Tracking: options.disableGa4Tracking,
     });
@@ -26,9 +29,7 @@ export class Analytics {
       this.formResponseTracker = new FormResponseTracker({
         disableFreeTextTracking: options.disableFormFreeTextTracking,
       });
-      this.cookie = new Cookie();
       this.navigationTracker = new NavigationTracker();
-
       if (this.cookie.consent) {
         this.loadGtmScript();
       }
