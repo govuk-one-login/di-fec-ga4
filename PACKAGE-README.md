@@ -96,7 +96,7 @@ Example of call:
 window.DI.appInit(
   { ga4ContainerId: "{{ga4ContainerId}}" },
   {
-    disabldisableGa4Tracking: true,
+    disableGa4Tracking: true,
     disableUaTracking: true,
     disableAnalyticsCookie: false,
     disableFormFreeTextTracking: true,
@@ -175,5 +175,9 @@ We are tracking the label of the field and the submit button text.
 
 Form Error Tracker is triggered when a page loads and when the page displays any form errors.
 We are tracking the label of the field and the error message.
+
+### Universal Analytics compability
+
+More information: https://govukverify.atlassian.net/wiki/spaces/DIFC/pages/3843227661/Universal+Analytics+compatibility
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
