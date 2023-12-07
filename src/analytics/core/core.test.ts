@@ -23,7 +23,7 @@ describe("should initialize the ga4 class", () => {
 
   test("tag manager script added to document", () => {
     const newInstance = new Analytics(gtmId);
-    newInstance.loadGtmScript();
+    newInstance.loadGtmScript(newInstance.gtmId);
     expect(document.getElementsByTagName("script")[0].src).toEqual(
       "https://www.googletagmanager.com/gtm.js?id=GTM-XXXX",
     );
@@ -40,6 +40,5 @@ describe("should initialize the ga4 class", () => {
     const newInstance = new Analytics(gtmId, { disableGa4Tracking: true });
     expect(newInstance.navigationTracker).toEqual(undefined);
     expect(newInstance.formResponseTracker).toEqual(undefined);
-    expect(newInstance.cookie).toEqual(undefined);
   });
 });

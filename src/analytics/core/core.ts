@@ -6,6 +6,7 @@ import { OptionsInterface } from "./core.interface";
 
 export class Analytics {
   gtmId: string;
+  uaContainerId: string | undefined;
   pageViewTracker: PageViewTracker | undefined;
   navigationTracker: NavigationTracker | undefined;
   cookie: Cookie | undefined;
@@ -18,6 +19,9 @@ export class Analytics {
    */
   constructor(gtmId: string, options: OptionsInterface = {}) {
     this.gtmId = gtmId;
+
+    this.cookie = new Cookie();
+
     this.pageViewTracker = new PageViewTracker({
       disableGa4Tracking: options.disableGa4Tracking,
     });
@@ -26,11 +30,9 @@ export class Analytics {
       this.formResponseTracker = new FormResponseTracker({
         disableFreeTextTracking: options.disableFormFreeTextTracking,
       });
-      this.cookie = new Cookie();
       this.navigationTracker = new NavigationTracker();
-
       if (this.cookie.consent) {
-        this.loadGtmScript();
+        this.loadGtmScript(this.gtmId);
       }
     }
   }
@@ -40,9 +42,8 @@ export class Analytics {
    *
    * @return {boolean} Returns true if the script was successfully loaded and appended, otherwise false.
    */
-  loadGtmScript(): boolean {
-    const googleSrc =
-      "https://www.googletagmanager.com/gtm.js?id=" + this.gtmId;
+  loadGtmScript(gtmId: string): boolean {
+    const googleSrc = "https://www.googletagmanager.com/gtm.js?id=" + gtmId;
     const newScript = document.createElement("script");
     newScript.async = true;
     // initialise GTM

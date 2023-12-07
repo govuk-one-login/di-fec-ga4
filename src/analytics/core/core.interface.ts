@@ -1,5 +1,6 @@
 export interface AppConfigInterface {
   ga4ContainerId: string;
+  uaContainerId: string;
 }
 
 export interface OptionsInterface {
