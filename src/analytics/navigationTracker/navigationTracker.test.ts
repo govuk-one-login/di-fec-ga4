@@ -120,6 +120,18 @@ describe("getLinkType", () => {
     expect(newInstance.getLinkType(element)).toBe("footer");
   });
 
+  test('should return "header menu bar" when the element is an <a> tag within the phase banner', () => {
+    const href = document.createElement("A");
+    href.className = "govuk-link";
+    href.dispatchEvent(action);
+    document.body.innerHTML = "<div class='govuk-phase-banner'></div>";
+    const phaseBanner =
+      document.getElementsByClassName("govuk-phase-banner")[0];
+    phaseBanner.appendChild(href);
+    const element = action.target as HTMLLinkElement;
+    expect(newInstance.getLinkType(element)).toBe("header menu bar");
+  });
+
   test('should return "header menu bar" when the element is an <a> tag within the header tag', () => {
     const href = document.createElement("A");
     href.className = "header__navigation";

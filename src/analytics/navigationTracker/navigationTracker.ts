@@ -125,7 +125,10 @@ export class NavigationTracker extends BaseTracker {
     if (element.tagName === "A") {
       if (this.isFooterLink(element)) {
         return "footer";
-      } else if (this.isHeaderMenuBarLink(element)) {
+      } else if (
+        this.isHeaderMenuBarLink(element) ||
+        this.isPhaseBannerLink(element)
+      ) {
         return "header menu bar";
       } else if (element.classList.contains("govuk-button")) {
         return "generic button";
@@ -134,7 +137,6 @@ export class NavigationTracker extends BaseTracker {
     }
     return "undefined"; // generic button
   }
-
   /**
    * Determines whether the given class name is a footer link.
    *
@@ -143,7 +145,7 @@ export class NavigationTracker extends BaseTracker {
    */
   isFooterLink(element: HTMLElement): boolean {
     const footer = document.getElementsByTagName("footer")[0];
-    return footer.contains(element);
+    return footer && footer.contains(element);
   }
 
   /**
@@ -154,6 +156,12 @@ export class NavigationTracker extends BaseTracker {
    */
   isHeaderMenuBarLink(element: HTMLElement): boolean {
     const header = document.getElementsByTagName("header")[0];
-    return header.contains(element);
+    return header && header.contains(element);
+  }
+
+  isPhaseBannerLink(element: HTMLElement): boolean {
+    const phaseBanner =
+      document.getElementsByClassName("govuk-phase-banner")[0];
+    return phaseBanner && phaseBanner.contains(element);
   }
 }
