@@ -64,7 +64,7 @@ describe("FormErrorTracker", () => {
     expect(instance.getErrorMessage()).toEqual("Error: Select one option");
   });
 
-  test("getType should return the type", () => {
+  test("getType with checkbox field should return the type checkbox", () => {
     const instance = new FormErrorTracker();
     document.body.innerHTML =
       '<form action="/test-url" method="post">' +
@@ -78,5 +78,50 @@ describe("FormErrorTracker", () => {
       "</form>";
     const form = document.forms[0];
     expect(instance.getType(form)).toEqual("checkbox");
+  });
+
+  test("getType with text field should return the type free text field", () => {
+    const instance = new FormErrorTracker();
+
+    document.body.innerHTML =
+      '<form action="/test-url" method="post">' +
+      '  <label for="username">test label username</label>' +
+      '  <p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>' +
+      '  <input type="text" id="username" name="username" value="test value"/>' +
+      '  <button id="button" type="submit">submit</button>' +
+      "</form>";
+
+    const form = document.forms[0];
+    expect(instance.getType(form)).toEqual("free text field");
+  });
+
+  test("getType with textarea field should return the type free text field", () => {
+    const instance = new FormErrorTracker();
+
+    document.body.innerHTML =
+      '<form action="/test-url" method="post">' +
+      '  <label for="username">test label username</label>' +
+      '  <p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>' +
+      '  <textarea id="username" name="username" value="test value"/>test value</textarea>' +
+      '  <button id="button" type="submit">submit</button>' +
+      "</form>";
+
+    const form = document.forms[0];
+    expect(instance.getType(form)).toEqual("free text field");
+  });
+
+  test("getType with select field should return the type dropdown-list", () => {
+    const instance = new FormErrorTracker();
+
+    document.body.innerHTML =
+      '<form action="/test-url" method="post">' +
+      '  <label for="username">test label username</label>' +
+      '  <p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>' +
+      '  <select id="username" name="username"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
+      '  <button id="button" type="submit">submit</button>' +
+      "</form>";
+
+    const form = document.forms[0];
+    expect(instance.getType(form)).toEqual("drop-down list");
   });
 });
