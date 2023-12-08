@@ -63,4 +63,27 @@ describe("should return the good parameter values", () => {
     const location = newInstance.getLocation();
     expect(location).toEqual(window.location.href);
   });
+
+  test("Get domain from element url", () => {
+    const location = newInstance.getDomain(
+      "https://signin.account.gov.uk/enter-email-create",
+    );
+    expect(location).toEqual("https://signin.account.gov.uk");
+  });
+
+  test("Get url path from 0 to 500 max from element url", () => {
+    const location = newInstance.getDomainPath(
+      "https://signin.account.gov.uk/enter-email-create",
+      0,
+    );
+    expect(location).toEqual("/enter-email-create");
+  });
+
+  test("Get undefined if url path part is not found from element url", () => {
+    const location = newInstance.getDomainPath(
+      "https://signin.account.gov.uk/enter-email-create",
+      1,
+    );
+    expect(location).toEqual("undefined");
+  });
 });

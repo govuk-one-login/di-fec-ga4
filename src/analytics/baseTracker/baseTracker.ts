@@ -1,5 +1,6 @@
 import { PageViewEventInterface } from "../pageViewTracker/pageViewTracker.interface";
 import { NavigationEventInterface } from "../navigationTracker/navigationTracker.interface";
+import { FormEventInterface } from "../formTracker/formTracker.interface";
 
 declare global {
   interface Window {
@@ -19,7 +20,10 @@ export class BaseTracker {
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
   pushToDataLayer(
-    event: PageViewEventInterface | NavigationEventInterface,
+    event:
+      | PageViewEventInterface
+      | NavigationEventInterface
+      | FormEventInterface,
   ): boolean {
     console.log("running pushToDataLayer");
     window.dataLayer = window.dataLayer || [];
@@ -62,5 +66,16 @@ export class BaseTracker {
     return document.referrer.length
       ? document.referrer?.toLowerCase()
       : "undefined";
+  }
+
+  getDomain(url: string): string {
+    const newUrl = new URL(url);
+    return `${newUrl.protocol}//${newUrl.host}`;
+  }
+
+  getDomainPath(url: string, part: number): string {
+    const newUrl = new URL(url);
+    const path = newUrl.pathname.split(/(?<=^(?:.{500})+)(?!$)/);
+    return path[part] ?? "undefined";
   }
 }
