@@ -74,8 +74,10 @@ export class BaseTracker {
   }
 
   getDomainPath(url: string, part: number): string {
+    const start = part * 500;
+    const end = start + 500;
     const newUrl = new URL(url);
-    const path = newUrl.pathname.split(/(?<=^(?:.{500})+)(?!$)/);
-    return path[part] ?? "undefined";
+    const domainPath = newUrl.pathname.substring(start, end);
+    return domainPath.length ? domainPath : "undefined";
   }
 }
