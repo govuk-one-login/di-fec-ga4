@@ -77,7 +77,7 @@ export class FormErrorTracker extends FormTracker {
     }
 
     if (fields.length) {
-      return fields[0].type;
+      return this.getFieldType(fields);
     } else {
       return "undefined";
     }
