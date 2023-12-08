@@ -194,3 +194,19 @@ describe("isFooterLink", () => {
     expect(newInstance.isFooterLink(element)).toBe(false);
   });
 });
+
+describe("isBackLink", () => {
+  const newInstance = new NavigationTracker();
+
+  test("should return true if link is a back button", () => {
+    document.body.innerHTML = `<a id="testLink3" href="/welcome" class="govuk-back-link">Back</a>`;
+    const element = document.getElementById("testLink3") as HTMLElement;
+    expect(newInstance.isBackLink(element)).toBe(true);
+  });
+
+  test("should return false if link is not a back button", () => {
+    document.body.innerHTML = `<a id="testLink3" href="/welcome" class="govuk-random-link">Back</a>`;
+    const element = document.getElementById("testLink3") as HTMLElement;
+    expect(newInstance.isBackLink(element)).toBe(false);
+  });
+});

@@ -129,6 +129,8 @@ export class NavigationTracker extends BaseTracker {
         return "header menu bar";
       } else if (element.classList.contains("govuk-button")) {
         return "generic button";
+      } else if (this.isBackLink(element)) {
+        return "back button";
       }
       return "generic link";
     }
@@ -138,8 +140,8 @@ export class NavigationTracker extends BaseTracker {
   /**
    * Determines whether the given class name is a footer link.
    *
-   * @param {string} className - The class name to check.
-   * @return {boolean} Returns true if the class name contains "govuk-footer__link", otherwise returns false.
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the footer tag contains this element, false otherwise.
    */
   isFooterLink(element: HTMLElement): boolean {
     const footer = document.getElementsByTagName("footer")[0];
@@ -149,11 +151,22 @@ export class NavigationTracker extends BaseTracker {
   /**
    * Determines if the given class name is a header menu bar link.
    *
-   * @param {string} className - The class name to check.
-   * @return {boolean} Returns true if the class name includes "header__navigation", false otherwise.
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the header tag contains this element, false otherwise.
    */
   isHeaderMenuBarLink(element: HTMLElement): boolean {
     const header = document.getElementsByTagName("header")[0];
     return header.contains(element);
+  }
+
+  /**
+   * Determines if the given element is a back button link.
+   *
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the class name of this element includes "govuk-back-link", false otherwise.
+   */
+  isBackLink(element: HTMLElement): boolean {
+    const elementClassName: string = element.className as string;
+    return elementClassName.includes("govuk-back-link");
   }
 }
