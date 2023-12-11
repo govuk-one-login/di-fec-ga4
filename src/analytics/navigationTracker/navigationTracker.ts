@@ -4,7 +4,6 @@ import { validateParameter } from "../../utils/validateParameter";
 
 export class NavigationTracker extends BaseTracker {
   eventName: string = "event_data";
-  section: string = "undefined";
 
   constructor() {
     super();
@@ -62,7 +61,7 @@ export class NavigationTracker extends BaseTracker {
         text: element.textContent
           ? validateParameter(element.textContent.trim(), 100)
           : "undefined",
-        section: this.section,
+        section: this.getSection(element),
         action: "undefined",
         external: this.isExternalLink(element.href) ? "true" : "false",
         link_domain: this.getDomain(element.href),
@@ -145,6 +144,25 @@ export class NavigationTracker extends BaseTracker {
     }
     return "undefined"; // generic button
   }
+
+  getSection(element: HTMLElement): string {
+    // if header
+    if (this.isLogoLink(element)) {
+      return "logo";
+    } else if (this.isPhaseBannerLink(element)) {
+      return "phase banner";
+    } else if (this.isNavLink(element)) {
+      return "menu links";
+    } else if (this.isSupportLink(element)) {
+      return "support links";
+    } else if (this.isLicenseLink(element)) {
+      return "license";
+    } else if (this.isCopyright(element)) {
+      return "copyright";
+    }
+    return "undefined";
+  }
+
   /**
    * Determines whether the given class name is a footer link.
    *
@@ -157,16 +175,22 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given class name is a header menu bar link.
+   * Determines if the given element is a phase banner link
    *
    * @param {string} element - The HTML link element to get the type of.
-   * @return {boolean} Returns true if the header tag contains this element, false otherwise.
+   * @return {boolean} Returns true if the class name of this element includes "govuk-phase-banner", false otherwise.
    */
   isHeaderMenuBarLink(element: HTMLElement): boolean {
     const header = document.getElementsByTagName("header")[0];
     return header && header.contains(element);
   }
 
+  /**
+   * Determines if the given element is a phase banner link
+   *
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the class name of this element includes "govuk-phase-banner", false otherwise.
+   */
   isPhaseBannerLink(element: HTMLElement): boolean {
     const phaseBanner =
       document.getElementsByClassName("govuk-phase-banner")[0];
@@ -182,5 +206,66 @@ export class NavigationTracker extends BaseTracker {
   isBackLink(element: HTMLElement): boolean {
     const elementClassName: string = element.className as string;
     return elementClassName.includes("govuk-back-link");
+  }
+
+  /**
+   * Determines if the given element is a phase banner link
+   *
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the class name of this element includes "govuk-header__logo", false otherwise.
+   */
+  isLogoLink(element: HTMLElement): boolean {
+    const logo = document.getElementsByClassName("govuk-header__logo")[0];
+    return logo && logo.contains(element);
+  }
+
+  /**
+   * Determines whether the given class name is a nav link.
+   *
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the nav tag contains this element, false otherwise.
+   */
+  isNavLink(element: HTMLElement): boolean {
+    const nav = document.getElementsByTagName("nav")[0];
+    return nav && nav.contains(element);
+  }
+
+  /**
+   * Determines if the given element is a in-line support link link
+   *
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the class name of this element includes "govuk-footer__inline-list", false otherwise.
+   */
+  isSupportLink(element: HTMLElement): boolean {
+    const supportLinks = document.getElementsByClassName(
+      "govuk-footer__inline-list",
+    )[0];
+    return supportLinks && supportLinks.contains(element);
+  }
+
+  /**
+   * Determines if the given element is a in-line license link
+   *
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the class name of this element includes "govuk-footer__licence-description", false otherwise.
+   */
+  isLicenseLink(element: HTMLElement): boolean {
+    const supportLinks = document.getElementsByClassName(
+      "govuk-footer__licence-description",
+    )[0];
+    return supportLinks && supportLinks.contains(element);
+  }
+
+  /**
+   * Determines if the given element is within the copyright logo
+   *
+   * @param {string} element - The HTML link element to get the type of.
+   * @return {boolean} Returns true if the class name of this element includes "govuk-footer__copyright-logo", false otherwise.
+   */
+  isCopyright(element: HTMLElement): boolean {
+    const licenseLinks = document.getElementsByClassName(
+      "govuk-footer__copyright-logo",
+    )[0];
+    return licenseLinks && licenseLinks.contains(element);
   }
 }

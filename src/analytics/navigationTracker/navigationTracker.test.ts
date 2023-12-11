@@ -222,3 +222,94 @@ describe("isBackLink", () => {
     expect(newInstance.isBackLink(element)).toBe(false);
   });
 });
+
+describe("getSection", () => {
+  const newInstance = new NavigationTracker();
+  const action = new MouseEvent("click", {
+    view: window,
+    bubbles: true,
+    cancelable: true,
+  });
+
+  test("it should return undefined if section is not defined", () => {
+    document.body.innerHTML = `<body><a id="testLink1">Link to GOV.UK</a></body>`;
+    const element = document.getElementById("testLink1") as HTMLElement;
+    expect(newInstance.getSection(element)).toBe("undefined");
+  });
+
+  test("it should return logo when a link is clicked in the logo", () => {
+    const element = document.createElement("span");
+    element.className = "govuk-header__logotype";
+    document.body.innerHTML = "<header></header>";
+    const header = document.getElementsByTagName("header")[0];
+    header.appendChild(element);
+    element.dispatchEvent(action);
+    element.addEventListener("click", (event) => {
+      expect(newInstance.getSection(element)).toBe("logo");
+    });
+  });
+
+  test("it should return phase banner when a link is clicked in the phase banner", () => {
+    const href = document.createElement("A");
+    href.className = "govuk-link";
+    href.dispatchEvent(action);
+    document.body.innerHTML = "<div class='govuk-phase-banner'></div>";
+    const phaseBanner =
+      document.getElementsByClassName("govuk-phase-banner")[0];
+    phaseBanner.appendChild(href);
+    const element = action.target as HTMLLinkElement;
+    expect(newInstance.getSection(element)).toBe("phase banner");
+  });
+
+  test("it should return menu links when a link is clicked in the menu links", () => {
+    const href = document.createElement("A");
+    href.className = "govuk-link";
+    href.dispatchEvent(action);
+    document.body.innerHTML = "<nav id='app-navigation'></nav>";
+    const navigation = document.getElementsByTagName("nav")[0];
+    navigation.appendChild(href);
+    const element = action.target as HTMLLinkElement;
+    expect(newInstance.getSection(element)).toBe("menu links");
+  });
+
+  test("it should return support links when a link is clicked in the support links", () => {
+    const href = document.createElement("A");
+    href.className = "govuk-link";
+    href.dispatchEvent(action);
+    document.body.innerHTML = "<div class='govuk-footer__inline-list'></div>";
+    const footerInlineList = document.getElementsByClassName(
+      "govuk-footer__inline-list",
+    )[0];
+    footerInlineList.appendChild(href);
+    const element = action.target as HTMLLinkElement;
+    expect(newInstance.getSection(element)).toBe("support links");
+  });
+
+  test("it should return license links when a link is clicked in the license link", () => {
+    const href = document.createElement("A");
+    href.className = "govuk-link";
+    href.dispatchEvent(action);
+    document.body.innerHTML =
+      "<span class='govuk-footer__licence-description'></span>";
+    const license = document.getElementsByClassName(
+      "govuk-footer__licence-description",
+    )[0];
+    license.appendChild(href);
+    const element = action.target as HTMLLinkElement;
+    expect(newInstance.getSection(element)).toBe("license");
+  });
+
+  test("it should return copyright when a link is clicked on copyright image", () => {
+    const href = document.createElement("A");
+    href.className = "govuk-link";
+    href.dispatchEvent(action);
+    document.body.innerHTML =
+      "<span class='govuk-footer__copyright-logo'></span>";
+    const copyright = document.getElementsByClassName(
+      "govuk-footer__copyright-logo",
+    )[0];
+    copyright.appendChild(href);
+    const element = action.target as HTMLLinkElement;
+    expect(newInstance.getSection(element)).toBe("copyright");
+  });
+});
