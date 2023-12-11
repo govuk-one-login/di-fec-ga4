@@ -61,16 +61,24 @@ export class FormResponseTracker extends FormTracker {
       return false;
     }
 
+    const submitUrl = this.getSubmitUrl(form);
+
     const formResponseTrackerEvent: FormEventInterface = {
       event: this.eventType,
       event_data: {
         event_name: this.eventName,
         type: validateParameter(this.getFieldType(fields), 100),
-        url: "undefined",
+        url: validateParameter(submitUrl, 100),
         text: validateParameter(this.getFieldValue(fields), 100),
         section: validateParameter(this.getFieldLabel(), 100),
         action: validateParameter(this.getButtonLabel(event), 100),
         external: "undefined",
+        link_domain: this.getDomain(submitUrl),
+        "link_path_parts.1": this.getDomainPath(submitUrl, 0),
+        "link_path_parts.2": this.getDomainPath(submitUrl, 1),
+        "link_path_parts.3": this.getDomainPath(submitUrl, 2),
+        "link_path_parts.4": this.getDomainPath(submitUrl, 3),
+        "link_path_parts.5": this.getDomainPath(submitUrl, 4),
       },
     };
 

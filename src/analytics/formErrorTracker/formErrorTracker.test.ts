@@ -37,11 +37,17 @@ describe("FormErrorTracker", () => {
       event_data: {
         event_name: "form_error",
         type: "checkbox",
-        url: "undefined",
+        url: "http://localhost/test-url",
         text: "error: select one option",
         section: "test label questions",
         action: "error",
         external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
       },
     };
 

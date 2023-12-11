@@ -47,11 +47,17 @@ describe("form with radio buttons", () => {
       event_data: {
         event_name: "form_response",
         type: "radio",
-        url: "undefined",
+        url: "http://localhost/test-url",
         text: "test label male",
         section: "test label questions",
         action: "undefined",
         external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
       },
     };
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
@@ -85,11 +91,17 @@ describe("form with input checkbox", () => {
       event_data: {
         event_name: "form_response",
         type: "checkbox",
-        url: "undefined",
+        url: "http://localhost/test-url",
         text: "test label question 1",
         section: "test label questions",
         action: "undefined",
         external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
       },
     };
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
@@ -118,11 +130,17 @@ describe("form with input text", () => {
       event_data: {
         event_name: "form_response",
         type: instance.FREE_TEXT_FIELD_TYPE,
-        url: "undefined",
+        url: "http://localhost/test-url",
         text: "test value",
         section: "test label username",
         action: "undefined",
         external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
       },
     };
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
@@ -173,11 +191,17 @@ describe("form with input textarea", () => {
       event_data: {
         event_name: "form_response",
         type: instance.FREE_TEXT_FIELD_TYPE,
-        url: "undefined",
+        url: "http://localhost/test-url",
         text: "test value",
         section: "test label username",
         action: "undefined",
         external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
       },
     };
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
@@ -207,11 +231,17 @@ describe("form with dropdown", () => {
       event_data: {
         event_name: "form_response",
         type: "drop-down list",
-        url: "undefined",
+        url: "http://localhost/test-url",
         text: "test value2",
         section: "test label username",
         action: "undefined",
         external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
       },
     };
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);

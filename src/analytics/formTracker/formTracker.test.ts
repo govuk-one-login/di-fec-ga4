@@ -77,4 +77,14 @@ describe("FormTracker", () => {
     document.body.appendChild(label);
     expect(instance.getFieldLabel()).toBe("test label");
   });
+
+  test("getSubmitUrl should return submit url", () => {
+    const instance = new FormTracker();
+    const form = document.createElement("form");
+    form.action = "/test-url";
+    form.innerHTML =
+      '<input id="test" name="test" value="test value" type="text"/>';
+    document.body.appendChild(form);
+    expect(instance.getSubmitUrl(form)).toBe("http://localhost/test-url");
+  });
 });
