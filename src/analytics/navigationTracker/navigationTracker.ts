@@ -65,6 +65,12 @@ export class NavigationTracker extends BaseTracker {
         section: this.section,
         action: "undefined",
         external: this.isExternalLink(element.href) ? "true" : "false",
+        link_domain: this.getDomain(element.href),
+        "link_path_parts.1": this.getDomainPath(element.href, 0),
+        "link_path_parts.2": this.getDomainPath(element.href, 1),
+        "link_path_parts.3": this.getDomainPath(element.href, 2),
+        "link_path_parts.4": this.getDomainPath(element.href, 3),
+        "link_path_parts.5": this.getDomainPath(element.href, 4),
       },
     };
 
