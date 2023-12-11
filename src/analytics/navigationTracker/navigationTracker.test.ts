@@ -261,13 +261,13 @@ describe("getSection", () => {
     expect(newInstance.getSection(element)).toBe("phase banner");
   });
 
-  test("it should return menu links when a link is clicked in the menu links", () => {
+  test("it should return menu links when a link is clicked in the header", () => {
     const href = document.createElement("A");
     href.className = "govuk-link";
     href.dispatchEvent(action);
-    document.body.innerHTML = "<nav id='app-navigation'></nav>";
-    const navigation = document.getElementsByTagName("nav")[0];
-    navigation.appendChild(href);
+    document.body.innerHTML = "<header></header>";
+    const header = document.getElementsByTagName("header")[0];
+    header.appendChild(href);
     const element = action.target as HTMLLinkElement;
     expect(newInstance.getSection(element)).toBe("menu links");
   });
