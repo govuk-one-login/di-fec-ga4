@@ -184,7 +184,7 @@ export class NavigationTracker extends BaseTracker {
    * Determines if the given element is a header link
    *
    * @param {string} element - The HTML link element to get the type of.
-   * @return {boolean} Returns true if the class name of this element includes "govuk-phase-banner", false otherwise.
+   * @return {boolean} Returns true if the header tag contains this element, false otherwise.
    */
   isHeaderMenuBarLink(element: HTMLElement): boolean {
     const header = document.getElementsByTagName("header")[0];
