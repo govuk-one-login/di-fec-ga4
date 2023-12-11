@@ -192,7 +192,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given class nam is a phase banner link
+   * Determines if the given class name is a phase banner link
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-phase-banner", false otherwise.
@@ -204,7 +204,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given class nam is a back button link.
+   * Determines if the given class name is a back button link.
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-back-link", false otherwise.
@@ -226,7 +226,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given class namis a nav link.
+   * Determines if the given tagname is a is a nav link
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the nav tag contains this element, false otherwise.
