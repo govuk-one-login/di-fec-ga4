@@ -124,7 +124,7 @@ export class NavigationTracker extends BaseTracker {
    * Returns the type of link based on the given HTML link element.
    *
    * @param {HTMLLinkElement} element - The HTML link element to get the type of.
-   * @return {string} The type of link: "footer", "header menu bar", "generic link", or "undefined".
+   * @return {string} The type of link: "footer", "header menu bar", "generic link", "generic button", or "undefined".
    */
   getLinkType(element: HTMLLinkElement): string {
     if (element.tagName === "A") {
@@ -142,9 +142,15 @@ export class NavigationTracker extends BaseTracker {
       }
       return "generic link";
     }
-    return "undefined"; // generic button
+    return "undefined";
   }
 
+  /**
+   * Returns the type of section based on the given HTML link element.
+   *
+   * @param {HTMLLinkElement} element - The HTML link element to get the type of.
+   * @return {string} The section: "logo", "phase banner", "menu links", "support links", "license", "copyright" or "undefined".
+   */
   getSection(element: HTMLElement): string {
     // if header
     if (this.isLogoLink(element)) {
@@ -175,7 +181,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given element is a phase banner link
+   * Determines if the given element is a header link
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-phase-banner", false otherwise.
@@ -186,7 +192,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given element is a phase banner link
+   * Determines if the given class nam is a phase banner link
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-phase-banner", false otherwise.
@@ -198,7 +204,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given element is a back button link.
+   * Determines if the given class nam is a back button link.
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-back-link", false otherwise.
@@ -209,7 +215,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given element is a phase banner link
+   * Determines if the given class name is a logo link
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-header__logo", false otherwise.
@@ -220,7 +226,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines whether the given class name is a nav link.
+   * Determines if the given class namis a nav link.
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the nav tag contains this element, false otherwise.
@@ -231,7 +237,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given element is a in-line support link link
+   * Determines if the given class name is a support link
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-footer__inline-list", false otherwise.
@@ -244,7 +250,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given element is a in-line license link
+   * Determines if the given class name is a license link
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-footer__licence-description", false otherwise.
@@ -257,7 +263,7 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given element is within the copyright logo
+   * Determines if the given class name is a copyright logo
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-footer__copyright-logo", false otherwise.
