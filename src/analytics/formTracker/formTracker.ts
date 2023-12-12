@@ -4,6 +4,7 @@ import { FormField } from "./formTracker.interface";
 export class FormTracker extends BaseTracker {
   FREE_TEXT_FIELD_TYPE = "free text field";
   DROPDOWN_FIELD_TYPE = "drop-down list";
+  RADIO_FIELD_TYPE = "radio buttons";
 
   constructor() {
     super();
@@ -74,6 +75,8 @@ export class FormTracker extends BaseTracker {
       return this.FREE_TEXT_FIELD_TYPE;
     } else if (elements[0].type === "select-one") {
       return this.DROPDOWN_FIELD_TYPE;
+    } else if (elements[0].type === "radio") {
+      return this.RADIO_FIELD_TYPE;
     } else {
       return elements[0].type;
     }
