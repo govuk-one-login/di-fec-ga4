@@ -32,16 +32,23 @@ export class FormErrorTracker extends FormTracker {
       return false;
     }
 
+    const submitUrl = this.getSubmitUrl(form);
     const formErrorTrackerEvent: FormEventInterface = {
       event: this.eventType,
       event_data: {
         event_name: this.eventName,
         type: validateParameter(this.getType(form), 100),
-        url: "undefined",
+        url: validateParameter(submitUrl, 100),
         text: validateParameter(this.getErrorMessage(), 100),
         section: validateParameter(this.getFieldLabel(), 100),
         action: "error",
         external: "undefined",
+        link_domain: this.getDomain(submitUrl),
+        "link_path_parts.1": this.getDomainPath(submitUrl, 0),
+        "link_path_parts.2": this.getDomainPath(submitUrl, 1),
+        "link_path_parts.3": this.getDomainPath(submitUrl, 2),
+        "link_path_parts.4": this.getDomainPath(submitUrl, 3),
+        "link_path_parts.5": this.getDomainPath(submitUrl, 4),
       },
     };
 

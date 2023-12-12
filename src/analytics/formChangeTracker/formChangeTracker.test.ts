@@ -41,11 +41,17 @@ describe("FormChangeTracker", () => {
       event_data: {
         event_name: "form_change_response",
         type: "undefined",
-        url: "undefined",
+        url: "http://localhost/test-url",
         text: "change", //put static value. Waiting final documentation on form change tracker
         section: "test label questions",
         action: "change response",
         external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
       },
     };
 
