@@ -130,4 +130,22 @@ describe("FormErrorTracker", () => {
     const form = document.forms[0];
     expect(instance.getType(form)).toEqual("drop-down list");
   });
+
+  test("getType with radio buttons field should return the type radio buttons", () => {
+    const instance = new FormErrorTracker();
+
+    document.body.innerHTML =
+      '<form action="/test-url" method="post">' +
+      "  <legend>test label questions</legend>" +
+      '  <p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>' +
+      '  <label for="male">test label male</label>' +
+      '  <input type="radio" id="male" name="male" value="Male" checked/>' +
+      '  <label for="female">test label female</label>' +
+      '  <input type="radio" id="female" name="female" value="Male"/>' +
+      '  <button id="button" type="submit">submit</button>' +
+      "</form>";
+
+    const form = document.forms[0];
+    expect(instance.getType(form)).toEqual("radio buttons");
+  });
 });

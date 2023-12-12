@@ -61,12 +61,12 @@ describe("FormTracker", () => {
     expect(instance.getFieldType(fields)).toBe("checkbox");
   });
 
-  test("getFieldType should return radio if type is radio", () => {
+  test("getFieldType should return radio buttons if type is radio", () => {
     const instance = new FormTracker();
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "radio" },
     ];
-    expect(instance.getFieldType(fields)).toBe("radio");
+    expect(instance.getFieldType(fields)).toBe("radio buttons");
   });
 
   test("getFieldLabel should return field label", () => {

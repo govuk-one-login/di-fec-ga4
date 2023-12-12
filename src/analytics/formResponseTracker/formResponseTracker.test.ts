@@ -46,7 +46,7 @@ describe("form with radio buttons", () => {
       event: "event_data",
       event_data: {
         event_name: "form_response",
-        type: "radio",
+        type: "radio buttons",
         url: "http://localhost/test-url",
         text: "test label male",
         section: "test label questions",
