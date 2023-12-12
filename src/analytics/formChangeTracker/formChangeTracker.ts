@@ -27,15 +27,16 @@ export class FormChangeTracker extends FormTracker {
     }
 
     const submitUrl = this.getSubmitUrl(form);
+    console.log("submitUrl", submitUrl);
     const formChangeTrackerEvent: FormEventInterface = {
       event: this.eventType,
       event_data: {
         event_name: this.eventName,
         type: "undefined",
         url: validateParameter(submitUrl, 100),
-        text: "undefined",
+        text: "change", //put static value. Waiting final documentation on form change tracker,
         section: validateParameter(this.getFieldLabel(), 100),
-        action: validateParameter(this.getSubmitterText(), 100),
+        action: "change response",
         external: "undefined",
         link_domain: this.getDomain(submitUrl),
         "link_path_parts.1": this.getDomainPath(submitUrl, 0),

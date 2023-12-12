@@ -42,9 +42,9 @@ describe("FormChangeTracker", () => {
         event_name: "form_change_response",
         type: "undefined",
         url: "http://localhost/test-url",
-        text: "undefined",
+        text: "change", //put static value. Waiting final documentation on form change tracker
         section: "test label questions",
-        action: instance.getSubmitterText(),
+        action: "change response",
         external: "undefined",
         link_domain: "http://localhost",
         "link_path_parts.1": "/test-url",
