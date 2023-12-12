@@ -32,9 +32,9 @@ export class FormChangeTracker extends FormTracker {
         event_name: this.eventName,
         type: "undefined",
         url: "undefined",
-        text: "undefined",
+        text: "change", //put static value. Waiting final documentation on form change tracker,
         section: validateParameter(this.getFieldLabel(), 100),
-        action: validateParameter(this.getSubmitterText(), 100),
+        action: "change response",
         external: "undefined",
       },
     };
