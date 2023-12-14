@@ -23,7 +23,7 @@ const RESET_PASSWORD_TOKEN_PATTERN = /reset_password_token=[a-zA-Z0-9-]+/g;
 const UNLOCK_TOKEN_PATTERN = /unlock_token=[a-zA-Z0-9-]+/g;
 const STATE_PATTERN = /state=.[^&]+/g;
 
-const isDate = function (value: any) {
+const isDate = function (value: string) {
   if (
     value.match(DATE_PATTERN_NUMERIC_1) ||
     value.match(DATE_PATTERN_NUMERIC_2) ||
@@ -36,7 +36,7 @@ const isDate = function (value: any) {
   }
 };
 
-const isPostCode = function (value: any) {
+const isPostCode = function (value: string) {
   if (value.match(POSTCODE_PATTERN)) {
     return true;
   } else {
@@ -44,7 +44,7 @@ const isPostCode = function (value: any) {
   }
 };
 
-const isPhoneNumber = function (value: any) {
+const isPhoneNumber = function (value: string) {
   if (
     value.match(PHONE_NUMBER_PATTERN_1) ||
     value.match(PHONE_NUMBER_PATTERN_2)
