@@ -2,6 +2,8 @@
  *   Takes a paremeter passed in from external use of a tracker and asserts it is defined, is a string and has a length allowed by GA
  */
 
+import { stripPIIFromString } from "./pii-remover";
+
 export function validateParameter(parameter: any, maxLength: number) {
   let validatedParameter = parameter || "undefined";
   const length = parameter.length;
@@ -18,6 +20,6 @@ export function validateParameter(parameter: any, maxLength: number) {
     );
     validatedParameter = parameter.substring(0, maxLength);
   }
-
-  return validatedParameter.toLowerCase();
+  const value = validatedParameter.toLowerCase();
+  return stripPIIFromString(value);
 }
