@@ -12,7 +12,7 @@
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
     "precommit": "npm run prettier && git add .",
     "pub": "cp PACKAGE-README.md dist/README.md && cp package.json dist && cd dist && npm publish --access public",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",

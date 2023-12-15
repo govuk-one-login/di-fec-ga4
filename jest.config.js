@@ -8,4 +8,8 @@ export default {
     "^.+\\.(ts|tsx)$": "ts-jest",
   },
   testEnvironment: "jsdom",
+  collectCoverage: true,
+  collectCoverageFrom: ["src/**/*.js"],
+  coverageDirectory: "coverage",
+  coverageReporters: ["lcov", "text", "html"],
 };
