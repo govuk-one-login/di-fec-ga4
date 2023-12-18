@@ -9,7 +9,7 @@ export default {
   },
   testEnvironment: "jsdom",
   collectCoverage: true,
-  collectCoverageFrom: ["src/**/*.js"],
+  collectCoverageFrom: ["src/**/*.ts"],
   coverageDirectory: "coverage",
   coverageReporters: ["lcov", "text", "html"],
 };
