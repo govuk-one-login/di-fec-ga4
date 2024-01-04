@@ -74,7 +74,7 @@ export class FormResponseTracker extends FormTracker {
             type: validateParameter(this.getFieldType([field]), 100),
             url: validateParameter(submitUrl, 100),
             text: validateParameter(this.getFieldValue([field]), 100),
-            section: validateParameter(this.getSectionValue([field]), 100),
+            section: validateParameter(this.getSectionValue(field), 100),
             action: validateParameter(this.getButtonLabel(event), 100),
             external: "undefined",
             link_domain: this.getDomain(submitUrl),
