@@ -119,6 +119,36 @@ export class FormTracker extends BaseTracker {
     }
     return label;
   }
+  /**
+   * Get the section value from the label or legend associated with the HTML form element.
+   *
+   * @param {FormField[]} elements - The array of form fields.
+   * @return {string} The label or legend of the field.
+   */
+  getSectionValue(elements: FormField[]): string {
+    for (const element of elements) {
+      const field = document.getElementById(element.id);
+      const fieldset = field?.closest("fieldset");
+      if (fieldset) {
+        // If it's a child of a fieldset e.g radio button/ checkbox, look for the legend
+        const legendElement = fieldset.querySelector("legend");
+        if (legendElement && legendElement.textContent) {
+          return legendElement.textContent.trim();
+        }
+      } else {
+        // If not within a fieldset,e.g free text field, dropdown check for label
+        const labelElement = document.querySelector(
+          `label[for="${element.id}"]`,
+        );
+        if (labelElement && labelElement.textContent) {
+          return labelElement.textContent.trim();
+        }
+      }
+    }
+
+    // If not within a fieldset or no legend found, return an empty string
+    return "";
+  }
 
   /**
    * Get the submit URL from the given HTML form element.
