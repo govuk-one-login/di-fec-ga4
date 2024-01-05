@@ -18,6 +18,10 @@ export class FormTracker extends BaseTracker {
    */
   public getFormFields(form: HTMLFormElement): FormField[] {
     const selectedFields: FormField[] = [];
+
+    // New: Define a record to store checkbox groups
+    const checkboxGroups: Record<string, string[]> = {};
+
     for (let i = 0; i < form.elements.length; i++) {
       const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
 
@@ -29,38 +33,68 @@ export class FormTracker extends BaseTracker {
         continue;
       }
 
-      if (
-        (element.type === "radio" || element.type === "checkbox") &&
-        element.checked
-      ) {
-        selectedFields.push({
-          id: element.id,
-          name: element.name,
-          value: document.querySelector(`label[for="${element.id}"]`)
-            ?.textContent
-            ? document
+      if (element.type === "checkbox") {
+        // New: Check if the checkbox belongs to a group
+        if (element.name) {
+          if (!checkboxGroups[element.name]) {
+            checkboxGroups[element.name] = [];
+          }
+          if (element.checked) {
+            // New: Push the label value to the checkbox group
+            checkboxGroups[element.name].push(
+              document
                 .querySelector(`label[for="${element.id}"]`)
-                ?.textContent?.trim()
-            : "undefined",
-          type: element.type,
-        });
-      } else if (element.type === "textarea" || element.type === "text") {
-        selectedFields.push({
-          id: element.id,
-          name: element.name,
-          value: element.value,
-          type: element.type,
-        });
-      } else if (element.type === "select-one") {
-        const selectedElement = form.elements[i] as HTMLSelectElement;
-        selectedFields.push({
-          id: selectedElement.id,
-          name: selectedElement.name,
-          value: selectedElement.options[selectedElement.selectedIndex].text,
-          type: selectedElement.type,
-        });
+                ?.textContent?.trim() ?? "undefined",
+            );
+          }
+        }
+      } else {
+        if (
+          (element.type === "radio" || element.type === "checkbox") &&
+          element.checked
+        ) {
+          selectedFields.push({
+            id: element.id,
+            name: element.name,
+            value: document.querySelector(`label[for="${element.id}"]`)
+              ?.textContent
+              ? document
+                  .querySelector(`label[for="${element.id}"]`)
+                  ?.textContent?.trim()
+              : "undefined",
+            type: element.type,
+          });
+        } else if (element.type === "textarea" || element.type === "text") {
+          selectedFields.push({
+            id: element.id,
+            name: element.name,
+            value: element.value,
+            type: element.type,
+          });
+        } else if (element.type === "select-one") {
+          const selectedElement = form.elements[i] as HTMLSelectElement;
+          selectedFields.push({
+            id: selectedElement.id,
+            name: selectedElement.name,
+            value: selectedElement.options[selectedElement.selectedIndex].text,
+            type: selectedElement.type,
+          });
+        }
       }
     }
+
+    // New: Concatenate values of checkbox groups
+    for (const groupName in checkboxGroups) {
+      const checkboxValues = checkboxGroups[groupName].join(", ");
+      console.log(checkboxValues);
+      selectedFields.push({
+        id: groupName, // New: Use the group name as the id for the concatenated value
+        name: groupName,
+        value: checkboxValues,
+        type: "checkbox",
+      });
+    }
+
     return selectedFields;
   }
 

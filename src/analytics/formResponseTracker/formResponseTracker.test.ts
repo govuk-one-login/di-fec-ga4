@@ -19,8 +19,8 @@ describe("form with multiple fields", () => {
       "  <legend>checked section</legend>" +
       '  <label for="question-1">checked value</label>' +
       '  <input type="checkbox" id="question-1" name="question-1" value="checked value" checked/>' +
-      '  <label for="question-2">unchecked value</label>' +
-      '  <input type="checkbox" id="question-2" name="question-2" value="unchecked value"/>' +
+      '  <label for="question-2">checked value2</label>' +
+      '  <input type="checkbox" id="question-2" name="question-1" value="checked value2" checked/>' +
       "</fieldset>" +
       '  <label for="region">dropdown section</label>' +
       '  <select id="region" name="region"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
@@ -29,9 +29,9 @@ describe("form with multiple fields", () => {
       "<fieldset>" +
       "  <legend>radio section</legend>" +
       '  <label for="male">radio value</label>' +
-      '  <input type="radio" id="male" name="male" value="radio value" checked/>' +
+      '  <input type="radio" id="male" name="radioGroup" value="radio value" checked/>' +
       '  <label for="female">radio value 2</label>' +
-      '  <input type="radio" id="female" name="female" value="radio value 2"/>' +
+      '  <input type="radio" id="female" name="radioGroup" value="radio value 2"/>' +
       "</fieldset>" +
       '  <label for="feedback">textarea section</label>' +
       '  <textarea id="feedback" name="feedback" value="test value"/>test value</textarea>' +
@@ -45,7 +45,7 @@ describe("form with multiple fields", () => {
         event_name: "form_response",
         type: "checkbox",
         url: "http://localhost/test-url",
-        text: "checked value",
+        text: "checked value, checked value2",
         section: "checked section",
         action: "undefined",
         external: "undefined",
