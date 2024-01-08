@@ -19,9 +19,6 @@ export class FormTracker extends BaseTracker {
   public getFormFields(form: HTMLFormElement): FormField[] {
     const selectedFields: FormField[] = [];
 
-    // New: Define a record to store checkbox groups
-    const checkboxGroups: Record<string, string[]> = {};
-
     for (let i = 0; i < form.elements.length; i++) {
       const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
 
@@ -33,26 +30,15 @@ export class FormTracker extends BaseTracker {
         continue;
       }
 
-      if (element.type === "checkbox") {
-        // New: Check if the checkbox belongs to a group
-        if (element.name) {
-          if (!checkboxGroups[element.name]) {
-            checkboxGroups[element.name] = [];
-          }
-          if (element.checked) {
-            // New: Push the label value to the checkbox group
-            checkboxGroups[element.name].push(
-              document
-                .querySelector(`label[for="${element.id}"]`)
-                ?.textContent?.trim() ?? "undefined",
-            );
-          }
-        }
-      } else {
-        if (
-          (element.type === "radio" || element.type === "checkbox") &&
-          element.checked
-        ) {
+      if (element.type === "checkbox" && element.checked) {
+        // Check if checkbox belongs to a group
+        const checkboxInSameGroup = selectedFields.find(
+          (field) => field.name === element.name,
+        );
+        // New: If the checkbox is part of a group, concatenate the current checkbox's value with the existing value of that group's checkbox
+        if (checkboxInSameGroup) {
+          checkboxInSameGroup.value += `, ${element.value}`;
+        } else {
           selectedFields.push({
             id: element.id,
             name: element.name,
@@ -64,35 +50,35 @@ export class FormTracker extends BaseTracker {
               : "undefined",
             type: element.type,
           });
-        } else if (element.type === "textarea" || element.type === "text") {
-          selectedFields.push({
-            id: element.id,
-            name: element.name,
-            value: element.value,
-            type: element.type,
-          });
-        } else if (element.type === "select-one") {
-          const selectedElement = form.elements[i] as HTMLSelectElement;
-          selectedFields.push({
-            id: selectedElement.id,
-            name: selectedElement.name,
-            value: selectedElement.options[selectedElement.selectedIndex].text,
-            type: selectedElement.type,
-          });
         }
+      } else if (element.type === "radio" && element.checked) {
+        selectedFields.push({
+          id: element.id,
+          name: element.name,
+          value: document.querySelector(`label[for="${element.id}"]`)
+            ?.textContent
+            ? document
+                .querySelector(`label[for="${element.id}"]`)
+                ?.textContent?.trim()
+            : "undefined",
+          type: element.type,
+        });
+      } else if (element.type === "textarea" || element.type === "text") {
+        selectedFields.push({
+          id: element.id,
+          name: element.name,
+          value: element.value,
+          type: element.type,
+        });
+      } else if (element.type === "select-one") {
+        const selectedElement = form.elements[i] as HTMLSelectElement;
+        selectedFields.push({
+          id: selectedElement.id,
+          name: selectedElement.name,
+          value: selectedElement.options[selectedElement.selectedIndex].text,
+          type: selectedElement.type,
+        });
       }
-    }
-
-    // New: Concatenate values of checkbox groups
-    for (const groupName in checkboxGroups) {
-      const checkboxValues = checkboxGroups[groupName].join(", ");
-      console.log(checkboxValues);
-      selectedFields.push({
-        id: groupName, // New: Use the group name as the id for the concatenated value
-        name: groupName,
-        value: checkboxValues,
-        type: "checkbox",
-      });
     }
 
     return selectedFields;
@@ -176,7 +162,7 @@ export class FormTracker extends BaseTracker {
       }
     }
 
-    // If not within a fieldset or no legend found, return an empty string
+    // If not within a fieldset or no legend found, return a "undefined" string
     return "undefined";
   }
 

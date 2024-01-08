@@ -1,10 +1,17 @@
-import { describe, expect, jest, test } from "@jest/globals";
+import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import { FormTracker } from "./formTracker";
 import { FormEventInterface, FormField } from "./formTracker.interface";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
 describe("FormTracker", () => {
+  let instance: FormTracker;
+
+  beforeEach(() => {
+    instance = new FormTracker();
+    // Remove any existing elements from document.body if needed
+    document.body.innerHTML = "";
+  });
   test("getFields should return a list of fields objects", () => {
     const instance = new FormTracker();
     const form = document.createElement("form");
@@ -22,7 +29,6 @@ describe("FormTracker", () => {
   });
 
   test("getFieldValue should return field value", () => {
-    const instance = new FormTracker();
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "test" },
     ];
@@ -30,7 +36,6 @@ describe("FormTracker", () => {
   });
 
   test("getFieldType should return free text field if type is text", () => {
-    const instance = new FormTracker();
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "text" },
     ];
@@ -38,7 +43,6 @@ describe("FormTracker", () => {
   });
 
   test("getFieldType should return free text field if type is textarea", () => {
-    const instance = new FormTracker();
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "textarea" },
     ];
@@ -46,7 +50,6 @@ describe("FormTracker", () => {
   });
 
   test("getFieldType should return drop-down list if type is select-one", () => {
-    const instance = new FormTracker();
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "select-one" },
     ];
@@ -54,7 +57,6 @@ describe("FormTracker", () => {
   });
 
   test("getFieldType should return checkbox if type is checkbox", () => {
-    const instance = new FormTracker();
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "checkbox" },
     ];
@@ -62,7 +64,6 @@ describe("FormTracker", () => {
   });
 
   test("getFieldType should return radio buttons if type is radio", () => {
-    const instance = new FormTracker();
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "radio" },
     ];
@@ -70,16 +71,14 @@ describe("FormTracker", () => {
   });
 
   test("getFieldLabel should return field label", () => {
-    const instance = new FormTracker();
     const label = document.createElement("label");
-    label.innerHTML = "test label";
     label.textContent = "test label";
     document.body.appendChild(label);
     expect(instance.getFieldLabel()).toBe("test label");
+    document.body.removeChild(label);
   });
 
   test("getSubmitUrl should return submit url", () => {
-    const instance = new FormTracker();
     const form = document.createElement("form");
     form.action = "/test-url";
     form.innerHTML =
@@ -89,7 +88,6 @@ describe("FormTracker", () => {
   });
 
   test("getSubmitUrl should return submit url with the query params also", () => {
-    const instance = new FormTracker();
     const form = document.createElement("form");
     form.action = "/test-url?edit=true";
     form.innerHTML =
@@ -98,5 +96,64 @@ describe("FormTracker", () => {
     expect(instance.getSubmitUrl(form)).toBe(
       "http://localhost/test-url?edit=true",
     );
+  });
+
+  test("getSectionValue should return label text if field is not within a fieldset ", () => {
+    const formField: FormField = {
+      id: "fieldId",
+      name: "fieldName",
+      value: "fieldValue",
+      type: "text",
+    };
+
+    // Create label and set for attribute
+
+    const label = document.createElement("label");
+    label.htmlFor = formField.id;
+    label.textContent = "test label";
+    document.body.appendChild(label);
+
+    // Create input and set id attribute to the same as label for attribute
+
+    const input = document.createElement("input");
+    input.id = formField.id;
+    document.body.appendChild(input);
+    expect(instance.getSectionValue(formField)).toBe("test label");
+  });
+  test("getSectionValue returns legend text when input is inside a fieldset with legend , i.e radio or checkbox ", () => {
+    const formField: FormField = {
+      id: "fieldId",
+      name: "fieldName",
+      value: "fieldValue",
+      type: "text",
+    };
+    // Create fieldset and legend
+    const fieldset = document.createElement("fieldset");
+    const legend = document.createElement("legend");
+    legend.textContent = "test legend";
+    fieldset.appendChild(legend);
+
+    // Create input and append to fieldset
+    const input = document.createElement("input");
+    input.id = formField.id;
+    fieldset.appendChild(input);
+
+    // Append fieldset to the document body
+    document.body.appendChild(fieldset);
+    expect(instance.getSectionValue(formField)).toBe("test legend");
+  });
+  test("getSectionValue should return undefined if there is no label or legend", () => {
+    const formField: FormField = {
+      id: "fieldId",
+      name: "fieldName",
+      value: "fieldValue",
+      type: "text",
+    };
+
+    // Create input and set id attribute to the same as label for attribute
+    const input = document.createElement("input");
+    input.id = formField.id;
+    document.body.appendChild(input);
+    expect(instance.getSectionValue(formField)).toBe("undefined");
   });
 });
