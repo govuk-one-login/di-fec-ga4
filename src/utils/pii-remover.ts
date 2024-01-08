@@ -10,6 +10,9 @@ const DATE_PATTERN_NUMERIC_1 = /\d{1,2}([-\/\\])\d{1,2}([-\/\\])\d{4}/g; // esli
 // e.g. 1990/01/01 or 1990-01-01 or 1990-1-1 or 1990/1/1 or 1990\1\1 or 1990\01\01
 const DATE_PATTERN_NUMERIC_2 = /\d{4}([-\/\\])\d{1,2}([-\/\\])\d{1,2}/g; // eslint-disable-line no-useless-escape
 
+// e.g. 01/01/90 or 01-01-90 or 1-1-90 or 1/1/90 or 01\01\90 or 1\1\90
+const DATE_PATTERN_NUMERIC_3 = /\d{1,2}([-\/\\])\d{1,2}([-\/\\])\d{2}/g; // eslint-disable-line no-useless-escape
+
 // e.g. 1(st) (of) Jan(uary) 1990 (or 90 or '90) - where the bracketed characters are optional parts that can be matched
 const DATE_PATTERN_STRING_1 =
   /\d{1,2}(?:st|nd|rd|th)?\s(?:of\s)?(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t)?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s(?:')?(\d{4}|\d{2})/gi;
@@ -27,6 +30,7 @@ const isDate = function (value: string) {
   if (
     value.match(DATE_PATTERN_NUMERIC_1) ||
     value.match(DATE_PATTERN_NUMERIC_2) ||
+    value.match(DATE_PATTERN_NUMERIC_3) ||
     value.match(DATE_PATTERN_STRING_1) ||
     value.match(DATE_PATTERN_STRING_2)
   ) {
@@ -71,6 +75,7 @@ export function stripPIIFromString(value: string) {
     var DATE_REDACTION_STRING = "[date]";
     stripped = stripped.replace(DATE_PATTERN_NUMERIC_1, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_NUMERIC_2, DATE_REDACTION_STRING);
+    stripped = stripped.replace(DATE_PATTERN_NUMERIC_3, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_STRING_1, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_STRING_2, DATE_REDACTION_STRING);
   } else if (isPostCode(value)) {
