@@ -18,9 +18,9 @@ describe("form with multiple fields", () => {
       "<fieldset>" +
       "  <legend>checked section</legend>" +
       '  <label for="question-1">checked value</label>' +
-      '  <input type="checkbox" id="question-1" name="question-1" value="checked value" checked/>' +
+      '  <input type="checkbox" id="question-1" name="question-1" value="checkedValue" checked/>' +
       '  <label for="question-2">checked value2</label>' +
-      '  <input type="checkbox" id="question-2" name="question-1" value="checked value2" checked/>' +
+      '  <input type="checkbox" id="question-2" name="question-1" value="checkedValue2" checked/>' +
       "</fieldset>" +
       '  <label for="region">dropdown section</label>' +
       '  <select id="region" name="region"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
@@ -215,10 +215,10 @@ describe("form with input checkbox", () => {
       '<form action="/test-url" method="post">' +
       "<fieldset>" +
       "  <legend>test label questions</legend>" +
-      '  <label for="question-1">test label question 1</label>' +
-      '  <input type="checkbox" id="question-1" name="question-1" value="test value" checked/>' +
-      '  <label for="question-2">test label question 2</label>' +
-      '  <input type="checkbox" id="question-2" name="question-2" value="test value"/>' +
+      '  <label for="question-1">test value</label>' +
+      '  <input type="checkbox" id="question-1" name="question-1" value="testValue" checked/>' +
+      '  <label for="question-2">test value2</label>' +
+      '  <input type="checkbox" id="question-2" name="question-2" value="testValue2"/>' +
       "</fieldset>";
     '  <button id="button" type="submit">submit</button>' + "</form>";
     document.dispatchEvent(action);
@@ -229,7 +229,7 @@ describe("form with input checkbox", () => {
         event_name: "form_response",
         type: "checkbox",
         url: "http://localhost/test-url",
-        text: "test label question 1",
+        text: "test value",
         section: "test label questions",
         action: "undefined",
         external: "undefined",

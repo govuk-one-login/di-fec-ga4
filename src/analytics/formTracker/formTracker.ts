@@ -37,7 +37,13 @@ export class FormTracker extends BaseTracker {
         );
         // New: If the checkbox is part of a group, concatenate the current checkbox's value with the existing value of that group's checkbox
         if (checkboxInSameGroup) {
-          checkboxInSameGroup.value += `, ${element.value}`;
+          checkboxInSameGroup.value += `, ${
+            document.querySelector(`label[for="${element.id}"]`)?.textContent
+              ? document
+                  .querySelector(`label[for="${element.id}"]`)
+                  ?.textContent?.trim()
+              : "undefined"
+          }`;
         } else {
           selectedFields.push({
             id: element.id,

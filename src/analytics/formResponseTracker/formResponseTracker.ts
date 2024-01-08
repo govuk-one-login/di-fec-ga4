@@ -52,7 +52,6 @@ export class FormResponseTracker extends FormTracker {
 
     if (form && form.elements) {
       fields = this.getFormFields(form);
-      console.log(fields);
     } else {
       return false;
     }

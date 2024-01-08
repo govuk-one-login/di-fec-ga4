@@ -13,7 +13,6 @@ describe("FormTracker", () => {
     document.body.innerHTML = "";
   });
   test("getFields should return a list of fields objects", () => {
-    const instance = new FormTracker();
     const form = document.createElement("form");
     form.innerHTML =
       '<input id="test" name="test" value="test value" type="text"/>';
@@ -24,6 +23,23 @@ describe("FormTracker", () => {
         name: "test",
         value: "test value",
         type: "text",
+      },
+    ]);
+  });
+  test("getFormFields should return checkbox values as string , separated by commas if part of checkbox group", () => {
+    const form = document.createElement("form");
+    form.innerHTML =
+      ' <label for="test">test value</label>' +
+      '<input id="test" name="test" value="test value" type="checkbox" checked/>' +
+      ' <label for="test1">test value2</label>' +
+      '<input id="test1" name="test" value="test value2" type="checkbox" checked/>';
+    document.body.appendChild(form);
+    expect(instance.getFormFields(form)).toEqual([
+      {
+        id: "test",
+        name: "test",
+        value: "test value, test value2",
+        type: "checkbox",
       },
     ]);
   });
