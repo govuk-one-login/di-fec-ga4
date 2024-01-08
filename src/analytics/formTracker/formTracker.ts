@@ -18,6 +18,7 @@ export class FormTracker extends BaseTracker {
    */
   public getFormFields(form: HTMLFormElement): FormField[] {
     const selectedFields: FormField[] = [];
+
     for (let i = 0; i < form.elements.length; i++) {
       const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
 
@@ -29,10 +30,34 @@ export class FormTracker extends BaseTracker {
         continue;
       }
 
-      if (
-        (element.type === "radio" || element.type === "checkbox") &&
-        element.checked
-      ) {
+      if (element.type === "checkbox" && element.checked) {
+        // Check if checkbox belongs to a group
+        const checkboxInSameGroup = selectedFields.find(
+          (field) => field.name === element.name,
+        );
+        // New: If the checkbox is part of a group, concatenate the current checkbox's value with the existing value of that group's checkbox
+        if (checkboxInSameGroup) {
+          checkboxInSameGroup.value += `, ${
+            document.querySelector(`label[for="${element.id}"]`)?.textContent
+              ? document
+                  .querySelector(`label[for="${element.id}"]`)
+                  ?.textContent?.trim()
+              : "undefined"
+          }`;
+        } else {
+          selectedFields.push({
+            id: element.id,
+            name: element.name,
+            value: document.querySelector(`label[for="${element.id}"]`)
+              ?.textContent
+              ? document
+                  .querySelector(`label[for="${element.id}"]`)
+                  ?.textContent?.trim()
+              : "undefined",
+            type: element.type,
+          });
+        }
+      } else if (element.type === "radio" && element.checked) {
         selectedFields.push({
           id: element.id,
           name: element.name,
@@ -61,6 +86,7 @@ export class FormTracker extends BaseTracker {
         });
       }
     }
+
     return selectedFields;
   }
 
@@ -118,6 +144,32 @@ export class FormTracker extends BaseTracker {
       }
     }
     return label;
+  }
+  /**
+   * Get the section value from the label or legend associated with the HTML form element.
+   *
+   * @param {FormField} element - The form field.
+   * @return {string} The label or legend of the field.
+   */
+  getSectionValue(element: FormField): string {
+    const field = document.getElementById(element.id);
+    const fieldset = field?.closest("fieldset");
+    if (fieldset) {
+      // If it's a child of a fieldset e.g radio button/ checkbox, look for the legend
+      const legendElement = fieldset.querySelector("legend");
+      if (legendElement && legendElement.textContent) {
+        return legendElement.textContent.trim();
+      }
+    } else {
+      // If not within a fieldset,e.g free text field, dropdown check for label
+      const labelElement = document.querySelector(`label[for="${element.id}"]`);
+      if (labelElement && labelElement.textContent) {
+        return labelElement.textContent.trim();
+      }
+    }
+
+    // If not within a fieldset or no legend found, return a "undefined" string
+    return "undefined";
   }
 
   /**
