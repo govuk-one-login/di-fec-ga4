@@ -40,6 +40,12 @@ describe("PII remover", () => {
     expect(validatedParameter).toEqual("[date]");
   });
 
+  test("date format dd/mm/yy should be replaced by '[date]'", () => {
+    const parameter = "23/11/23";
+    const validatedParameter = validateParameter(parameter, 100);
+    expect(validatedParameter).toEqual("[date]");
+  });
+
   test("date format yyyy/mm/dd should be replaced by '[date]'", () => {
     const parameter = "2021/11/21";
     const validatedParameter = validateParameter(parameter, 100);
