@@ -91,7 +91,6 @@ describe("FormTracker", () => {
     label.textContent = "test label";
     document.body.appendChild(label);
     expect(instance.getFieldLabel()).toBe("test label");
-    document.body.removeChild(label);
   });
 
   test("getSubmitUrl should return submit url", () => {
