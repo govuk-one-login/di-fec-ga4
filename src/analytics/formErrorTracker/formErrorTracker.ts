@@ -24,36 +24,42 @@ export class FormErrorTracker extends FormTracker {
     }
 
     const form = document.forms[0];
-    if (!form) {
+    let fields: FormField[] = [];
+
+    if (form && form.elements) {
+      fields = this.getFieldsWithErrors(form);
+    } else {
       return false;
     }
 
-    if (!form.elements) {
+    if (!fields.length) {
+      console.log("form or fields not found");
       return false;
     }
-
-    const submitUrl = this.getSubmitUrl(form);
-    const formErrorTrackerEvent: FormEventInterface = {
-      event: this.eventType,
-      event_data: {
-        event_name: this.eventName,
-        type: validateParameter(this.getType(form), 100),
-        url: validateParameter(submitUrl, 100),
-        text: validateParameter(this.getErrorMessage(), 100),
-        section: validateParameter(this.getFieldLabel(), 100),
-        action: "error",
-        external: "undefined",
-        link_domain: this.getDomain(submitUrl),
-        "link_path_parts.1": this.getDomainPath(submitUrl, 0),
-        "link_path_parts.2": this.getDomainPath(submitUrl, 1),
-        "link_path_parts.3": this.getDomainPath(submitUrl, 2),
-        "link_path_parts.4": this.getDomainPath(submitUrl, 3),
-        "link_path_parts.5": this.getDomainPath(submitUrl, 4),
-      },
-    };
-
     try {
-      this.pushToDataLayer(formErrorTrackerEvent);
+      for (const field of fields) {
+        const submitUrl = this.getSubmitUrl(form);
+        const formErrorTrackerEvent: FormEventInterface = {
+          event: this.eventType,
+          event_data: {
+            event_name: this.eventName,
+            type: validateParameter(this.getFieldType([field]), 100),
+            url: validateParameter(submitUrl, 100),
+            text: validateParameter(this.getErrorMessage(field), 100),
+            section: validateParameter(this.getSectionValue(field), 100),
+            action: "error",
+            external: "undefined",
+            link_domain: this.getDomain(submitUrl),
+            "link_path_parts.1": this.getDomainPath(submitUrl, 0),
+            "link_path_parts.2": this.getDomainPath(submitUrl, 1),
+            "link_path_parts.3": this.getDomainPath(submitUrl, 2),
+            "link_path_parts.4": this.getDomainPath(submitUrl, 3),
+            "link_path_parts.5": this.getDomainPath(submitUrl, 4),
+          },
+        };
+
+        this.pushToDataLayer(formErrorTrackerEvent);
+      }
       return true;
     } catch (err) {
       console.error("Error in trackFormError", err);
@@ -61,32 +67,35 @@ export class FormErrorTracker extends FormTracker {
     }
   }
 
-  getErrorMessage() {
-    const error = document.getElementsByClassName("govuk-error-message");
+  getErrorMessage(field: FormField) {
+    const error = document.getElementById(`${field.id}-error`);
     if (error) {
-      return error[0]?.textContent?.trim();
+      return error?.textContent?.trim();
     } else {
       return "undefined";
     }
   }
 
-  getType(form: HTMLFormElement) {
-    const fields: HTMLInputElement[] = [];
-    for (let i = 0; i < form.elements.length; i++) {
-      const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
-      if (
-        element.type !== "hidden" &&
-        element.type !== "fieldset" &&
-        element.type !== "submit"
-      ) {
-        fields.push(element);
-      }
-    }
+  getFieldsWithErrors(form: HTMLFormElement): FormField[] {
+    const errorFields: FormField[] = [];
+    const formGroups = document.querySelectorAll(".govuk-form-group--error");
 
-    if (fields.length) {
-      return this.getFieldType(fields);
-    } else {
-      return "undefined";
-    }
+    formGroups.forEach((formGroup) => {
+      const element = formGroup.querySelector("input, textarea,select") as
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | HTMLSelectElement;
+
+      if (element) {
+        errorFields.push({
+          id: element.id,
+          name: element.name,
+          value: element.value,
+          type: element.type,
+        });
+      }
+    });
+
+    return errorFields;
   }
 }
