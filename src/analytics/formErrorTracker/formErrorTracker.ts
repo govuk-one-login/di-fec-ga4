@@ -27,7 +27,7 @@ export class FormErrorTracker extends FormTracker {
     let fields: FormField[] = [];
 
     if (form && form.elements) {
-      fields = this.getFieldsWithErrors(form);
+      fields = this.getErrorFields(form);
     } else {
       return false;
     }
@@ -67,6 +67,14 @@ export class FormErrorTracker extends FormTracker {
     }
   }
 
+  /**
+   Retrieve the text content of an error message associated with a specific form field.
+
+   * @param {FormField} field - The form field.
+   * @return returns a string representing the text content of the error message associated with the specified form field. 
+   * If no error message is found, it returns the string "undefined
+   */
+
   getErrorMessage(field: FormField) {
     const error = document.getElementById(`${field.id}-error`);
     if (error) {
@@ -76,7 +84,16 @@ export class FormErrorTracker extends FormTracker {
     }
   }
 
-  getFieldsWithErrors(form: HTMLFormElement): FormField[] {
+  /**
+   * Querys first input, textarea, or select element within each form group that has an error message.
+   * If element is found, creates a FormField object with information about the element
+   * (id, name, value, type) and pushes this FormField object into the errorFields array.
+
+   * @param {form: HTMLFormElement} - The HTML form element.
+   * @return {FormField[]} elements - The array containing information about form fields associated with errors..
+   */
+
+  getErrorFields(form: HTMLFormElement): FormField[] {
     const errorFields: FormField[] = [];
     const formGroups = document.querySelectorAll(".govuk-form-group--error");
 
