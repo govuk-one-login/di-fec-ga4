@@ -24,6 +24,7 @@ export class FormErrorTracker extends FormTracker {
     }
 
     const form = document.forms[0];
+    const submitUrl = this.getSubmitUrl(form);
     let fields: FormField[] = [];
 
     if (form && form.elements) {
@@ -38,7 +39,6 @@ export class FormErrorTracker extends FormTracker {
     }
     try {
       for (const field of fields) {
-        const submitUrl = this.getSubmitUrl(form);
         const formErrorTrackerEvent: FormEventInterface = {
           event: this.eventType,
           event_data: {
