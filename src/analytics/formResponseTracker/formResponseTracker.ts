@@ -48,6 +48,7 @@ export class FormResponseTracker extends FormTracker {
     }
 
     const form = document.forms[0];
+    const submitUrl = this.getSubmitUrl(form);
     let fields: FormField[] = [];
 
     if (form && form.elements) {
@@ -64,8 +65,6 @@ export class FormResponseTracker extends FormTracker {
     try {
       // Iterate through each form field and generate an event for each
       for (const field of fields) {
-        const submitUrl = this.getSubmitUrl(form);
-
         const formResponseTrackerEvent: FormEventInterface = {
           event: this.eventType,
           event_data: {
