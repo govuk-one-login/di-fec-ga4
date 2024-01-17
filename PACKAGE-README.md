@@ -57,14 +57,19 @@ The package is owned by the DI Frontend Capability team, part of the development
 
 1. Install NPM package
    ```sh
-   npm install one-login-ga4
+   npm install @govuk-one-login/one-login-analytics
    ```
 2. Configure your node application's startup file (example: app.js or index.js) and add a new virtual directory:
 
    ```js
    app.use(
      "/ga4-assets",
-     express.static(path.join(__dirname, "../node_modules/one-login-ga4/lib")),
+     express.static(
+       path.join(
+         __dirname,
+         "../node_modules/@govuk-one-login/one-login-analytics/lib",
+       ),
+     ),
    );
    ```
 
