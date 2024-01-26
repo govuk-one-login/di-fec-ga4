@@ -285,18 +285,18 @@ describe("getSection", () => {
     expect(newInstance.getSection(element)).toBe("support links");
   });
 
-  test("it should return license links when a link is clicked in the license link", () => {
+  test("it should return licence links when a link is clicked in the licence link", () => {
     const href = document.createElement("A");
     href.className = "govuk-link";
     href.dispatchEvent(action);
     document.body.innerHTML =
       "<span class='govuk-footer__licence-description'></span>";
-    const license = document.getElementsByClassName(
+    const licence = document.getElementsByClassName(
       "govuk-footer__licence-description",
     )[0];
-    license.appendChild(href);
+    licence.appendChild(href);
     const element = action.target as HTMLLinkElement;
-    expect(newInstance.getSection(element)).toBe("license");
+    expect(newInstance.getSection(element)).toBe("licence");
   });
 
   test("it should return copyright when a link is clicked on copyright image", () => {
