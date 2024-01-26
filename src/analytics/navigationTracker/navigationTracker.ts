@@ -149,7 +149,7 @@ export class NavigationTracker extends BaseTracker {
    * Returns the type of section based on the given HTML link element.
    *
    * @param {HTMLLinkElement} element - The HTML link element to get the type of.
-   * @return {string} The section: "logo", "phase banner", "menu links", "support links", "license", "copyright" or "undefined".
+   * @return {string} The section: "logo", "phase banner", "menu links", "support links", "licence", "copyright" or "undefined".
    */
   getSection(element: HTMLElement): string {
     // if header
@@ -161,8 +161,8 @@ export class NavigationTracker extends BaseTracker {
       return "menu links";
     } else if (this.isSupportLink(element)) {
       return "support links";
-    } else if (this.isLicenseLink(element)) {
-      return "license";
+    } else if (this.isLicenceLink(element)) {
+      return "licence";
     } else if (this.isCopyright(element)) {
       return "copyright";
     }
@@ -253,12 +253,12 @@ export class NavigationTracker extends BaseTracker {
   }
 
   /**
-   * Determines if the given class name is a license link
+   * Determines if the given class name is a licence link
    *
    * @param {string} element - The HTML link element to get the type of.
    * @return {boolean} Returns true if the class name of this element includes "govuk-footer__licence-description", false otherwise.
    */
-  isLicenseLink(element: HTMLElement): boolean {
+  isLicenceLink(element: HTMLElement): boolean {
     const supportLinks = document.getElementsByClassName(
       "govuk-footer__licence-description",
     )[0];
@@ -272,9 +272,9 @@ export class NavigationTracker extends BaseTracker {
    * @return {boolean} Returns true if the class name of this element includes "govuk-footer__copyright-logo", false otherwise.
    */
   isCopyright(element: HTMLElement): boolean {
-    const licenseLinks = document.getElementsByClassName(
+    const licenceLinks = document.getElementsByClassName(
       "govuk-footer__copyright-logo",
     )[0];
-    return licenseLinks && licenseLinks.contains(element);
+    return licenceLinks && licenceLinks.contains(element);
   }
 }
