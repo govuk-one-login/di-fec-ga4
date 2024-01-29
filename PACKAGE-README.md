@@ -171,6 +171,28 @@ Trigger by the submission of any form, this tracker will send to GA4 some data a
 - Submit Button text
 - Value of the field
 
+### Checkbox or Radio Fields Without a Legend
+
+If a checkbox or radio field has been implemented without a legend, please follow these steps to ensure the tracker can retrieve the correct section value:
+
+1. Add a `rel` attribute to the tag used to hold the section title.
+2. Set the `rel` attribute value to match the `id` of the field.
+
+**Example:**
+(
+
+<h2 rel="consentCheckbox">Section Title</h2>
+<div class="govuk-form-group">
+  <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+    <div class="govuk-checkboxes__item">
+      <input id="consentCheckbox" name="consentCheckbox" type="checkbox" />
+      <label id="consentCheckbox-label" for="consentCheckbox">
+        Checkbox Label
+      </label>
+    </div>
+  </div>
+</div>)
+
 ### Form Change Tracker
 
 Form Change Tracker is triggered when a user clicks on a link that allows them to change a previous form they had completed and loads the form page correctly. The URL needs to contain an edit parameter equal to true (example: /my-form-page?edit=true).
@@ -181,8 +203,31 @@ We are tracking the label of the field and the submit button text.
 Form Error Tracker is triggered when a page loads and when the page displays any form errors.
 We are tracking the label of the field and the error message.
 
+### Checkbox or Radio Fields Without a Legend
+
+If a checkbox or radio field has been implemented without a legend, please follow these steps to ensure the tracker can retrieve the correct section value:
+
+1. Add a `rel` attribute to the tag used to hold the section title.
+2. Set the `rel` attribute value to match the `id` of the field.
+
+**Example:**
+(
+
+<h2 rel="consentCheckbox">Section Title</h2>
+<div class="govuk-form-group">
+  <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+    <div class="govuk-checkboxes__item">
+      <input id="consentCheckbox" name="consentCheckbox" type="checkbox" />
+      <label id="consentCheckbox-label" for="consentCheckbox">
+        Checkbox Label
+      </label>
+    </div>
+  </div>
+</div>)
+
 ### Universal Analytics compability
 
-More information: https://govukverify.atlassian.net/wiki/spaces/DIFC/pages/3843227661/Universal+Analytics+compatibility
+More information:
+https://govukverify.atlassian.net/wiki/spaces/DIFC/pages/3843227661/Universal+Analytics+compatibility
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
