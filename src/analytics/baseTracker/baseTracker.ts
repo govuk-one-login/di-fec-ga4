@@ -69,11 +69,18 @@ export class BaseTracker {
   }
 
   getDomain(url: string): string {
+    if (url === "undefined") {
+      return "undefined";
+    }
     const newUrl = new URL(url);
     return `${newUrl.protocol}//${newUrl.host}`;
   }
 
   getDomainPath(url: string, part: number): string {
+    if (url === "undefined") {
+      return "undefined";
+    }
+
     const start = part * 500;
     const end = start + 500;
     const newUrl = new URL(url);

@@ -71,12 +71,22 @@ describe("should return the good parameter values", () => {
     expect(location).toEqual("https://signin.account.gov.uk");
   });
 
+  test("Getdomain needs to return undefined if url = undefined", () => {
+    const location = newInstance.getDomain("undefined");
+    expect(location).toEqual("undefined");
+  });
+
   test("Get url path from 0 to 500 max from element url", () => {
     const location = newInstance.getDomainPath(
       "https://signin.account.gov.uk/enter-email-create",
       0,
     );
     expect(location).toEqual("/enter-email-create");
+  });
+
+  test("Get domain path needs to return undefined if url = undefined", () => {
+    const location = newInstance.getDomainPath("undefined", 0);
+    expect(location).toEqual("undefined");
   });
 
   test("Get undefined if url path part is not found from element url", () => {

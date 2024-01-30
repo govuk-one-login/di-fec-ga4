@@ -69,11 +69,26 @@ describe("navigationTracker", () => {
     href.dispatchEvent(action);
   });
 
-  //test trackNavigation accept link
-  test("trackNavigation should return false if a link without href", () => {
-    const href = document.createElement("A");
-    href.className = "govuk-footer__link";
-    href.innerHTML = "Link to GOV.UK";
+  //test trackNavigation accept navigation button
+  test("trackNavigation should return true if a navigation button", () => {
+    document.body.innerHTML = "<header></header><footer></footer>";
+    const href = document.createElement("BUTTON");
+    href.setAttribute("data-nav", "true");
+    href.setAttribute("data-link", "/next-url");
+    href.innerHTML = "Continue";
+    href.setAttribute("href", "http://localhost");
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackNavigation(event)).toBe(true);
+    });
+    href.dispatchEvent(action);
+  });
+
+  //test trackNavigation doesn't accept button
+  test("trackNavigation should return false if not a navigation button", () => {
+    document.body.innerHTML = "<header></header><footer></footer>";
+    const href = document.createElement("BUTTON");
+    href.innerHTML = "Continue";
+    href.setAttribute("href", "http://localhost");
     href.addEventListener("click", (event) => {
       expect(newInstance.trackNavigation(event)).toBe(false);
     });
@@ -155,6 +170,15 @@ describe("getLinkType", () => {
   test('should return "generic button" when the element is a has a tag and button classname', () => {
     const button = document.createElement("A");
     button.className = "govuk-button";
+    button.dispatchEvent(action);
+    const element = action.target as HTMLLinkElement;
+    expect(newInstance.getLinkType(element)).toBe("generic button");
+  });
+
+  test('should return "generic button" when the element is a button', () => {
+    const button = document.createElement("BUTTON");
+    button.setAttribute("data-nav", "true");
+    button.setAttribute("data-link", "/next-url");
     button.dispatchEvent(action);
     const element = action.target as HTMLLinkElement;
     expect(newInstance.getLinkType(element)).toBe("generic button");

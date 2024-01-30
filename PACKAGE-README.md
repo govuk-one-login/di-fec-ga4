@@ -162,6 +162,8 @@ We are tracking different types of link:
 - Header Menu Bar: When a user clicks on a link in the header menu
 - Footer links: When a user clicks on a link within the footer
 
+[!NOTE] All links are automatically tracked. But if you need to track a button, your element needs to have a specific attributes "data-nav" and "data-link"(e.g: <button data-nav=true data-link="/next-page-url">Next</button>) [!NOTE]
+
 ### Form Response Tracker
 
 Trigger by the submission of any form, this tracker will send to GA4 some data about the form details:

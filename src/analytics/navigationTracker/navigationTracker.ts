@@ -37,11 +37,29 @@ export class NavigationTracker extends BaseTracker {
     ]);
 
     /**
-     * Navigation tracker is only for links
+     * Navigation tracker is only for links and navigation buttons
      */
-    if (element.tagName !== "A") {
+    if (element.tagName !== "A" && element.tagName !== "BUTTON") {
       return false;
     }
+
+    if (
+      element.tagName === "BUTTON" &&
+      !element.attributes.getNamedItem("data-nav")
+    ) {
+      return false;
+    }
+
+    if (
+      element.tagName === "BUTTON" &&
+      element.attributes.getNamedItem("data-link")
+    ) {
+      element.href =
+        `${window.location.protocol}//${
+          window.location.host
+        }${element.attributes.getNamedItem("data-link")?.value}` || "undefined";
+    }
+
     // Ignore links that don't have an inbound or outbound href
     if (
       !element.href ||
@@ -49,7 +67,7 @@ export class NavigationTracker extends BaseTracker {
       element.href === "#" ||
       element.href === window.location.href + "#"
     ) {
-      return false;
+      element.href = "undefined";
     }
 
     const navigationTrackerEvent: NavigationEventInterface = {
@@ -141,6 +159,8 @@ export class NavigationTracker extends BaseTracker {
         return "back button";
       }
       return "generic link";
+    } else if (element.tagName === "BUTTON") {
+      return "generic button";
     }
     return "undefined";
   }
