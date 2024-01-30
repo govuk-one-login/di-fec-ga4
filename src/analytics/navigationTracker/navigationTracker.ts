@@ -37,7 +37,7 @@ export class NavigationTracker extends BaseTracker {
     ]);
 
     /**
-     * Navigation tracker is only for links
+     * Navigation tracker is only for links and navigation buttons
      */
     if (element.tagName !== "A" && element.tagName !== "BUTTON") {
       return false;

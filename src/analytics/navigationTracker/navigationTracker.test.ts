@@ -84,7 +84,7 @@ describe("navigationTracker", () => {
   });
 
   //test trackNavigation doesn't accept button
-  test("trackNavigation should return false if a navigation button", () => {
+  test("trackNavigation should return false if not a navigation button", () => {
     document.body.innerHTML = "<header></header><footer></footer>";
     const href = document.createElement("BUTTON");
     href.innerHTML = "Continue";
