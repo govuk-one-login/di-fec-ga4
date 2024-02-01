@@ -1,5 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
+import TerserPlugin from "terser-webpack-plugin";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +23,19 @@ const config = {
         exclude: /node_modules/,
       },
     ],
+  },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          output: {
+            preamble:
+              "/* eslint-disable no-console,no-useless-escape, no-unused-vars */",
+            comments: false,
+          },
+        },
+      }),
+    ], //eslint-disable no-console
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
