@@ -51,6 +51,20 @@ describe("FormTracker", () => {
     expect(instance.getFieldValue(fields)).toBe("test value");
   });
 
+  test("getFieldValue should return empty value if type is text", () => {
+    const fields: FormField[] = [
+      { id: "test", name: "test", value: "test value", type: "text" },
+    ];
+    expect(instance.getFieldValue(fields)).toBe("");
+  });
+
+  test("getFieldValue should return empty value if type is textarea", () => {
+    const fields: FormField[] = [
+      { id: "test", name: "test", value: "test value", type: "textarea" },
+    ];
+    expect(instance.getFieldValue(fields)).toBe("");
+  });
+
   test("getFieldType should return free text field if type is text", () => {
     const fields: FormField[] = [
       { id: "test", name: "test", value: "test value", type: "text" },
