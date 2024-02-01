@@ -73,13 +73,22 @@ export class FormErrorTracker extends FormTracker {
    * @param {FormField} field - The form field.
    * @return returns a string representing the text content of the error message associated with the specified form field. 
    * If no error message is found, it returns the string "undefined
-   */
+  */
 
   getErrorMessage(field: FormField) {
     const error = document.getElementById(`${field.id}-error`);
     if (error) {
       return error?.textContent?.trim();
     } else {
+      // If no error message is found, try to find an error message using the "parent" id of the form field
+      const fieldNameInput = field.id.split("-");
+      if (fieldNameInput.length > 1) {
+        const error = document.getElementById(`${fieldNameInput[0]}-error`);
+        if (error) {
+          return error?.textContent?.trim();
+        }
+      }
+
       return "undefined";
     }
   }

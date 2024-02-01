@@ -229,6 +229,29 @@ describe("FormErrorTracker", () => {
       "error: this is an  error message",
     );
   });
+
+  test("getErrorMessage should return parent field error message", () => {
+    const formField: FormField = {
+      id: "fieldId",
+      name: "fieldName",
+      value: "fieldValue",
+      type: "text",
+    };
+
+    // Create error element
+    const errorElement = document.createElement("p");
+    errorElement.id = "fieldId-error";
+    errorElement.textContent = "error: this is an  error message";
+    document.body.appendChild(errorElement);
+    // Create input element
+    const input = document.createElement("input");
+    input.id = formField.id + "-day";
+    document.body.appendChild(input);
+    expect(instance.getErrorMessage(formField)).toBe(
+      "error: this is an  error message",
+    );
+  });
+
   test("getErrorMessage should return undefined , when there is no error message", () => {
     const formField: FormField = {
       id: "fieldId",
