@@ -118,7 +118,9 @@ export class FormTracker extends BaseTracker {
     let value = "";
     const separator = elements.length > 1 ? ", " : "";
     elements.forEach((element) => {
-      value += element.value + separator;
+      if (element.type !== "text" && element.type !== "textarea") {
+        value += element.value + separator;
+      }
     });
     return value;
   }
