@@ -8,7 +8,7 @@
     ".": "./dist/lib/analytics.js"
   },
   "scripts": {
-    "build": "npm run prettier && webpack --config webpack.config.js --mode production",
+    "build": "npm ci && npm run prettier && webpack --config webpack.config.js --mode production",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,md}\"",
     "precommit": "npm run prettier && git add .",
     "pub": "cp PACKAGE-README.md dist/README.md && cp package.json dist && cd dist && npm publish --access public",
