@@ -10,9 +10,9 @@ describe("should push to dataLayer", () => {
       page_view: {
         language: "en",
         location: "http://localhost:3000/",
-        organisations: "OT1056",
+        organisations: "<OT1056>",
         primary_publishing_organisation:
-          "Government Digital Service - Digital Identity",
+          "government digital service - digital identity",
         referrer: "http://localhost:4000/",
         status_code: "200",
         title: "Home",
