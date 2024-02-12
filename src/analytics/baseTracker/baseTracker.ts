@@ -9,9 +9,9 @@ declare global {
 }
 
 export class BaseTracker {
-  public organisations: string = "OT1056";
+  public organisations: string = "<OT1056>";
   public primary_publishing_organisation: string =
-    "Government Digital Service - Digital Identity";
+    "government digital service - digital identity";
 
   /**
    * Pushes an event to the data layer.
