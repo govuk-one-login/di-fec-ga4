@@ -20,7 +20,7 @@ export class Analytics {
   constructor(gtmId: string, options: OptionsInterface = {}) {
     this.gtmId = gtmId;
 
-    this.cookie = new Cookie();
+    this.cookie = new Cookie(options.cookieDomain);
 
     this.pageViewTracker = new PageViewTracker({
       disableGa4Tracking: options.disableGa4Tracking,
