@@ -8,4 +8,5 @@ export interface OptionsInterface {
   disableUaTracking?: boolean;
   disableAnalyticsCookie?: boolean;
   disableFormFreeTextTracking?: boolean;
+  cookieDomain?: string | undefined;
 }

@@ -10,9 +10,11 @@ export class Cookie {
   public cookieBanner = document.getElementById("cookies-banner-main");
   public acceptCookies = document.getElementsByName("cookiesAccept");
   public rejectCookies = document.getElementsByName("cookiesReject");
+  cookieDomain: string;
 
-  constructor() {
+  constructor(cookieDomain: string | undefined) {
     this.initialise();
+    this.cookieDomain = cookieDomain || "account.gov.uk";
   }
 
   /**
@@ -25,7 +27,7 @@ export class Cookie {
       this.consent = this.hasConsentForAnalytics();
       this.hideElement(this.cookieBannerContainer[0] as HTMLElement);
     } else {
-      //add event listerners
+      //add event listeners
       this.acceptCookies[0]?.addEventListener(
         "click",
         this.handleAcceptClickEvent.bind(this),
@@ -52,7 +54,7 @@ export class Cookie {
    */
   handleAcceptClickEvent(event: Event): void {
     event.preventDefault();
-    this.setBannerCookieConsent(true, window.location.hostname);
+    this.setBannerCookieConsent(true, this.cookieDomain);
     this.consent = true;
     window.DI.analyticsGa4.loadGtmScript();
   }
@@ -65,7 +67,7 @@ export class Cookie {
   handleRejectClickEvent(event: Event): void {
     event.preventDefault();
     this.consent = false;
-    this.setBannerCookieConsent(false, window.location.hostname);
+    this.setBannerCookieConsent(false, this.cookieDomain);
   }
 
   /**

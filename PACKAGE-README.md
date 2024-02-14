@@ -94,6 +94,7 @@ The package is owned by the DI Frontend Capability team, part of the development
    - disableUaTracking (boolean): disable Universal Analytics tracker
    - disableAnalyticsCookie (boolean): disable analytics cookie logic within the analytics library
    - disableFormFreeTextTracking (boolean): disable free text field tracking within the form response tracker.
+   - cookieDomain (string): specify the domain the analytics consent cookie should be raised against (default is "account.gov.uk")
 
 Example of call:
 
@@ -105,6 +106,7 @@ window.DI.appInit(
     disableUaTracking: true,
     disableAnalyticsCookie: false,
     disableFormFreeTextTracking: true,
+    cookieDomain: "{{ cookieDomain }}",
   },
 );
 ```
