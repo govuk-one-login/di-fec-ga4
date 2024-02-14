@@ -5,8 +5,10 @@ window.DI = {
   analyticsGa4: { loadGtmScript: () => {}, cookie: { consent: true } },
 };
 
+const cookieDomain = "";
+
 describe("initialise Cookie", () => {
-  const instance = new Cookie();
+  const instance = new Cookie(cookieDomain);
   test("should hide the cookie banner if a cookie preference has been set", () => {
     jest.spyOn(instance, "getCookie").mockReturnValue("true");
     jest.spyOn(instance, "hasConsentForAnalytics").mockReturnValue(true);
@@ -20,7 +22,7 @@ describe("initialise Cookie", () => {
 
 describe("handleAcceptClickEvent", () => {
   const event = new Event("click");
-  const instance = new Cookie();
+  const instance = new Cookie(cookieDomain);
 
   test("should load GTM script", () => {
     const spy = jest.spyOn(window.DI.analyticsGa4, "loadGtmScript");
@@ -42,7 +44,7 @@ describe("handleAcceptClickEvent", () => {
 
 describe("handleRejectClickEvent", () => {
   const event = new Event("click");
-  const instance = new Cookie();
+  const instance = new Cookie(cookieDomain);
 
   test("should set consent property to false", () => {
     instance.handleRejectClickEvent(event);
@@ -58,7 +60,7 @@ describe("handleRejectClickEvent", () => {
 
 describe("handleHideButtonClickEvent", () => {
   const event = new Event("click");
-  const instance = new Cookie();
+  const instance = new Cookie(cookieDomain);
 
   test("should load hideElement", () => {
     const spy = jest.spyOn(instance, "hideElement");
@@ -69,7 +71,7 @@ describe("handleHideButtonClickEvent", () => {
 
 describe("handleHideButtonClickEvent", () => {
   const event = new Event("click");
-  const instance = new Cookie();
+  const instance = new Cookie(cookieDomain);
 
   test("should load hideElement", () => {
     const spy = jest.spyOn(instance, "hideElement");
@@ -79,7 +81,7 @@ describe("handleHideButtonClickEvent", () => {
 });
 
 describe("setBannerCookieConsent", () => {
-  const instance = new Cookie();
+  const instance = new Cookie(cookieDomain);
 
   test("should load setCookie", () => {
     const spy = jest.spyOn(instance, "setCookie");
@@ -112,7 +114,7 @@ describe("setBannerCookieConsent", () => {
 describe("getCookie", () => {
   test("should return the value of the cookie if found", () => {
     document.cookie = "cookies_preferences_set=%7B%22analytics%22%3Afalse%7D";
-    const instance = new Cookie();
+    const instance = new Cookie(cookieDomain);
     expect(instance.getCookie("cookies_preferences_set")).toBe(
       "%7B%22analytics%22%3Afalse%7D",
     );
@@ -122,24 +124,24 @@ describe("getCookie", () => {
 describe("hasConsentForAnalytics", () => {
   test("should return true if consent is given", () => {
     document.cookie = "cookies_preferences_set=%7B%22analytics%22%3Atrue%7D";
-    const instance = new Cookie();
+    const instance = new Cookie(cookieDomain);
     expect(instance.hasConsentForAnalytics()).toBe(true);
   });
 
   test("should return false if consent is not given", () => {
     document.cookie = "cookies_preferences_set=%7B%22analytics%22%3Afalse%7D";
-    const instance = new Cookie();
+    const instance = new Cookie(cookieDomain);
     expect(instance.hasConsentForAnalytics()).toBe(false);
   });
 
   test("should return false if no cookie", () => {
     document.cookie = "";
-    const instance = new Cookie();
+    const instance = new Cookie(cookieDomain);
     expect(instance.hasConsentForAnalytics()).toBe(false);
   });
 
   test("should load getCookie", () => {
-    const instance = new Cookie();
+    const instance = new Cookie(cookieDomain);
     const spy = jest.spyOn(instance, "getCookie");
     instance.hasConsentForAnalytics();
     expect(instance.getCookie).toHaveBeenCalled();
@@ -148,7 +150,7 @@ describe("hasConsentForAnalytics", () => {
 
 describe("hideElement", () => {
   test('should hide the element by setting its display property to "none"', () => {
-    const instance = new Cookie();
+    const instance = new Cookie(cookieDomain);
     const element = document.createElement("div");
     instance.hideElement(element);
     expect(element.style.display).toBe("none");
@@ -157,7 +159,7 @@ describe("hideElement", () => {
 
 describe("showElement", () => {
   test('should show the element by setting its display property to "block"', () => {
-    const instance = new Cookie();
+    const instance = new Cookie(cookieDomain);
     const element = document.createElement("div");
     instance.showElement(element);
     expect(element.style.display).toBe("block");
@@ -166,7 +168,7 @@ describe("showElement", () => {
 
 describe("setCookie", () => {
   test("should set the cookie", () => {
-    const instance = new Cookie();
+    const instance = new Cookie(cookieDomain);
     const cookie = "cookies_preferences_set=%7B%22analytics%22%3Atrue%7D";
     const options = { days: 365 };
     const domain = "localhost";

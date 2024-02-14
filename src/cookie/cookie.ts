@@ -14,7 +14,7 @@ export class Cookie {
 
   constructor(cookieDomain: string | undefined) {
     this.initialise();
-    this.cookieDomain = cookieDomain || ".account.gov.uk";
+    this.cookieDomain = cookieDomain || "account.gov.uk";
   }
 
   /**
