@@ -25,7 +25,11 @@ export class PageViewTracker extends BaseTracker {
     if (this.disableGa4Tracking) {
       return false;
     }
-    if (!window.DI.analyticsGa4.cookie.consent) {
+
+    if (
+      window.DI.analyticsGa4.cookie.hasCookie &&
+      !window.DI.analyticsGa4.cookie.consent
+    ) {
       return false;
     }
 

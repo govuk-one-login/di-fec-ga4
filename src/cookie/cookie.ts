@@ -1,5 +1,6 @@
 export class Cookie {
   public consent: boolean = false;
+  public hasCookie: boolean = false;
   public COOKIES_PREFERENCES_SET = "cookies_preferences_set";
   public cookiesAccepted = document.getElementById("cookies-accepted");
   public cookiesRejected = document.getElementById("cookies-rejected");
@@ -124,9 +125,15 @@ export class Cookie {
    * @return {boolean} - Returns true if the user has given consent for analytics, false otherwise.
    */
   hasConsentForAnalytics(): boolean {
-    const cookieConsent = JSON.parse(
-      decodeURIComponent(this.getCookie(this.COOKIES_PREFERENCES_SET)),
-    );
+    const cookieValue = this.getCookie(this.COOKIES_PREFERENCES_SET);
+
+    if (!cookieValue) {
+      return false;
+    } else {
+      this.hasCookie = true;
+    }
+
+    const cookieConsent = JSON.parse(decodeURIComponent(cookieValue));
     return cookieConsent ? cookieConsent.analytics === true : false;
   }
 
