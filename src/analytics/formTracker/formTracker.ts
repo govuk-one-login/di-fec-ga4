@@ -161,7 +161,7 @@ export class FormTracker extends BaseTracker {
     if (fieldset) {
       // If it's a child of a fieldset e.g radio button/ checkbox, look for the legend
       const legendElement = fieldset.querySelector("legend");
-      if (legendElement && legendElement.textContent) {
+      if (legendElement?.textContent) {
         return legendElement.textContent.trim();
       }
       // if it is a checkbox or radio which does not have a legend, then check for the below conditions
@@ -170,25 +170,25 @@ export class FormTracker extends BaseTracker {
       const h1OrH2WithRel = document.querySelector(
         `h1[rel="${element.id}"], h2[rel="${element.id}"]`,
       );
-      if (h1OrH2WithRel && h1OrH2WithRel.textContent) {
+      if (h1OrH2WithRel?.textContent) {
         return h1OrH2WithRel.textContent.trim();
       }
 
       // If not found, get text content of the first h1
       const firstH1 = document.querySelector("h1");
-      if (firstH1 && firstH1.textContent) {
+      if (firstH1?.textContent) {
         return firstH1.textContent.trim();
       }
 
       // If not found, get text content of the first h2
       const firstH2 = document.querySelector("h2");
-      if (firstH2 && firstH2.textContent) {
+      if (firstH2?.textContent) {
         return firstH2.textContent.trim();
       }
     } else {
       // If not within a fieldset and not a checkbox or radio button then,e.g free text field, dropdown check for label
       const labelElement = document.querySelector(`label[for="${element.id}"]`);
-      if (labelElement && labelElement.textContent) {
+      if (labelElement?.textContent) {
         return labelElement.textContent.trim();
       }
     }
