@@ -63,7 +63,7 @@ export class NavigationTracker extends BaseTracker {
     // Ignore links that don't have an inbound or outbound href
     if (
       !element.href ||
-      !element.href.length ||
+      !element.href?.length ||
       element.href === "#" ||
       element.href === window.location.href + "#"
     ) {
