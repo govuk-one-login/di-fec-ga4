@@ -39,8 +39,8 @@ export class Cookie {
       );
 
       const hideButtons = Array.prototype.slice.call(this.hideCookieBanner);
-      for (let i = 0; i < hideButtons.length; i++) {
-        hideButtons[i].addEventListener(
+      for (const hideButton of hideButtons) {
+        hideButton.addEventListener(
           "click",
           this.handleHideButtonClickEvent.bind(this),
         );
