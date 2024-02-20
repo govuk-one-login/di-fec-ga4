@@ -148,10 +148,10 @@ export class Cookie {
       const cookies = document.cookie.split(";");
       for (let i = 0, len = cookies.length; i < len; i++) {
         let cookie = cookies[i];
-        while (cookie.charAt(0) === " ") {
+        while (cookie.startsWith(" ")) {
           cookie = cookie.substring(1, cookie.length);
         }
-        if (cookie.indexOf(nameEQ) === 0) {
+        if (cookie.startsWith(nameEQ)) {
           return cookie.substring(nameEQ.length);
         }
       }
