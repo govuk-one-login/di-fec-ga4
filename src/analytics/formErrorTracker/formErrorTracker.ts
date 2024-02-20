@@ -27,7 +27,7 @@ export class FormErrorTracker extends FormTracker {
     const submitUrl = this.getSubmitUrl(form);
     let fields: FormField[] = [];
 
-    if (form && form.elements) {
+    if (form?.elements) {
       fields = this.getErrorFields(form);
     } else {
       return false;
