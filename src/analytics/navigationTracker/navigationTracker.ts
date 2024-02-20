@@ -252,7 +252,7 @@ export class NavigationTracker extends BaseTracker {
    * @return {boolean} Returns true if the nav tag contains this element, false otherwise.
    */
   isNavLink(element: HTMLElement): boolean {
-    const elementClassName: string = element.className as string;
+    const elementClassName: string = element.className;
     const isLink = elementClassName.includes("govuk-link");
     const header = document.getElementsByTagName("header")[0];
 
