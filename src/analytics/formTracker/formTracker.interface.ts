@@ -24,6 +24,6 @@ export interface FormField {
   type: string;
 }
 
-export interface formTrackerOptionsInterface {
+export interface FormTrackerOptionsInterface {
   disableFreeTextTracking?: boolean;
 }

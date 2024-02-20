@@ -3,7 +3,7 @@ import { FormTracker } from "../formTracker/formTracker";
 import {
   FormEventInterface,
   FormField,
-  formTrackerOptionsInterface,
+  FormTrackerOptionsInterface,
 } from "../formTracker/formTracker.interface";
 
 export class FormResponseTracker extends FormTracker {
@@ -17,7 +17,7 @@ export class FormResponseTracker extends FormTracker {
    * @param {formTrackerOptionsInterface} formTrackerOptions - The options for the form tracker.
    * @return {void}
    */
-  constructor(formTrackerOptions: formTrackerOptionsInterface = {}) {
+  constructor(formTrackerOptions: FormTrackerOptionsInterface = {}) {
     super();
     this.disableFreeTextTracking =
       formTrackerOptions.disableFreeTextTracking || false;
