@@ -108,8 +108,7 @@ export class Cookie {
       if (typeof window.CustomEvent === "function") {
         event = new window.CustomEvent("cookie-consent");
       } else {
-        event = document.createEvent("CustomEvent");
-        event.initCustomEvent("cookie-consent");
+        event = new CustomEvent("cookie-consent");
       }
       window.dispatchEvent(event);
     } else {
