@@ -1,6 +1,6 @@
 const EMAIL_PATTERN = /[^\s=/?&#+]+(?:@|%40)[^\s=/?&+]+/g;
 const POSTCODE_PATTERN =
-  /\b[A-PR-UWYZ][A-HJ-Z]?[0-9][0-9A-HJKMNPR-Y]?(?:[\s+]|%20)*[0-9](?!refund)[ABD-HJLNPQ-Z]{2,3}\b/gi;
+  /\b[A-PR-UWYZ][A-HJ-Z]?\d[0-9A-HJKMNPR-Y]?(?:[\s+]|%20)*\d(?!refund)[ABD-HJLNPQ-Z]{2,3}\b/gi;
 const PHONE_NUMBER_PATTERN_1 = /\b\d{4} \d{7}\b/g;
 const PHONE_NUMBER_PATTERN_2 = /\b\d{4}\d{7}\b/g;
 
