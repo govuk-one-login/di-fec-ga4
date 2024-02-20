@@ -111,10 +111,8 @@ export class Cookie {
         event = new CustomEvent("cookie-consent");
       }
       window.dispatchEvent(event);
-    } else {
-      if (this.cookiesRejected) {
-        this.showElement(this.cookiesRejected);
-      }
+    } else if (this.cookiesRejected) {
+      this.showElement(this.cookiesRejected);
     }
   }
 
