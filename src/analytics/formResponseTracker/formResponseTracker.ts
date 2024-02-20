@@ -51,7 +51,7 @@ export class FormResponseTracker extends FormTracker {
     const submitUrl = this.getSubmitUrl(form);
     let fields: FormField[] = [];
 
-    if (form?.elements) {
+    if (form && form.elements) {
       fields = this.getFormFields(form);
     } else {
       return false;

@@ -42,7 +42,9 @@ export class BaseTracker {
    * @return {string} The language code. Defaults to "en" if no language code is found.
    */
   getLanguage(): string {
-    const languageCode = document.querySelector("html")?.getAttribute("lang");
+    const languageCode =
+      document.querySelector("html") &&
+      document.querySelector("html")?.getAttribute("lang");
     return languageCode?.toLowerCase() || "undefined";
   }
 
