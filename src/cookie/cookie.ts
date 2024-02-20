@@ -194,7 +194,7 @@ export class Cookie {
    * @param {HTMLElement} element - The HTML element to be hidden.
    */
   hideElement(element: HTMLElement): void {
-    if (element && element.style) {
+    if (element?.style) {
       element.style.display = "none";
     }
   }
@@ -205,7 +205,7 @@ export class Cookie {
    * @param {HTMLElement} element - The element to be shown.
    */
   showElement(element: HTMLElement): void {
-    if (element && element.style) {
+    if (element?.style) {
       element.style.display = "block";
     }
   }
