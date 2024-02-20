@@ -230,7 +230,7 @@ export class NavigationTracker extends BaseTracker {
    * @return {boolean} Returns true if the class name of this element includes "govuk-back-link", false otherwise.
    */
   isBackLink(element: HTMLElement): boolean {
-    const elementClassName: string = element.className as string;
+    const elementClassName: string = element.className;
     return elementClassName.includes("govuk-back-link");
   }
 
