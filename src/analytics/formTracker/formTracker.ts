@@ -10,84 +10,91 @@ export class FormTracker extends BaseTracker {
     super();
   }
 
+  private selectedFields: FormField[] = [];
+
+  private isExcludedType(element: HTMLInputElement): boolean {
+    return (
+      element.type === "hidden" ||
+      element.type === "fieldset" ||
+      element.type === "submit"
+    );
+  }
+
+  private getElementValue(element: HTMLInputElement): string {
+    const label = document.querySelector(`label[for="${element.id}"]`);
+    return label?.textContent?.trim() || "undefined";
+  }
+
+  private processCheckbox(element: HTMLInputElement): void {
+    const checkboxInSameGroup = this.selectedFields.find(
+      (field) => field.name === element.name,
+    );
+
+    if (checkboxInSameGroup) {
+      checkboxInSameGroup.value += `, ${this.getElementValue(element)}`;
+    } else {
+      this.selectedFields.push({
+        id: element.id,
+        name: element.name,
+        value: this.getElementValue(element),
+        type: element.type,
+      });
+    }
+  }
+
+  private processRadio(element: HTMLInputElement): void {
+    this.selectedFields.push({
+      id: element.id,
+      name: element.name,
+      value: this.getElementValue(element),
+      type: element.type,
+    });
+  }
+
+  private processTextElement(element: HTMLInputElement): void {
+    this.selectedFields.push({
+      id: element.id,
+      name: element.name,
+      value: element.value,
+      type: element.type,
+    });
+  }
+
+  private processSelectOne(element: HTMLSelectElement): void {
+    this.selectedFields.push({
+      id: element.id,
+      name: element.name,
+      value: element.options[element.selectedIndex].text,
+      type: element.type,
+    });
+  }
   /**
    * Retrieves the selected fields from an HTML form.
    *
    * @param {HTMLFormElement} form - The HTML form element.
    * @return {FormField[]} An array of selected form fields.
    */
+
   public getFormFields(form: HTMLFormElement): FormField[] {
-    const selectedFields: FormField[] = [];
-
     for (let i = 0; i < form.elements.length; i++) {
-      const element: HTMLInputElement = form.elements[i] as HTMLInputElement;
+      const element = form.elements[i] as HTMLInputElement;
 
-      if (
-        element.type === "hidden" ||
-        element.type === "fieldset" ||
-        element.type === "submit"
-      ) {
+      if (this.isExcludedType(element)) {
         continue;
       }
 
       if (element.type === "checkbox" && element.checked) {
-        // Check if checkbox belongs to a group
-        const checkboxInSameGroup = selectedFields.find(
-          (field) => field.name === element.name,
-        );
-        // New: If the checkbox is part of a group, concatenate the current checkbox's value with the existing value of that group's checkbox
-        if (checkboxInSameGroup) {
-          checkboxInSameGroup.value += `, ${
-            document.querySelector(`label[for="${element.id}"]`)?.textContent
-              ? document
-                  .querySelector(`label[for="${element.id}"]`)
-                  ?.textContent?.trim()
-              : "undefined"
-          }`;
-        } else {
-          selectedFields.push({
-            id: element.id,
-            name: element.name,
-            value: document.querySelector(`label[for="${element.id}"]`)
-              ?.textContent
-              ? document
-                  .querySelector(`label[for="${element.id}"]`)
-                  ?.textContent?.trim()
-              : "undefined",
-            type: element.type,
-          });
-        }
+        this.processCheckbox(element);
       } else if (element.type === "radio" && element.checked) {
-        selectedFields.push({
-          id: element.id,
-          name: element.name,
-          value: document.querySelector(`label[for="${element.id}"]`)
-            ?.textContent
-            ? document
-                .querySelector(`label[for="${element.id}"]`)
-                ?.textContent?.trim()
-            : "undefined",
-          type: element.type,
-        });
+        this.processRadio(element);
       } else if (element.type === "textarea" || element.type === "text") {
-        selectedFields.push({
-          id: element.id,
-          name: element.name,
-          value: element.value,
-          type: element.type,
-        });
+        this.processTextElement(element);
       } else if (element.type === "select-one") {
-        const selectedElement = form.elements[i] as HTMLSelectElement;
-        selectedFields.push({
-          id: selectedElement.id,
-          name: selectedElement.name,
-          value: selectedElement.options[selectedElement.selectedIndex].text,
-          type: selectedElement.type,
-        });
+        this.processSelectOne(element as unknown as HTMLSelectElement);
       }
     }
 
-    return selectedFields;
+    return this.selectedFields;
   }
 
   /**
