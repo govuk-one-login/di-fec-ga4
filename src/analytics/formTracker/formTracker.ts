@@ -12,7 +12,7 @@ export class FormTracker extends BaseTracker {
 
   private selectedFields: FormField[] = [];
 
-  private isExcludedType(element: HTMLInputElement): boolean {
+  isExcludedType(element: HTMLInputElement): boolean {
     return (
       element.type === "hidden" ||
       element.type === "fieldset" ||
@@ -20,12 +20,12 @@ export class FormTracker extends BaseTracker {
     );
   }
 
-  private getElementValue(element: HTMLInputElement): string {
+  getElementValue(element: HTMLInputElement): string {
     const label = document.querySelector(`label[for="${element.id}"]`);
     return label?.textContent?.trim() || "undefined";
   }
 
-  private processCheckbox(element: HTMLInputElement): void {
+  processCheckbox(element: HTMLInputElement): void {
     const checkboxInSameGroup = this.selectedFields.find(
       (field) => field.name === element.name,
     );
@@ -42,7 +42,7 @@ export class FormTracker extends BaseTracker {
     }
   }
 
-  private processRadio(element: HTMLInputElement): void {
+  processRadio(element: HTMLInputElement): void {
     this.selectedFields.push({
       id: element.id,
       name: element.name,
@@ -51,7 +51,7 @@ export class FormTracker extends BaseTracker {
     });
   }
 
-  private processTextElement(element: HTMLInputElement): void {
+  processTextElement(element: HTMLInputElement | HTMLTextAreaElement): void {
     this.selectedFields.push({
       id: element.id,
       name: element.name,
@@ -60,7 +60,7 @@ export class FormTracker extends BaseTracker {
     });
   }
 
-  private processSelectOne(element: HTMLSelectElement): void {
+  processSelectOne(element: HTMLSelectElement): void {
     this.selectedFields.push({
       id: element.id,
       name: element.name,
