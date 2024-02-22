@@ -72,17 +72,17 @@ export function stripPIIFromString(value: string) {
   stripped = stripped.replace(STATE_PATTERN, "state=[state]");
 
   if (isDate(value)) {
-    let DATE_REDACTION_STRING = "[date]";
+    const DATE_REDACTION_STRING = "[date]";
     stripped = stripped.replace(DATE_PATTERN_NUMERIC_1, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_NUMERIC_2, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_NUMERIC_3, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_STRING_1, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_STRING_2, DATE_REDACTION_STRING);
   } else if (isPostCode(value)) {
-    let POSTCODE_REDACTION_STRING = "[postcode]";
+    const POSTCODE_REDACTION_STRING = "[postcode]";
     stripped = stripped.replace(POSTCODE_PATTERN, POSTCODE_REDACTION_STRING);
   } else if (isPhoneNumber(value)) {
-    let PHONENUMBER_REDACTION_STRING = "[phonenumber]";
+    const PHONENUMBER_REDACTION_STRING = "[phonenumber]";
     stripped = stripped.replace(
       PHONE_NUMBER_PATTERN_1,
       PHONENUMBER_REDACTION_STRING,
