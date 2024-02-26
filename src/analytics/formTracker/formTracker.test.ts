@@ -12,20 +12,43 @@ describe("FormTracker", () => {
     // Remove any existing elements from document.body if needed
     document.body.innerHTML = "";
   });
-  test("getFields should return a list of fields objects", () => {
+
+  // getFormFields Tests
+
+  test("getFormFields should return a list of fields objects", () => {
     const form = document.createElement("form");
     form.innerHTML =
-      '<input id="test" name="test" value="test value" type="text"/>';
+      '<input id="text" name="text" value="text value" type="text"/>' +
+      ' <label for="checkbox">checkbox value</label>' +
+      '<input id="checkbox" name="checkbox" value="checkbox value" type="checkbox" checked/>' +
+      '<label for="selectField">Select Field:</label>' +
+      '<select id="selectField" name="selectField">' +
+      '  <option value="Option 1">Option 1</option>' +
+      '  <option value="Option 2" selected>Option 2</option>' +
+      "</select>";
     document.body.appendChild(form);
     expect(instance.getFormFields(form)).toEqual([
       {
-        id: "test",
-        name: "test",
-        value: "test value",
+        id: "text",
+        name: "text",
+        value: "text value",
         type: "text",
+      },
+      {
+        id: "checkbox",
+        name: "checkbox",
+        value: "checkbox value",
+        type: "checkbox",
+      },
+      {
+        id: "selectField",
+        name: "selectField",
+        value: "Option 2",
+        type: "select-one",
       },
     ]);
   });
+
   test("getFormFields should return checkbox values as string , separated by commas if part of checkbox group", () => {
     const form = document.createElement("form");
     form.innerHTML =
@@ -40,6 +63,226 @@ describe("FormTracker", () => {
         name: "test",
         value: "test value, test value2",
         type: "checkbox",
+      },
+    ]);
+  });
+
+  // isExcludedType Tests
+
+  test("isExcludedType should return true for hidden input type", () => {
+    const element: HTMLInputElement = { type: "hidden" } as HTMLInputElement;
+    const result = instance.isExcludedType(element);
+    expect(result).toBe(true);
+  });
+
+  test("isExcludedType should return true for submit input type", () => {
+    const element: HTMLInputElement = { type: "submit" } as HTMLInputElement;
+    const result = instance.isExcludedType(element);
+    expect(result).toBe(true);
+  });
+  test("isExcludedType should return true for fieldset input type", () => {
+    const element: HTMLInputElement = { type: "fieldset" } as HTMLInputElement;
+    const result = instance.isExcludedType(element);
+    expect(result).toBe(true);
+  });
+  test("isExcludedType should return false for other input types", () => {
+    const element: HTMLInputElement = { type: "text" } as HTMLInputElement;
+    const result = instance.isExcludedType(element);
+    expect(result).toBe(false);
+  });
+
+  // getElementValue Tests
+
+  test("getElementValue should return trimmed label text content", () => {
+    const element: HTMLInputElement = document.createElement("input");
+    element.id = "inputId";
+
+    // Create a label element and associate it with the input
+    const label: HTMLLabelElement = document.createElement("label");
+    label.setAttribute("for", "inputId");
+    label.textContent = " Test Label ";
+
+    // Append the input and label to the document body
+    document.body.appendChild(element);
+    document.body.appendChild(label);
+
+    const result = instance.getElementValue(element);
+    expect(result).toBe("Test Label");
+  });
+
+  test("getElementValue should return 'undefined' for a non-existing label", () => {
+    const element: HTMLInputElement = document.createElement("input");
+    element.id = "inputId";
+
+    // Append the input to the document body
+    document.body.appendChild(element);
+
+    const result = instance.getElementValue(element);
+    expect(result).toBe("undefined");
+  });
+
+  // processCheckbox Tests
+
+  test("processCheckbox should add checkbox to selected fields", () => {
+    const element: HTMLInputElement = document.createElement("input");
+    element.id = "checkboxId";
+    element.name = "checkboxName";
+    element.type = "checkbox";
+
+    // Create a label and associate it with the checkbox
+    const label: HTMLLabelElement = document.createElement("label");
+    label.setAttribute("for", "checkboxId");
+    label.textContent = "checkbox label";
+
+    document.body.appendChild(element);
+    document.body.appendChild(label);
+
+    instance.processCheckbox(element);
+    expect(instance["selectedFields"]).toEqual([
+      {
+        id: "checkboxId",
+        name: "checkboxName",
+        value: "checkbox label",
+        type: "checkbox",
+      },
+    ]);
+  });
+
+  test("processCheckbox should return the values of checkboxes which are part of the same group as a string separated by commas", () => {
+    const element: HTMLInputElement = document.createElement("input");
+    element.id = "checkboxId";
+    element.name = "checkboxName";
+    element.type = "checkbox";
+
+    const secondElement: HTMLInputElement = document.createElement("input");
+    secondElement.id = "secondCheckboxId";
+    secondElement.name = "checkboxName";
+    secondElement.type = "checkbox";
+
+    // Create a label and associate it with the checkbox1
+    const label: HTMLLabelElement = document.createElement("label");
+    label.setAttribute("for", "checkboxId");
+    label.textContent = "checkbox1 label";
+
+    // Create a label and associate it with the checkbox2
+    const label2: HTMLLabelElement = document.createElement("label");
+    label2.setAttribute("for", "secondCheckboxId");
+    label2.textContent = "checkbox2 label";
+
+    document.body.appendChild(element);
+    document.body.appendChild(secondElement);
+    document.body.appendChild(label);
+    document.body.appendChild(label2);
+
+    instance.processCheckbox(element);
+    instance.processCheckbox(secondElement);
+    expect(instance["selectedFields"]).toEqual([
+      {
+        id: "checkboxId",
+        name: "checkboxName",
+        value: "checkbox1 label, checkbox2 label",
+        type: "checkbox",
+      },
+    ]);
+  });
+
+  // processRadio Tests
+
+  test("processRadio should add radio button to selected fields", () => {
+    const element: HTMLInputElement = document.createElement("input");
+    element.id = "radioId";
+    element.name = "radioName";
+    element.type = "radio";
+
+    // Create a label and associate it with the radio
+    const label: HTMLLabelElement = document.createElement("label");
+    label.setAttribute("for", "radioId");
+    label.textContent = "radio label";
+
+    document.body.appendChild(element);
+    document.body.appendChild(label);
+
+    instance.processCheckbox(element);
+    expect(instance["selectedFields"]).toEqual([
+      {
+        id: "radioId",
+        name: "radioName",
+        value: "radio label",
+        type: "radio",
+      },
+    ]);
+  });
+
+  // processTextElement Tests
+
+  test("processTextElement should add text input to selected fields", () => {
+    const element: HTMLInputElement = document.createElement("input");
+    element.id = "textId";
+    element.name = "textName";
+    element.type = "text";
+    element.value = "text value";
+
+    document.body.appendChild(element);
+
+    instance.processTextElement(element);
+    expect(instance["selectedFields"]).toEqual([
+      {
+        id: "textId",
+        name: "textName",
+        value: "text value",
+        type: "text",
+      },
+    ]);
+  });
+
+  test("processTextElement should add textarea to selected fields", () => {
+    const element: HTMLTextAreaElement = document.createElement("textarea");
+    element.id = "textareaId";
+    element.name = "textareaName";
+    element.value = "textarea value";
+
+    document.body.appendChild(element);
+
+    instance.processTextElement(element);
+    expect(instance["selectedFields"]).toEqual([
+      {
+        id: "textareaId",
+        name: "textareaName",
+        value: "textarea value",
+        type: "textarea",
+      },
+    ]);
+  });
+
+  // processSelectOne Tests
+
+  test("processSelectOne should add select-one element to selected fields", () => {
+    const element: HTMLSelectElement = document.createElement("select");
+    element.id = "selectId";
+    element.name = "selectName";
+    element.setAttribute("select-one", "");
+
+    // Create and append option elements
+    const option1 = document.createElement("option");
+    option1.text = "Option 1";
+    element.add(option1);
+
+    const option2 = document.createElement("option");
+    option2.text = "Option 2";
+    element.add(option2);
+
+    document.body.appendChild(element);
+
+    // Set selectedIndex
+    element.selectedIndex = 1;
+
+    instance.processSelectOne(element);
+    expect(instance["selectedFields"]).toEqual([
+      {
+        id: "selectId",
+        name: "selectName",
+        value: "Option 2",
+        type: "select-one",
       },
     ]);
   });

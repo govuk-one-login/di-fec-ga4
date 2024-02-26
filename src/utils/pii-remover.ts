@@ -1,6 +1,6 @@
 const EMAIL_PATTERN = /[^\s=/?&#+]+(?:@|%40)[^\s=/?&+]+/g;
 const POSTCODE_PATTERN =
-  /\b[A-PR-UWYZ][A-HJ-Z]?[0-9][0-9A-HJKMNPR-Y]?(?:[\s+]|%20)*[0-9](?!refund)[ABD-HJLNPQ-Z]{2,3}\b/gi;
+  /\b[A-PR-UWYZ][A-HJ-Z]?\d[0-9A-HJKMNPR-Y]?(?:[\s+]|%20)*\d(?!refund)[ABD-HJLNPQ-Z]{2,3}\b/gi;
 const PHONE_NUMBER_PATTERN_1 = /\b\d{4} \d{7}\b/g;
 const PHONE_NUMBER_PATTERN_2 = /\b\d{4}\d{7}\b/g;
 
@@ -60,7 +60,7 @@ const isPhoneNumber = function (value: string) {
 };
 
 export function stripPIIFromString(value: string) {
-  var stripped = value.replace(EMAIL_PATTERN, "[email]");
+  let stripped = value.replace(EMAIL_PATTERN, "[email]");
   stripped = stripped.replace(
     RESET_PASSWORD_TOKEN_PATTERN,
     "reset_password_token=[reset_password_token]",
@@ -72,17 +72,17 @@ export function stripPIIFromString(value: string) {
   stripped = stripped.replace(STATE_PATTERN, "state=[state]");
 
   if (isDate(value)) {
-    var DATE_REDACTION_STRING = "[date]";
+    const DATE_REDACTION_STRING = "[date]";
     stripped = stripped.replace(DATE_PATTERN_NUMERIC_1, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_NUMERIC_2, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_NUMERIC_3, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_STRING_1, DATE_REDACTION_STRING);
     stripped = stripped.replace(DATE_PATTERN_STRING_2, DATE_REDACTION_STRING);
   } else if (isPostCode(value)) {
-    var POSTCODE_REDACTION_STRING = "[postcode]";
+    const POSTCODE_REDACTION_STRING = "[postcode]";
     stripped = stripped.replace(POSTCODE_PATTERN, POSTCODE_REDACTION_STRING);
   } else if (isPhoneNumber(value)) {
-    var PHONENUMBER_REDACTION_STRING = "[phonenumber]";
+    const PHONENUMBER_REDACTION_STRING = "[phonenumber]";
     stripped = stripped.replace(
       PHONE_NUMBER_PATTERN_1,
       PHONENUMBER_REDACTION_STRING,

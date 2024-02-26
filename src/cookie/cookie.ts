@@ -39,8 +39,8 @@ export class Cookie {
       );
 
       const hideButtons = Array.prototype.slice.call(this.hideCookieBanner);
-      for (let i = 0; i < hideButtons.length; i++) {
-        hideButtons[i].addEventListener(
+      for (const hideButton of hideButtons) {
+        hideButton.addEventListener(
           "click",
           this.handleHideButtonClickEvent.bind(this),
         );
@@ -108,14 +108,11 @@ export class Cookie {
       if (typeof window.CustomEvent === "function") {
         event = new window.CustomEvent("cookie-consent");
       } else {
-        event = document.createEvent("CustomEvent");
-        event.initCustomEvent("cookie-consent");
+        event = new CustomEvent("cookie-consent");
       }
       window.dispatchEvent(event);
-    } else {
-      if (this.cookiesRejected) {
-        this.showElement(this.cookiesRejected);
-      }
+    } else if (this.cookiesRejected) {
+      this.showElement(this.cookiesRejected);
     }
   }
 
@@ -149,10 +146,10 @@ export class Cookie {
       const cookies = document.cookie.split(";");
       for (let i = 0, len = cookies.length; i < len; i++) {
         let cookie = cookies[i];
-        while (cookie.charAt(0) === " ") {
+        while (cookie.startsWith(" ")) {
           cookie = cookie.substring(1, cookie.length);
         }
-        if (cookie.indexOf(nameEQ) === 0) {
+        if (cookie.startsWith(nameEQ)) {
           return cookie.substring(nameEQ.length);
         }
       }
@@ -197,7 +194,7 @@ export class Cookie {
    * @param {HTMLElement} element - The HTML element to be hidden.
    */
   hideElement(element: HTMLElement): void {
-    if (element && element.style) {
+    if (element?.style) {
       element.style.display = "none";
     }
   }
@@ -208,7 +205,7 @@ export class Cookie {
    * @param {HTMLElement} element - The element to be shown.
    */
   showElement(element: HTMLElement): void {
-    if (element && element.style) {
+    if (element?.style) {
       element.style.display = "block";
     }
   }

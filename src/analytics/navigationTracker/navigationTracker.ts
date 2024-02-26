@@ -63,7 +63,7 @@ export class NavigationTracker extends BaseTracker {
     // Ignore links that don't have an inbound or outbound href
     if (
       !element.href ||
-      !element.href.length ||
+      !element.href?.length ||
       element.href === "#" ||
       element.href === window.location.href + "#"
     ) {
@@ -230,7 +230,7 @@ export class NavigationTracker extends BaseTracker {
    * @return {boolean} Returns true if the class name of this element includes "govuk-back-link", false otherwise.
    */
   isBackLink(element: HTMLElement): boolean {
-    const elementClassName: string = element.className as string;
+    const elementClassName: string = element.className;
     return elementClassName.includes("govuk-back-link");
   }
 
@@ -252,7 +252,7 @@ export class NavigationTracker extends BaseTracker {
    * @return {boolean} Returns true if the nav tag contains this element, false otherwise.
    */
   isNavLink(element: HTMLElement): boolean {
-    const elementClassName: string = element.className as string;
+    const elementClassName: string = element.className;
     const isLink = elementClassName.includes("govuk-link");
     const header = document.getElementsByTagName("header")[0];
 
