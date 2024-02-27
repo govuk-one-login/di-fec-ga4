@@ -27,7 +27,6 @@ export class FormChangeTracker extends FormTracker {
     }
 
     const submitUrl = this.getSubmitUrl(form);
-    console.log("submitUrl", submitUrl);
     const formChangeTrackerEvent: FormEventInterface = {
       event: this.eventType,
       event_data: {
