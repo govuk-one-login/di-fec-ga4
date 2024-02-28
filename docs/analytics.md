@@ -33,9 +33,9 @@ The constructor first creates a new Cookie manager and Page View tracker instanc
 If GA4 is not disabled, it will:
 
 - If the user has consented, load the GTM script (using the containerId's passed as parameters)
-- activate the Form Response Tracker
+- activates the Form Response Tracker
   > `dist/docs/formTracker.md`
-- active the Navigation Tracker
+- activates the Navigation Tracker
   > `dist/docs/navigationTracker.md`
 
 ## How DCMAW wires analytics functionality into its front end
