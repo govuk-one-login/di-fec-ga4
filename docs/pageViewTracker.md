@@ -45,7 +45,7 @@ On page load function needs to be called:
 Content ID is a unique ID for each front end display on a given page. It is detached from the page url and title and can be used to identify a page interacting irrespective of copy updates or multiple front end displays i.e. a page url that has 2 front end displays based on device sniffing. E.g. the download app page in the DCMAW journey.
 100 characters or fewer, lowercase, Guid with hyphens
 
-#### first_publish_at
+#### first_published_at
 
 The original publish date of the page.
 100 characters or fewer, YYYY-MM-DD for example: 2023-03-16

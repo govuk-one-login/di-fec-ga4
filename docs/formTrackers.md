@@ -43,7 +43,7 @@ Inputs of the following type will be included in the `form_response` event pushe
 ## Form Error Tracker
 
 If a user has consented to analytics cookies, then the
-`form_error` event is pushed when the user loads a form which contains form error message.
+`form_error` event is pushed when the user loads a form which contains a form error message(s).
 
 ### How it works
 
@@ -70,7 +70,7 @@ The form error tracker works by looking in the page if there is an element with 
 ## Form Change Tracker
 
 If a user has consented to analytics cookies, then the
-`form_change` event is pushed when the user loads a form because he/she wants to change the answer.
+`form_change` event is pushed when the user loads a form because they want to change the answer.
 
 ### How it works
 

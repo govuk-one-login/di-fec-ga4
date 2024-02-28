@@ -33,7 +33,7 @@ The constructor first creates a new Cookie manager and Page View tracker instanc
 If GA4 is not disabled, it will:
 
 - If the user has consented, load the GTM script (using the containerId's passed as parameters)
-- active the Form Response Tracker
+- activate the Form Response Tracker
   > `dist/docs/formTracker.md`
 - active the Navigation Tracker
   > `dist/docs/navigationTracker.md`
@@ -42,9 +42,9 @@ If GA4 is not disabled, it will:
 
 All the javascript files within `src/` are "uglified" into a single, minified `analytics.js` file.
 
-The `analytics.js` file has to be include in the base nunjucks template (e.g: `src/views/common/layout/base.njk`) as a script,
+The `analytics.js` file has to be included in the base nunjucks template (e.g: `src/views/common/layout/base.njk`) as a script,
 which makes available all the javascript functions described above on the global window object in the browser.
 
 We then call our `appInit` (`src/index.ts`) function (which is now accessible on the global window
-object) in the same base nunjucks template which initialises analytics and the cookie banner. We pass the `containerId`s and `disableGa4Tracking` as paramters, `disableGa4Tracking`, `disableUaTracking` and `domain` as options;
-these values can be inject by your `setLocal` middleware functions which grabs these values from the current environment.
+object) in the same base nunjucks template which initialises analytics and the cookie banner. We pass the `containerId`s and `disableGa4Tracking` as parameters, `disableGa4Tracking`, `disableUaTracking` and `domain` as options;
+these values can be injected by your `setLocal` middleware functions which grabs these values from the current environment.
