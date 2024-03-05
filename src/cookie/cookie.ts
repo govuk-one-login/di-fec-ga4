@@ -13,6 +13,9 @@ export class Cookie {
   public rejectCookies = document.getElementsByName("cookiesReject");
   cookieDomain: string;
 
+  HIDDING_CLASS = "govuk-!-display-none";
+  SHOWING_CLASS = "govuk-!-display-block";
+
   constructor(cookieDomain: string | undefined) {
     this.initialise();
     this.cookieDomain = cookieDomain || "account.gov.uk";
@@ -45,6 +48,7 @@ export class Cookie {
           this.handleHideButtonClickEvent.bind(this),
         );
       }
+      this.showElement(this.cookieBannerContainer[0] as HTMLElement);
     }
   }
 
@@ -194,8 +198,11 @@ export class Cookie {
    * @param {HTMLElement} element - The HTML element to be hidden.
    */
   hideElement(element: HTMLElement): void {
-    if (element?.style) {
-      element.style.display = "none";
+    if (!element?.classList.contains(this.HIDDING_CLASS)) {
+      element?.classList.add(this.HIDDING_CLASS);
+    }
+    if (element?.classList.contains(this.SHOWING_CLASS)) {
+      element?.classList.remove(this.SHOWING_CLASS);
     }
   }
 
@@ -205,8 +212,11 @@ export class Cookie {
    * @param {HTMLElement} element - The element to be shown.
    */
   showElement(element: HTMLElement): void {
-    if (element?.style) {
-      element.style.display = "block";
+    if (element?.classList.contains(this.HIDDING_CLASS)) {
+      element?.classList.remove(this.HIDDING_CLASS);
+    }
+    if (!element?.classList.contains(this.SHOWING_CLASS)) {
+      element?.classList.add(this.SHOWING_CLASS);
     }
   }
 }

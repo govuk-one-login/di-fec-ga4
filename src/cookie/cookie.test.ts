@@ -153,7 +153,7 @@ describe("hideElement", () => {
     const instance = new Cookie(cookieDomain);
     const element = document.createElement("div");
     instance.hideElement(element);
-    expect(element.style.display).toBe("none");
+    expect(element.classList).toContain(instance.HIDDING_CLASS);
   });
 });
 
@@ -162,7 +162,7 @@ describe("showElement", () => {
     const instance = new Cookie(cookieDomain);
     const element = document.createElement("div");
     instance.showElement(element);
-    expect(element.style.display).toBe("block");
+    expect(element.classList).toContain(instance.SHOWING_CLASS);
   });
 });
 
