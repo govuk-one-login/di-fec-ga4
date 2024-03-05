@@ -76,6 +76,7 @@ The package is owned by the DI Frontend Capability team, part of the development
    [!WARNING] Check if the path to your node module folder is the correct one. [!WARNING]
 
 3. Set a variable “ga4ContainerId” with the value of your google tag manager id (format: GTM-XXXXXXX) and be sure it’s accessible to your base nunjucks template (example: src/views/common/layout/base.njk).
+   You can also set the variable uaContainerId with the value of your google tag container id (format: GTM-XXXXXXX).
 
 [!NOTE] Different methods exist if you want to set this variable. Some projects use a middleware, some will prefer to use another method. [!NOTE]
 
@@ -84,7 +85,7 @@ The package is owned by the DI Frontend Capability team, part of the development
    ```js
     <script src="/ga4-assets/analytics.js"></script>
     <script>
-    window.DI.appInit({ga4ContainerId: "{{ga4ContainerId}}"})
+    window.DI.appInit({ga4ContainerId: "{{ga4ContainerId}}", uaContainerId: '{{ uaContainerId }}'})
     </script>
    ```
 
@@ -92,20 +93,19 @@ The package is owned by the DI Frontend Capability team, part of the development
 
    - disableGa4Tracking (boolean): disable GA4 trackers
    - disableUaTracking (boolean): disable Universal Analytics tracker
-   - disableAnalyticsCookie (boolean): disable analytics cookie logic within the analytics library
-   - disableFormFreeTextTracking (boolean): disable free text field tracking within the form response tracker.
    - cookieDomain (string): specify the domain the analytics consent cookie should be raised against (default is "account.gov.uk")
 
 Example of call:
 
 ```js
 window.DI.appInit(
-  { ga4ContainerId: "{{ga4ContainerId}}" },
+  {
+    ga4ContainerId: "{{ga4ContainerId}}",
+    uaContainerId: "{{ uaContainerId }}",
+  },
   {
     disableGa4Tracking: true,
     disableUaTracking: true,
-    disableAnalyticsCookie: false,
-    disableFormFreeTextTracking: true,
     cookieDomain: "{{ cookieDomain }}",
   },
 );
@@ -122,6 +122,25 @@ The Cookie class is responsible for managing cookies consent about analytics. It
 - Show the element that displays a message when consent is not given
 - Show the element that displays a message when consent is given
 - Hide the cookie banner when the visitor wants to hide the accepted or rejected message
+
+[!NOTE]
+Tips:
+1/ You can get analytics cookie consent status (true or false) by calling the function hasConsentForAnalytics:
+
+```js
+window.DI.analyticsGa4.cookie.hasConsentForAnalytics();
+```
+
+2/ You can revoke analytics cookie consent by calling the function setBannerCookieConsent:
+
+```js
+window.DI.analyticsGa4.cookie.setBannerCookieConsent(
+  false,
+  youranalyticsdomain,
+);
+```
+
+[!NOTE]
 
 ### Page View Tracker
 
