@@ -27,9 +27,7 @@ export class Analytics {
     });
 
     if (!options.disableGa4Tracking) {
-      this.formResponseTracker = new FormResponseTracker({
-        disableFreeTextTracking: options.disableFormFreeTextTracking,
-      });
+      this.formResponseTracker = new FormResponseTracker();
       this.navigationTracker = new NavigationTracker();
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);

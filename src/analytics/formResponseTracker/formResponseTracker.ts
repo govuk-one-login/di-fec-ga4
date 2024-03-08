@@ -3,24 +3,19 @@ import { FormTracker } from "../formTracker/formTracker";
 import {
   FormEventInterface,
   FormField,
-  FormTrackerOptionsInterface,
 } from "../formTracker/formTracker.interface";
 
 export class FormResponseTracker extends FormTracker {
   eventName: string = "form_response";
   eventType: string = "event_data";
-  disableFreeTextTracking: boolean = false;
 
   /**
    * Initializes a new instance of the FormResponseTracker class.
    *
-   * @param {formTrackerOptionsInterface} formTrackerOptions - The options for the form tracker.
    * @return {void}
    */
-  constructor(formTrackerOptions: FormTrackerOptionsInterface = {}) {
+  constructor() {
     super();
-    this.disableFreeTextTracking =
-      formTrackerOptions.disableFreeTextTracking || false;
     this.initialiseEventListener();
   }
 
@@ -83,14 +78,6 @@ export class FormResponseTracker extends FormTracker {
             "link_path_parts.5": this.getDomainPath(submitUrl, 4),
           },
         };
-
-        // Don't track free text if disableFreeTextTracking is set
-        if (
-          this.disableFreeTextTracking &&
-          formResponseTrackerEvent.event_data.type === this.FREE_TEXT_FIELD_TYPE
-        ) {
-          return false; // Skip tracking for this field
-        }
 
         // Push the event to the data layer for each field
         this.pushToDataLayer(formResponseTrackerEvent);

@@ -284,27 +284,6 @@ describe("form with input text", () => {
   });
 });
 
-describe("test disable free text tracking option", () => {
-  const action = new Event("submit", {
-    bubbles: true,
-    cancelable: true,
-  });
-
-  const spy = jest.spyOn(FormResponseTracker.prototype, "trackFormResponse");
-
-  test("pushToDataLayer should not be called with free text value", () => {
-    const instance = new FormResponseTracker({ disableFreeTextTracking: true });
-    document.body.innerHTML =
-      '<form action="/test-url" method="post">' +
-      '  <label for="username">test label username</label>' +
-      '  <input type="text" id="username" name="username" value="test no value"/>' +
-      '  <button id="button" type="submit">submit</button>' +
-      "</form>";
-    document.dispatchEvent(action);
-    expect(instance.trackFormResponse).toReturnWith(false);
-  });
-});
-
 describe("form with input textarea", () => {
   const action = new Event("submit", {
     bubbles: true,
