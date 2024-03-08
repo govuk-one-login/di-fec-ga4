@@ -10,14 +10,8 @@ export function validateParameter(parameter: any, maxLength: number) {
   const type = typeof parameter;
 
   if (type !== "string") {
-    console.error(
-      `GA4: Invalid data type found, ${parameter} should be a string but instead found a ${type}`,
-    );
     validatedParameter = "undefined";
   } else if (length > maxLength) {
-    console.error(
-      `GA4: ${parameter} should not be more than ${maxLength} characters, it is currently ${length} characters long`,
-    );
     validatedParameter = parameter.substring(0, maxLength);
   }
   const value = validatedParameter.toLowerCase();

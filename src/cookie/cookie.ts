@@ -13,8 +13,8 @@ export class Cookie {
   public rejectCookies = document.getElementsByName("cookiesReject");
   cookieDomain: string;
 
-  HIDDING_CLASS = "govuk-!-display-none";
-  SHOWING_CLASS = "govuk-!-display-block";
+  HIDDEN_CLASS = "govuk-!-display-none";
+  SHOWN_CLASS = "govuk-!-display-block";
 
   constructor(cookieDomain: string | undefined) {
     this.initialise();
@@ -198,11 +198,11 @@ export class Cookie {
    * @param {HTMLElement} element - The HTML element to be hidden.
    */
   hideElement(element: HTMLElement): void {
-    if (!element?.classList.contains(this.HIDDING_CLASS)) {
-      element?.classList.add(this.HIDDING_CLASS);
+    if (!element?.classList.contains(this.HIDDEN_CLASS)) {
+      element?.classList.add(this.HIDDEN_CLASS);
     }
-    if (element?.classList.contains(this.SHOWING_CLASS)) {
-      element?.classList.remove(this.SHOWING_CLASS);
+    if (element?.classList.contains(this.SHOWN_CLASS)) {
+      element?.classList.remove(this.SHOWN_CLASS);
     }
   }
 
@@ -212,11 +212,11 @@ export class Cookie {
    * @param {HTMLElement} element - The element to be shown.
    */
   showElement(element: HTMLElement): void {
-    if (element?.classList.contains(this.HIDDING_CLASS)) {
-      element?.classList.remove(this.HIDDING_CLASS);
+    if (element?.classList.contains(this.HIDDEN_CLASS)) {
+      element?.classList.remove(this.HIDDEN_CLASS);
     }
-    if (!element?.classList.contains(this.SHOWING_CLASS)) {
-      element?.classList.add(this.SHOWING_CLASS);
+    if (!element?.classList.contains(this.SHOWN_CLASS)) {
+      element?.classList.add(this.SHOWN_CLASS);
     }
   }
 }
