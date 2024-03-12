@@ -107,10 +107,9 @@ export class FormErrorTracker extends FormTracker {
     const formGroups = document.querySelectorAll(".govuk-form-group--error");
 
     formGroups.forEach((formGroup) => {
-      const element = formGroup.querySelector("input, textarea,select") as
-        | HTMLInputElement
-        | HTMLTextAreaElement
-        | HTMLSelectElement;
+      const element = formGroup.querySelector(
+        "input, textarea,select,password,checkbox",
+      ) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
       if (element) {
         errorFields.push({

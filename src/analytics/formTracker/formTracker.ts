@@ -87,7 +87,11 @@ export class FormTracker extends BaseTracker {
         this.processCheckbox(element);
       } else if (element.type === "radio" && element.checked) {
         this.processRadio(element);
-      } else if (element.type === "textarea" || element.type === "text") {
+      } else if (
+        element.type === "textarea" ||
+        element.type === "text" ||
+        element.type === "password"
+      ) {
         this.processTextElement(element);
       } else if (element.type === "select-one") {
         this.processSelectOne(element as unknown as HTMLSelectElement);
@@ -104,7 +108,11 @@ export class FormTracker extends BaseTracker {
    * @return {string} The field type based on the elements.
    */
   getFieldType(elements: FormField[]): string {
-    if (elements[0].type === "textarea" || elements[0].type === "text") {
+    if (
+      elements[0].type === "textarea" ||
+      elements[0].type === "text" ||
+      elements[0].type === "password"
+    ) {
       return this.FREE_TEXT_FIELD_TYPE;
     } else if (elements[0].type === "select-one") {
       return this.DROPDOWN_FIELD_TYPE;
@@ -125,7 +133,11 @@ export class FormTracker extends BaseTracker {
     let value = "";
     const separator = elements.length > 1 ? ", " : "";
     elements.forEach((element) => {
-      if (element.type !== "text" && element.type !== "textarea") {
+      if (
+        element.type !== "text" &&
+        element.type !== "textarea" &&
+        element.type !== "password"
+      ) {
         value += element.value + separator;
       }
     });
