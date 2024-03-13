@@ -87,14 +87,10 @@ export class FormTracker extends BaseTracker {
         this.processCheckbox(element);
       } else if (element.type === "radio" && element.checked) {
         this.processRadio(element);
-      } else if (
-        element.type === "textarea" ||
-        element.type === "text" ||
-        element.type === "password"
-      ) {
-        this.processTextElement(element);
       } else if (element.type === "select-one") {
         this.processSelectOne(element as unknown as HTMLSelectElement);
+      } else {
+        this.processTextElement(element);
       }
     }
 
@@ -130,9 +126,9 @@ export class FormTracker extends BaseTracker {
     const separator = elements.length > 1 ? ", " : "";
     elements.forEach((element) => {
       if (
-        element.type !== "text" &&
-        element.type !== "textarea" &&
-        element.type !== "password"
+        element.type === "checkbox" ||
+        element.type === "radio" ||
+        element.type === "select-one"
       ) {
         value += element.value + separator;
       }
