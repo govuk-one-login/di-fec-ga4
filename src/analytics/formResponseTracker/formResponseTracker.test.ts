@@ -385,3 +385,26 @@ describe("Cookie Management", () => {
     expect(instance.trackFormResponse).toReturnWith(false);
   });
 });
+
+describe("cancel event if form is invalid", () => {
+  const action = new Event("submit", {
+    bubbles: true,
+    cancelable: true,
+  });
+  const spy = jest.spyOn(FormResponseTracker.prototype, "trackFormResponse");
+  const instance = new FormResponseTracker();
+
+  test("trackFormResponse should return false if form is invalid", () => {
+    window.DI.analyticsGa4.cookie.consent = true;
+    document.body.innerHTML =
+      '<form action="/test-url" method="post">' +
+      '  <label for="email">test label email</label>' +
+      '  <input type="text" id="email" name="email" value=""/>' +
+      '  <label for="username">test label username</label>' +
+      '  <select id="username" name="username"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
+      '  <button id="button" type="submit">submit</button>' +
+      "</form>";
+    document.dispatchEvent(action);
+    expect(instance.trackFormResponse).toReturnWith(false);
+  });
+});

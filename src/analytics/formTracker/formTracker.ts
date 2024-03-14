@@ -213,4 +213,19 @@ export class FormTracker extends BaseTracker {
   getSubmitUrl(form: HTMLFormElement): string {
     return form.action ?? "undefined";
   }
+
+  /**
+   * Check if the form fields are valid.
+   *
+   * @param {FormField[]} fields - array of form fields
+   * @return {boolean} true if all fields are valid, false otherwise
+   */
+  isFormValid(fields: FormField[]): boolean {
+    for (const field of fields) {
+      if (!field.value) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
