@@ -289,7 +289,7 @@ describe("FormTracker", () => {
 
   test("getFieldValue should return field value", () => {
     const fields: FormField[] = [
-      { id: "test", name: "test", value: "test value", type: "test" },
+      { id: "test", name: "test", value: "test value", type: "checkbox" },
     ];
     expect(instance.getFieldValue(fields)).toBe("test value");
   });

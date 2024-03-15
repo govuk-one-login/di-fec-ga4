@@ -1,4 +1,4 @@
-import { describe, expect, jest, test } from "@jest/globals";
+import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import { FormResponseTracker } from "./formResponseTracker";
 import { FormEventInterface } from "../formTracker/formTracker.interface";
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
@@ -7,6 +7,11 @@ describe("form with multiple fields", () => {
   const action = new Event("submit", {
     bubbles: true,
     cancelable: true,
+  });
+
+  beforeEach(() => {
+    // Remove any existing elements from document.body if needed
+    document.body.innerHTML = "";
   });
 
   const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
@@ -26,6 +31,8 @@ describe("form with multiple fields", () => {
       '  <select id="region" name="region"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
       '  <label for="username">text input section</label>' +
       '  <input type="text" id="username" name="username" value="test value"/>' +
+      '  <label for="password">password input section</label>' +
+      '  <input type="password" id="password" name="password" value="test gregre value"/>' +
       "<fieldset>" +
       "  <legend>radio section</legend>" +
       '  <label for="male">radio value</label>' +
@@ -94,6 +101,24 @@ describe("form with multiple fields", () => {
         "link_path_parts.5": "undefined",
       },
     };
+    const dataLayerEventPassword: FormEventInterface = {
+      event: "event_data",
+      event_data: {
+        event_name: "form_response",
+        type: instance.FREE_TEXT_FIELD_TYPE,
+        url: "http://localhost/test-url",
+        text: "undefined",
+        section: "password input section",
+        action: "undefined",
+        external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
+      },
+    };
     const dataLayerEventRadio: FormEventInterface = {
       event: "event_data",
       event_data: {
@@ -133,6 +158,7 @@ describe("form with multiple fields", () => {
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventCheckbox);
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventDropdown);
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventText);
+    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventPassword);
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventRadio);
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventTextarea);
   });

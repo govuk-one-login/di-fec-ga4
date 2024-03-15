@@ -87,10 +87,10 @@ export class FormTracker extends BaseTracker {
         this.processCheckbox(element);
       } else if (element.type === "radio" && element.checked) {
         this.processRadio(element);
-      } else if (element.type === "textarea" || element.type === "text") {
-        this.processTextElement(element);
       } else if (element.type === "select-one") {
         this.processSelectOne(element as unknown as HTMLSelectElement);
+      } else {
+        this.processTextElement(element);
       }
     }
 
@@ -104,14 +104,14 @@ export class FormTracker extends BaseTracker {
    * @return {string} The field type based on the elements.
    */
   getFieldType(elements: FormField[]): string {
-    if (elements[0].type === "textarea" || elements[0].type === "text") {
-      return this.FREE_TEXT_FIELD_TYPE;
-    } else if (elements[0].type === "select-one") {
+    if (elements[0].type === "select-one") {
       return this.DROPDOWN_FIELD_TYPE;
     } else if (elements[0].type === "radio") {
       return this.RADIO_FIELD_TYPE;
-    } else {
+    } else if (elements[0].type === "checkbox") {
       return elements[0].type;
+    } else {
+      return this.FREE_TEXT_FIELD_TYPE;
     }
   }
 
@@ -125,7 +125,11 @@ export class FormTracker extends BaseTracker {
     let value = "";
     const separator = elements.length > 1 ? ", " : "";
     elements.forEach((element) => {
-      if (element.type !== "text" && element.type !== "textarea") {
+      if (
+        element.type === "checkbox" ||
+        element.type === "radio" ||
+        element.type === "select-one"
+      ) {
         value += element.value + separator;
       }
     });

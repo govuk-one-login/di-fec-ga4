@@ -66,6 +66,11 @@ describe("FormErrorTracker", () => {
       '  <p id="email-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Please give us your email</p>' +
       '  <input type ="text" id="email" name="Email" /></input>' +
       "</div>" +
+      '<div class="govuk-form-group govuk-form-group--error">' +
+      '  <label for="password">password input section</label>' +
+      '  <p id="password-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Please give us your password</p>' +
+      '  <input type ="password" id="password" name="password" /></input>' +
+      "</div>" +
       '  <button id="button" type="submit">submit</button>' +
       "</form>";
 
@@ -159,12 +164,32 @@ describe("FormErrorTracker", () => {
         "link_path_parts.5": "undefined",
       },
     };
+
+    const dataLayerEventPassword: FormEventInterface = {
+      event: "event_data",
+      event_data: {
+        event_name: "form_error",
+        type: instance.FREE_TEXT_FIELD_TYPE,
+        url: "http://localhost/test-url",
+        text: "error: please give us your password",
+        section: "password input section",
+        action: "error",
+        external: "undefined",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
+      },
+    };
     instance.trackFormError();
 
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventDropdown);
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventRadio);
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventTextarea);
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventText);
+    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventPassword);
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventCheckbox);
   });
   test("datalayer event should be defined", () => {
