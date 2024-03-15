@@ -57,6 +57,11 @@ export class FormResponseTracker extends FormTracker {
       return false;
     }
 
+    //check if form is valid
+    if (!this.isFormValid(fields)) {
+      return false;
+    }
+
     try {
       // Iterate through each form field and generate an event for each
       for (const field of fields) {
