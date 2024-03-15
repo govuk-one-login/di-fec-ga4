@@ -75,7 +75,7 @@ export class NavigationTracker extends BaseTracker {
       event_data: {
         event_name: "navigation",
         type: this.getLinkType(element),
-        url: validateParameter(element.href, 100),
+        url: validateParameter(element.href, 500),
         text: element.textContent
           ? validateParameter(element.textContent.trim(), 100)
           : "undefined",
