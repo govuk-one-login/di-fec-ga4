@@ -66,6 +66,11 @@ describe("pageViewTracker", () => {
     expect(status).toBe("logged out");
   });
 
+  test("getLoggedInStatus returns the good data if loggedinstatus is undefined", () => {
+    const status = newInstance.getLoggedInStatus(undefined);
+    expect(status).toBe("undefined");
+  });
+
   test("getRelyingParty returns the good data", () => {
     const relyingParty = newInstance.getRelyingParty();
     expect(relyingParty).toBe("localhost");
