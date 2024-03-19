@@ -157,6 +157,7 @@ describe("FormTracker", () => {
     element.id = "checkboxId";
     element.name = "checkboxName";
     element.type = "checkbox";
+    element.checked = true;
 
     // Create a label and associate it with the checkbox
     const label: HTMLLabelElement = document.createElement("label");
@@ -182,11 +183,13 @@ describe("FormTracker", () => {
     element.id = "checkboxId";
     element.name = "checkboxName";
     element.type = "checkbox";
+    element.checked = true;
 
     const secondElement: HTMLInputElement = document.createElement("input");
     secondElement.id = "secondCheckboxId";
     secondElement.name = "checkboxName";
     secondElement.type = "checkbox";
+    secondElement.checked = true;
 
     // Create a label and associate it with the checkbox1
     const label: HTMLLabelElement = document.createElement("label");
@@ -222,6 +225,7 @@ describe("FormTracker", () => {
     element.id = "radioId";
     element.name = "radioName";
     element.type = "radio";
+    element.checked = true;
 
     // Create a label and associate it with the radio
     const label: HTMLLabelElement = document.createElement("label");
