@@ -48,7 +48,7 @@ export class FormErrorTracker extends FormTracker {
             text: validateParameter(this.getErrorMessage(field), 100),
             section: validateParameter(this.getSectionValue(field), 100),
             action: "error",
-            external: "undefined",
+            external: "false",
             link_domain: this.getDomain(submitUrl),
             "link_path_parts.1": this.getDomainPath(submitUrl, 0),
             "link_path_parts.2": this.getDomainPath(submitUrl, 1),
