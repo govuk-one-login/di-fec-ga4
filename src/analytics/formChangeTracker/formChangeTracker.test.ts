@@ -45,7 +45,7 @@ describe("FormChangeTracker", () => {
         text: "change", //put static value. Waiting final documentation on form change tracker
         section: "test label questions",
         action: "change response",
-        external: "undefined",
+        external: "false",
         link_domain: "http://localhost",
         "link_path_parts.1": "/test-url",
         "link_path_parts.2": "undefined",
