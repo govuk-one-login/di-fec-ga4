@@ -82,7 +82,11 @@ export class PageViewTracker extends BaseTracker {
    * @param {boolean} loggedInStatus - The logged in status.
    * @return {string} The string representation of the logged in status.
    */
-  getLoggedInStatus(loggedInStatus: boolean): string {
+  getLoggedInStatus(loggedInStatus: boolean | undefined): string {
+    if (loggedInStatus === undefined) {
+      return "undefined";
+    }
+
     return loggedInStatus ? "logged in" : "logged out";
   }
 
