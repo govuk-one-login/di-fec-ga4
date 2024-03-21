@@ -169,6 +169,7 @@ export class FormTracker extends BaseTracker {
     const fieldset = field?.closest("fieldset");
     const checkbox = element.type === "checkbox";
     const radio = element.type === "radio";
+    const commonId = element.id.split("-")[0];
     if (fieldset) {
       // If it's a child of a fieldset ,look for the legend if not check for backup conditions
       const legendElement = fieldset.querySelector("legend");
@@ -176,7 +177,7 @@ export class FormTracker extends BaseTracker {
         return legendElement.textContent.trim();
       }
       const h1OrH2WithRel = document.querySelector(
-        `h1[rel="${element.id}"], h2[rel="${element.id}"]`,
+        `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
       );
       if (h1OrH2WithRel?.textContent) {
         return h1OrH2WithRel.textContent.trim();
@@ -196,7 +197,7 @@ export class FormTracker extends BaseTracker {
     } else if (checkbox || radio) {
       // Look for h1 or h2 with rel attribute matching element.id
       const h1OrH2WithRel = document.querySelector(
-        `h1[rel="${element.id}"], h2[rel="${element.id}"]`,
+        `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
       );
       if (h1OrH2WithRel?.textContent) {
         return h1OrH2WithRel.textContent.trim();

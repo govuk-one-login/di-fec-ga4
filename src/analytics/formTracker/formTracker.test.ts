@@ -486,7 +486,7 @@ describe("FormTracker", () => {
   });
   test("getSectionValue should return h1 with rel attribute matching element.id if there is a radio button without a legend, inside a fieldset", () => {
     const formField: FormField = {
-      id: "fieldId",
+      id: "fieldId-1",
       name: "fieldName",
       value: "fieldValue",
       type: "radio",
@@ -512,7 +512,7 @@ describe("FormTracker", () => {
     document.body.appendChild(fieldset);
     const h1 = document.createElement("h1");
     h1.textContent = "Hello, World!";
-    h1.setAttribute("rel", formField.id);
+    h1.setAttribute("rel", "fieldId");
     document.body.appendChild(h1);
     expect(instance.getSectionValue(formField)).toBe("Hello, World!");
   });
