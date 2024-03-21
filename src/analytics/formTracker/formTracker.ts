@@ -168,14 +168,31 @@ export class FormTracker extends BaseTracker {
     const field = document.getElementById(element.id);
     const fieldset = field?.closest("fieldset");
     const checkbox = element.type === "checkbox";
-    const radio = element.type === "radio buttons";
+    const radio = element.type === "radio";
     if (fieldset) {
-      // If it's a child of a fieldset e.g radio button/ checkbox, look for the legend
+      // If it's a child of a fieldset ,look for the legend if not check for backup conditions
       const legendElement = fieldset.querySelector("legend");
       if (legendElement?.textContent) {
         return legendElement.textContent.trim();
       }
-      // if it is a checkbox or radio which does not have a legend, then check for the below conditions
+      const h1OrH2WithRel = document.querySelector(
+        `h1[rel="${element.id}"], h2[rel="${element.id}"]`,
+      );
+      if (h1OrH2WithRel?.textContent) {
+        return h1OrH2WithRel.textContent.trim();
+      }
+      // If not found, get text content of the first h1
+      const firstH1 = document.querySelector("h1");
+      if (firstH1?.textContent) {
+        return firstH1.textContent.trim();
+      }
+
+      // If not found, get text content of the first h2
+      const firstH2 = document.querySelector("h2");
+      if (firstH2?.textContent) {
+        return firstH2.textContent.trim();
+      }
+      // if it is a checkbox or radio not in a fieldset, then check for the below conditions
     } else if (checkbox || radio) {
       // Look for h1 or h2 with rel attribute matching element.id
       const h1OrH2WithRel = document.querySelector(

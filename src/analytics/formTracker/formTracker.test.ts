@@ -463,12 +463,12 @@ describe("FormTracker", () => {
       id: "fieldId",
       name: "fieldName",
       value: "fieldValue",
-      type: "radio buttons",
+      type: "radio",
     };
 
     // Create radio and set ID attribute to the same as label FOR attribute
     const radio = document.createElement("input");
-    radio.type = "radio buttons";
+    radio.type = "radio";
     radio.id = formField.id;
 
     const label = document.createElement("label");
@@ -478,6 +478,38 @@ describe("FormTracker", () => {
     // Append the radio and label to the document
     document.body.appendChild(radio);
     document.body.appendChild(label);
+    const h1 = document.createElement("h1");
+    h1.textContent = "Hello, World!";
+    h1.setAttribute("rel", formField.id);
+    document.body.appendChild(h1);
+    expect(instance.getSectionValue(formField)).toBe("Hello, World!");
+  });
+  test("getSectionValue should return h1 with rel attribute matching element.id if there is a radio button without a legend, inside a fieldset", () => {
+    const formField: FormField = {
+      id: "fieldId",
+      name: "fieldName",
+      value: "fieldValue",
+      type: "radio",
+    };
+
+    // Create radio and set ID attribute to the same as label FOR attribute
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.id = formField.id;
+
+    const label = document.createElement("label");
+    label.htmlFor = formField.id; // Associates the label with the radio by matching their IDs
+    label.textContent = "Your Label Text"; // Set the label text
+
+    // Create fieldset element
+    const fieldset = document.createElement("fieldset");
+
+    // Append the radio and label to the fieldset
+    fieldset.appendChild(radio);
+    fieldset.appendChild(label);
+
+    // Append the fieldset to the document
+    document.body.appendChild(fieldset);
     const h1 = document.createElement("h1");
     h1.textContent = "Hello, World!";
     h1.setAttribute("rel", formField.id);
@@ -571,12 +603,12 @@ describe("FormTracker", () => {
       id: "fieldId",
       name: "fieldName",
       value: "fieldValue",
-      type: "radio buttons",
+      type: "radio",
     };
 
     // Create checkbox and set ID attribute to the same as label FOR attribute
     const radio = document.createElement("input");
-    radio.type = "radio buttons";
+    radio.type = "radio";
     radio.id = formField.id;
 
     const label = document.createElement("label");
