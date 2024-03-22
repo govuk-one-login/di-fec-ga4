@@ -170,50 +170,34 @@ export class FormTracker extends BaseTracker {
     const checkbox = element.type === "checkbox";
     const radio = element.type === "radio";
     const commonId = element.id.split("-")[0];
+
+    const checkCommonSelectors = (): string => {
+      const h1OrH2WithRel = document.querySelector(
+        `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
+      );
+      if (h1OrH2WithRel?.textContent) return h1OrH2WithRel.textContent.trim();
+
+      const firstH1 = document.querySelector("h1");
+      if (firstH1?.textContent) return firstH1.textContent.trim();
+
+      const firstH2 = document.querySelector("h2");
+      if (firstH2?.textContent) return firstH2.textContent.trim();
+
+      return "undefined";
+    };
+
     if (fieldset) {
       // If it's a child of a fieldset ,look for the legend if not check for backup conditions
       const legendElement = fieldset.querySelector("legend");
       if (legendElement?.textContent) {
         return legendElement.textContent.trim();
       }
-      const h1OrH2WithRel = document.querySelector(
-        `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
-      );
-      if (h1OrH2WithRel?.textContent) {
-        return h1OrH2WithRel.textContent.trim();
-      }
-      // If not found, get text content of the first h1
-      const firstH1 = document.querySelector("h1");
-      if (firstH1?.textContent) {
-        return firstH1.textContent.trim();
-      }
 
-      // If not found, get text content of the first h2
-      const firstH2 = document.querySelector("h2");
-      if (firstH2?.textContent) {
-        return firstH2.textContent.trim();
-      }
+      return checkCommonSelectors();
+
       // if it is a checkbox or radio not in a fieldset, then check for the below conditions
     } else if (checkbox || radio) {
-      // Look for h1 or h2 with rel attribute matching element.id
-      const h1OrH2WithRel = document.querySelector(
-        `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
-      );
-      if (h1OrH2WithRel?.textContent) {
-        return h1OrH2WithRel.textContent.trim();
-      }
-
-      // If not found, get text content of the first h1
-      const firstH1 = document.querySelector("h1");
-      if (firstH1?.textContent) {
-        return firstH1.textContent.trim();
-      }
-
-      // If not found, get text content of the first h2
-      const firstH2 = document.querySelector("h2");
-      if (firstH2?.textContent) {
-        return firstH2.textContent.trim();
-      }
+      return checkCommonSelectors();
     } else {
       // If not within a fieldset and not a checkbox or radio button then,e.g free text field, dropdown check for label
       const labelElement = document.querySelector(`label[for="${element.id}"]`);
