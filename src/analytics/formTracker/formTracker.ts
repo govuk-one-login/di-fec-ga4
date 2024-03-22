@@ -167,8 +167,9 @@ export class FormTracker extends BaseTracker {
   getSectionValue(element: FormField): string {
     const field = document.getElementById(element.id);
     const fieldset = field?.closest("fieldset");
-    const checkbox = element.type === "checkbox";
-    const radio = element.type === "radio buttons";
+    const isCheckboxType = element.type === "checkbox";
+    const isRadioType = element.type === "radio buttons";
+    const isDateType = element.type === "date";
     if (fieldset) {
       // If it's a child of a fieldset e.g radio button/ checkbox, look for the legend
       const legendElement = fieldset.querySelector("legend");
@@ -176,7 +177,7 @@ export class FormTracker extends BaseTracker {
         return legendElement.textContent.trim();
       }
       // if it is a checkbox or radio which does not have a legend, then check for the below conditions
-    } else if (checkbox || radio) {
+    } else if (isCheckboxType || isRadioType || isDateType) {
       // Look for h1 or h2 with rel attribute matching element.id
       const h1OrH2WithRel = document.querySelector(
         `h1[rel="${element.id}"], h2[rel="${element.id}"]`,
@@ -231,5 +232,60 @@ export class FormTracker extends BaseTracker {
       }
     }
     return true;
+  }
+
+  /**
+   * Checks if the given array of form fields represents a date field.
+   *
+   * @param {FormField[]} fields - The array of form fields to check.
+   * @return {boolean} Returns true if the fields represent a date field, false otherwise.
+   */
+  isDateFields(fields: FormField[]): boolean {
+    //date is composed of 3 fields
+    if (fields.length !== 3) {
+      return false;
+    }
+    //all field ids need to be linked to the same prefix id
+    const idPrefix_field1 = fields[0].id.split("-")[0];
+    const idPrefix_field2 = fields[1].id.split("-")[0];
+    const idPrefix_field3 = fields[2].id.split("-")[0];
+    if (
+      idPrefix_field1 !== idPrefix_field2 ||
+      idPrefix_field1 !== idPrefix_field3 ||
+      idPrefix_field2 !== idPrefix_field3
+    ) {
+      return false;
+    }
+    //fields needs to finish with -day, -month, -year
+    const idSuffix_field1 = fields[0].id.split("-").pop();
+    const idSuffix_field2 = fields[1].id.split("-").pop();
+    const idSuffix_field3 = fields[2].id.split("-").pop();
+
+    if (
+      idSuffix_field1 !== "day" ||
+      idSuffix_field2 !== "month" ||
+      idSuffix_field3 !== "year"
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+  /**
+   * Combines the date fields into a single form field.
+   *
+   * @param {FormField[]} fields - array of form fields
+   * @return {FormField[]} array containing the combined date field
+   */
+  combineDateFields(fields: FormField[]): FormField[] {
+    const combineDateField: FormField[] = [
+      {
+        id: fields[0].id,
+        name: fields[0].id.split("-")[0],
+        value: `${fields[0].value}-${fields[1].value}-${fields[2].value}`,
+        type: "date",
+      },
+    ];
+    return combineDateField;
   }
 }

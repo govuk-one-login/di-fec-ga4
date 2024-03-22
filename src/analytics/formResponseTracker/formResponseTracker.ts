@@ -62,6 +62,11 @@ export class FormResponseTracker extends FormTracker {
       return false;
     }
 
+    //manage date (day/month/year) fields
+    if (this.isDateFields(fields)) {
+      fields = this.combineDateFields(fields);
+    }
+
     try {
       // Iterate through each form field and generate an event for each
       for (const field of fields) {
