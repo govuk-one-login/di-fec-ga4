@@ -1,4 +1,4 @@
-import { describe, expect, jest, test } from "@jest/globals";
+import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { PageViewTracker } from "./pageViewTracker";
 import {
   PageViewParametersInterface,
@@ -120,6 +120,7 @@ describe("Cookie Management", () => {
 
   test("trackOnPageLoad should return false if not cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
+    window.DI.analyticsGa4.cookie.hasCookie = true;
     const instance = new PageViewTracker();
     const dataLayerEvent: PageViewEventInterface = {
       event: instance.eventName,
@@ -162,12 +163,26 @@ describe("Form Change Tracker Trigger", () => {
 });
 
 describe("Form Error Tracker Trigger", () => {
+  beforeEach(() => {
+    // Remove any existing elements from document.body if needed
+    document.body.innerHTML = "";
+  });
+
   const spy = jest.spyOn(FormErrorTracker.prototype, "trackFormError");
+  const instance = new PageViewTracker();
+  const formErrorTracker = new FormErrorTracker();
+  window.DI.analyticsGa4.cookie.consent = true;
+  window.DI.analyticsGa4.cookie.hasCookie = true;
+
+  test("trackOnPageLoad should called form error function and return false if form error message exists", () => {
+    const spy2 = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
+    document.body.innerHTML =
+      '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
+    instance.trackOnPageLoad(parameters);
+    expect(instance.trackOnPageLoad).toReturnWith(false);
+  });
 
   test("FormError tracker is not triggered", () => {
-    const instance = new PageViewTracker();
-    const formErrorTracker = new FormErrorTracker();
-
     instance.trackOnPageLoad(parameters);
     expect(formErrorTracker.trackFormError).not.toHaveBeenCalled();
   });
