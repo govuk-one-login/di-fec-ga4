@@ -118,8 +118,9 @@ describe("pageViewTracker test disable ga4 tracking option", () => {
 describe("Cookie Management", () => {
   const spy = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
 
-  test("trackOnPageLoad should return false if not cookie consent", () => {
+  test("trackOnPageLoad should return false if visitor rejects cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
+    window.DI.analyticsGa4.cookie.hasCookie = true;
     const instance = new PageViewTracker();
     const dataLayerEvent: PageViewEventInterface = {
       event: instance.eventName,
