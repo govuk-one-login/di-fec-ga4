@@ -36,7 +36,7 @@ export class FormChangeTracker extends FormTracker {
         text: "change", //put static value. Waiting final documentation on form change tracker,
         section: validateParameter(this.getFieldLabel(), 100),
         action: "change response",
-        external: "undefined",
+        external: "false",
         link_domain: this.getDomain(submitUrl),
         "link_path_parts.1": this.getDomainPath(submitUrl, 0),
         "link_path_parts.2": this.getDomainPath(submitUrl, 1),

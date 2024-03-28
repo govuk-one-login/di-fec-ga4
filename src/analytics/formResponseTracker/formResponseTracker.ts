@@ -62,6 +62,11 @@ export class FormResponseTracker extends FormTracker {
       return false;
     }
 
+    //manage date (day/month/year) fields
+    if (this.isDateFields(fields)) {
+      fields = this.combineDateFields(fields);
+    }
+
     try {
       // Iterate through each form field and generate an event for each
       for (const field of fields) {
@@ -74,7 +79,7 @@ export class FormResponseTracker extends FormTracker {
             text: validateParameter(this.getFieldValue([field]), 100),
             section: validateParameter(this.getSectionValue(field), 100),
             action: validateParameter(this.getButtonLabel(event), 100),
-            external: "undefined",
+            external: "false",
             link_domain: this.getDomain(submitUrl),
             "link_path_parts.1": this.getDomainPath(submitUrl, 0),
             "link_path_parts.2": this.getDomainPath(submitUrl, 1),

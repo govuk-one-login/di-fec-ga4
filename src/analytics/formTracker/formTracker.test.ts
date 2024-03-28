@@ -647,4 +647,70 @@ describe("FormTracker", () => {
 
     expect(instance.getSectionValue(formField)).toBe("Your Label Text");
   });
+  test("isDateFields should return true if date fields are present", () => {
+    const formFields: FormField[] = [
+      {
+        id: "fieldId-day",
+        name: "fieldId-day",
+        value: "01",
+        type: "text",
+      },
+      {
+        id: "fieldId-month",
+        name: "fieldId-month",
+        value: "01",
+        type: "text",
+      },
+      {
+        id: "fieldId-year",
+        name: "fieldId-year",
+        value: "2000",
+        type: "text",
+      },
+    ];
+    expect(instance.isDateFields(formFields)).toBe(true);
+  });
+  test("isDateFields should return false if date fields are not present", () => {
+    const formFields: FormField[] = [
+      {
+        id: "fieldId",
+        name: "fieldId",
+        value: "test",
+        type: "text",
+      },
+    ];
+    expect(instance.isDateFields(formFields)).toBe(false);
+  });
+  test("combineDateFields should return specific formField from date fields", () => {
+    const formFields: FormField[] = [
+      {
+        id: "fieldId-day",
+        name: "fieldId-day",
+        value: "01",
+        type: "text",
+      },
+      {
+        id: "fieldId-month",
+        name: "fieldId-month",
+        value: "01",
+        type: "text",
+      },
+      {
+        id: "fieldId-year",
+        name: "fieldId-year",
+        value: "2000",
+        type: "text",
+      },
+    ];
+
+    const result: FormField[] = [
+      {
+        id: "fieldId-day",
+        name: "fieldId",
+        value: "01-01-2000",
+        type: "date",
+      },
+    ];
+    expect(instance.combineDateFields(formFields)).toStrictEqual(result);
+  });
 });

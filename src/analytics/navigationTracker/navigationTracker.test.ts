@@ -108,11 +108,15 @@ describe("navigationTracker", () => {
 });
 
 describe("Cookie Management", () => {
-  const spy = jest.spyOn(NavigationTracker.prototype, "trackNavigation");
   test("trackNavigation should return false if not cookie consent", () => {
+    const spy = jest.spyOn(NavigationTracker.prototype, "trackNavigation");
     window.DI.analyticsGa4.cookie.consent = false;
     const instance = new NavigationTracker();
-    expect(instance.trackNavigation).toReturnWith(false);
+    const href = document.createElement("A");
+    href.className = "govuk-footer__link";
+    href.addEventListener("click", (event) => {
+      expect(instance.trackNavigation).toReturnWith(false);
+    });
   });
 });
 
