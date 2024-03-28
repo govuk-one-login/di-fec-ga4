@@ -33,6 +33,14 @@ export class PageViewTracker extends BaseTracker {
       return false;
     }
 
+    //trigger form error tracking
+    const errorTrigger = document.getElementsByClassName("govuk-error-message");
+    if (errorTrigger.length) {
+      const formErrorTracker = new FormErrorTracker();
+      formErrorTracker.trackFormError();
+      return false;
+    }
+
     const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,
       page_view: {
@@ -58,13 +66,6 @@ export class PageViewTracker extends BaseTracker {
     if (document.location.href.includes("edit=true")) {
       const formChangeTracker = new FormChangeTracker();
       formChangeTracker.trackFormChange();
-    }
-
-    //trigger form error tracking
-    const errorTrigger = document.getElementsByClassName("govuk-error-message");
-    if (errorTrigger.length) {
-      const formErrorTracker = new FormErrorTracker();
-      formErrorTracker.trackFormError();
     }
 
     try {
