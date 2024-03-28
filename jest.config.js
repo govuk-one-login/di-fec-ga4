@@ -12,4 +12,5 @@ export default {
   collectCoverageFrom: ["src/**/*.ts"],
   coverageDirectory: "coverage",
   coverageReporters: ["lcov", "text", "html"],
+  clearMocks: true,
 };
