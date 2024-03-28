@@ -172,7 +172,7 @@ export class FormTracker extends BaseTracker {
     const isDateType = element.type === "date";
     const commonId = element.id.split("-")[0];
 
-    const checkCommonSelectors = (): string => {
+    const getHeadingText = (): string => {
       const h1OrH2WithRel = document.querySelector(
         `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
       );
@@ -194,11 +194,11 @@ export class FormTracker extends BaseTracker {
         return legendElement.textContent.trim();
       }
 
-      return checkCommonSelectors();
+      return getHeadingText();
 
       // if it is a checkbox or radio or date not in a fieldset, then check for backup conditions
     } else if (isCheckboxType || isRadioType || isDateType) {
-      return checkCommonSelectors();
+      return getHeadingText();
     } else {
       // If not within a fieldset and not a checkbox / radio button/ date/s field ,e.g free text field or dropdown check for label
       const labelElement = document.querySelector(`label[for="${element.id}"]`);
