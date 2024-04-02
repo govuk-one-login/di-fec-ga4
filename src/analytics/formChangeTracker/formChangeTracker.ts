@@ -20,7 +20,7 @@ export class FormChangeTracker extends FormTracker {
       return false;
     }
 
-    const form = document.forms[0];
+    const form = this.getFormElement();
 
     if (!form) {
       return false;

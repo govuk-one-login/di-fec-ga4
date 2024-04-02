@@ -19,6 +19,7 @@ describe("form with multiple fields", () => {
   test("event fired and data layer defined for each of the fields", () => {
     const instance = new FormResponseTracker();
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action= "/test-url" method= "post">' +
       "<fieldset>" +
       "  <legend>checked section</legend>" +
@@ -43,7 +44,7 @@ describe("form with multiple fields", () => {
       '  <label for="feedback">textarea section</label>' +
       '  <textarea id="feedback" name="feedback" value="test value"/>test value</textarea>' +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form></div>";
     document.dispatchEvent(action);
 
     const dataLayerEventCheckbox: FormEventInterface = {
@@ -193,6 +194,7 @@ describe("form with radio buttons", () => {
   test("datalayer event should be defined", () => {
     const instance = new FormResponseTracker();
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       "<fieldset>" +
       "  <legend>test label questions</legend>" +
@@ -201,7 +203,7 @@ describe("form with radio buttons", () => {
       '  <label for="female">test label female</label>' +
       '  <input type="radio" id="female" name="female" value="Male"/>' +
       "</fieldset>";
-    '  <button id="button" type="submit">submit</button>' + "</form>";
+    '  <button id="button" type="submit">submit</button>' + "</form></div>";
     document.dispatchEvent(action);
 
     const dataLayerEvent: FormEventInterface = {
@@ -238,6 +240,7 @@ describe("form with input checkbox", () => {
     const instance = new FormResponseTracker();
 
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       "<fieldset>" +
       "  <legend>test label questions</legend>" +
@@ -246,7 +249,7 @@ describe("form with input checkbox", () => {
       '  <label for="question-2">test value2</label>' +
       '  <input type="checkbox" id="question-2" name="question-2" value="testValue2"/>' +
       "</fieldset>";
-    '  <button id="button" type="submit">submit</button>' + "</form>";
+    '  <button id="button" type="submit">submit</button>' + "</form></div>";
     document.dispatchEvent(action);
 
     const dataLayerEvent: FormEventInterface = {
@@ -281,11 +284,12 @@ describe("form with input text", () => {
   test("datalayer event should be defined", () => {
     const instance = new FormResponseTracker();
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       '  <label for="username">test label username</label>' +
       '  <input type="text" id="username" name="username" value="test value"/>' +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form></div>";
     document.dispatchEvent(action);
 
     const dataLayerEvent: FormEventInterface = {
@@ -321,11 +325,12 @@ describe("form with input textarea", () => {
   test("datalayer event should be defined", () => {
     const instance = new FormResponseTracker();
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       '  <label for="username">test label username</label>' +
       '  <textarea id="username" name="username" value="test value"/>test value</textarea>' +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form></div>";
     document.dispatchEvent(action);
 
     const dataLayerEvent: FormEventInterface = {
@@ -361,11 +366,12 @@ describe("form with dropdown", () => {
   test("datalayer event should be defined", () => {
     const instance = new FormResponseTracker();
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       '  <label for="username">test label username</label>' +
       '  <select id="username" name="username"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form></div>";
     document.dispatchEvent(action);
 
     const dataLayerEvent: FormEventInterface = {
@@ -401,11 +407,12 @@ describe("Cookie Management", () => {
   test("trackFormResponse should return false if not cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       '  <label for="username">test label username</label>' +
       '  <select id="username" name="username"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form></div>";
     document.dispatchEvent(action);
 
     expect(instance.trackFormResponse).toReturnWith(false);
@@ -423,13 +430,14 @@ describe("cancel event if form is invalid", () => {
   test("trackFormResponse should return false if form is invalid", () => {
     window.DI.analyticsGa4.cookie.consent = true;
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       '  <label for="email">test label email</label>' +
       '  <input type="text" id="email" name="email" value=""/>' +
       '  <label for="username">test label username</label>' +
       '  <select id="username" name="username"><option value="test value">test value</option><option value="test value2" selected>test value2</option></select>' +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form></div>";
     document.dispatchEvent(action);
     expect(instance.trackFormResponse).toReturnWith(false);
   });

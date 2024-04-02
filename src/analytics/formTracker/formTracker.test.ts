@@ -43,6 +43,25 @@ describe("FormTracker", () => {
     expect(instance.isFormValid(fields)).toBe(true);
   });
 
+  //getFormElement Tests
+  test("getFormElement should return the form element", () => {
+    const divElement = document.createElement("div");
+    divElement.id = "main-content";
+    const form = document.createElement("form");
+    form.innerHTML =
+      '<input id="text" name="text" value="text value" type="text"/>' +
+      ' <label for="checkbox">checkbox value</label>' +
+      '<input id="checkbox" name="checkbox" value="checkbox value" type="checkbox" checked/>' +
+      '<label for="selectField">Select Field:</label>' +
+      '<select id="selectField" name="selectField">' +
+      '  <option value="Option 1">Option 1</option>' +
+      '  <option value="Option 2" selected>Option 2</option>' +
+      "</select>";
+    divElement.appendChild(form);
+    document.body.appendChild(divElement);
+    expect(instance.getFormElement()).toEqual(form);
+  });
+
   // getFormFields Tests
   test("getFormFields should return a list of fields objects", () => {
     const form = document.createElement("form");

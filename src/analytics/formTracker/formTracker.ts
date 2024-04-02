@@ -68,6 +68,15 @@ export class FormTracker extends BaseTracker {
       type: element.type,
     });
   }
+
+  /**
+   * Retrieves the first HTMLFormElement within the specified document's main content.
+   *
+   * @return {HTMLFormElement | null} The first HTMLFormElement found within the main content, or null if none is found.
+   */
+  getFormElement(): HTMLFormElement | null {
+    return document.querySelector("#main-content form");
+  }
   /**
    * Retrieves the selected fields from an HTML form.
    *

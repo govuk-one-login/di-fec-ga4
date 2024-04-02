@@ -27,6 +27,7 @@ describe("FormChangeTracker", () => {
     const instance = new FormChangeTracker();
     document.body.innerHTML = "";
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       "  <legend>test label questions</legend>" +
       '  <label for="question-1">test label question 1</label>' +
@@ -34,7 +35,7 @@ describe("FormChangeTracker", () => {
       '  <label for="question-2">test label question 2</label>' +
       '  <input type="checkbox" id="question-2" name="question-2" value="test value"/>' +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form></div>";
 
     const dataLayerEvent: FormEventInterface = {
       event: "event_data",
@@ -63,6 +64,7 @@ describe("FormChangeTracker", () => {
     const instance = new FormChangeTracker();
 
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       "  <legend>test label questions</legend>" +
       '  <label for="question-1">test label question 1</label>' +
@@ -70,7 +72,7 @@ describe("FormChangeTracker", () => {
       '  <label for="question-2">test label question 2</label>' +
       '  <input type="checkbox" id="question-2" name="question-2" value="test value"/>' +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form></div>";
 
     instance.getSubmitterText();
     expect(instance.getSubmitterText).toReturnWith("submit");

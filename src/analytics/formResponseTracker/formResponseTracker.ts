@@ -42,8 +42,12 @@ export class FormResponseTracker extends FormTracker {
       return false;
     }
 
-    const form = document.forms[0];
-    const submitUrl = this.getSubmitUrl(form);
+    const form = this.getFormElement();
+
+    if (!form) {
+      return false;
+    }
+
     let fields: FormField[] = [];
 
     if (form?.elements) {
@@ -66,6 +70,8 @@ export class FormResponseTracker extends FormTracker {
     if (this.isDateFields(fields)) {
       fields = this.combineDateFields(fields);
     }
+
+    const submitUrl = this.getSubmitUrl(form);
 
     try {
       // Iterate through each form field and generate an event for each
