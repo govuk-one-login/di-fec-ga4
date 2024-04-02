@@ -159,6 +159,28 @@ export class FormTracker extends BaseTracker {
     return label;
   }
   /**
+   * Get the heading text associated with the specified HTML element ID.
+   *
+   * @param {string} elementId - The ID of the HTML element.
+   * @return {string} The heading text of the element, or "undefined" if not found.
+   */
+
+  getHeadingText = (elementId: string): string => {
+    const commonId = elementId.split("-")[0];
+    const h1OrH2WithRel = document.querySelector(
+      `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
+    );
+    if (h1OrH2WithRel?.textContent) return h1OrH2WithRel.textContent.trim();
+
+    const firstH1 = document.querySelector("h1");
+    if (firstH1?.textContent) return firstH1.textContent.trim();
+
+    const firstH2 = document.querySelector("h2");
+    if (firstH2?.textContent) return firstH2.textContent.trim();
+
+    return "undefined";
+  };
+  /**
    * Get the section value from the label or legend associated with the HTML form element.
    *
    * @param {FormField} element - The form field.
@@ -170,22 +192,6 @@ export class FormTracker extends BaseTracker {
     const isCheckboxType = element.type === "checkbox";
     const isRadioType = element.type === "radio";
     const isDateType = element.type === "date";
-    const commonId = element.id.split("-")[0];
-
-    const getHeadingText = (): string => {
-      const h1OrH2WithRel = document.querySelector(
-        `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
-      );
-      if (h1OrH2WithRel?.textContent) return h1OrH2WithRel.textContent.trim();
-
-      const firstH1 = document.querySelector("h1");
-      if (firstH1?.textContent) return firstH1.textContent.trim();
-
-      const firstH2 = document.querySelector("h2");
-      if (firstH2?.textContent) return firstH2.textContent.trim();
-
-      return "undefined";
-    };
 
     if (fieldset) {
       // If it's a child of a fieldset ,look for the legend if not check for backup conditions
@@ -194,11 +200,11 @@ export class FormTracker extends BaseTracker {
         return legendElement.textContent.trim();
       }
 
-      return getHeadingText();
+      return this.getHeadingText(element.id);
 
       // if it is a checkbox or radio or date not in a fieldset, then check for backup conditions
     } else if (isCheckboxType || isRadioType || isDateType) {
-      return getHeadingText();
+      return this.getHeadingText(element.id);
     } else {
       // If not within a fieldset and not a checkbox / radio button/ date/s field ,e.g free text field or dropdown check for label
       const labelElement = document.querySelector(`label[for="${element.id}"]`);
