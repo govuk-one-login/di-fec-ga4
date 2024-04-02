@@ -157,6 +157,7 @@ describe("FormTracker", () => {
     element.id = "checkboxId";
     element.name = "checkboxName";
     element.type = "checkbox";
+    element.checked = true;
 
     // Create a label and associate it with the checkbox
     const label: HTMLLabelElement = document.createElement("label");
@@ -177,16 +178,56 @@ describe("FormTracker", () => {
     ]);
   });
 
+  test("processCheckbox should add only selected checkbox to selected fields", () => {
+    const element: HTMLInputElement = document.createElement("input");
+    element.id = "checkboxId";
+    element.name = "checkboxName";
+    element.type = "checkbox";
+    element.checked = true;
+
+    // Create a label and associate it with the checkbox
+    const label: HTMLLabelElement = document.createElement("label");
+    label.setAttribute("for", "checkboxId");
+    label.textContent = "checkbox label";
+
+    const element2: HTMLInputElement = document.createElement("input");
+    element2.id = "checkboxId2";
+    element2.name = "checkboxName2";
+    element2.type = "checkbox";
+
+    // Create a label and associate it with the checkbox
+    const label2: HTMLLabelElement = document.createElement("label");
+    label2.setAttribute("for", "checkboxId2");
+    label2.textContent = "checkbox2 label";
+
+    document.body.appendChild(element);
+    document.body.appendChild(label);
+    document.body.appendChild(element2);
+    document.body.appendChild(label2);
+
+    instance.processCheckbox(element);
+    expect(instance["selectedFields"]).toEqual([
+      {
+        id: "checkboxId",
+        name: "checkboxName",
+        value: "checkbox label",
+        type: "checkbox",
+      },
+    ]);
+  });
+
   test("processCheckbox should return the values of checkboxes which are part of the same group as a string separated by commas", () => {
     const element: HTMLInputElement = document.createElement("input");
     element.id = "checkboxId";
     element.name = "checkboxName";
     element.type = "checkbox";
+    element.checked = true;
 
     const secondElement: HTMLInputElement = document.createElement("input");
     secondElement.id = "secondCheckboxId";
     secondElement.name = "checkboxName";
     secondElement.type = "checkbox";
+    secondElement.checked = true;
 
     // Create a label and associate it with the checkbox1
     const label: HTMLLabelElement = document.createElement("label");
@@ -222,6 +263,7 @@ describe("FormTracker", () => {
     element.id = "radioId";
     element.name = "radioName";
     element.type = "radio";
+    element.checked = true;
 
     // Create a label and associate it with the radio
     const label: HTMLLabelElement = document.createElement("label");

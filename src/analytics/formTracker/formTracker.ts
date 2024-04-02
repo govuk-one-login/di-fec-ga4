@@ -26,6 +26,10 @@ export class FormTracker extends BaseTracker {
   }
 
   processCheckbox(element: HTMLInputElement): void {
+    if (!element.checked) {
+      return;
+    }
+
     const checkboxInSameGroup = this.selectedFields.find(
       (field) => field.name === element.name,
     );
@@ -43,6 +47,10 @@ export class FormTracker extends BaseTracker {
   }
 
   processRadio(element: HTMLInputElement): void {
+    if (!element.checked) {
+      return;
+    }
+
     this.selectedFields.push({
       id: element.id,
       name: element.name,
@@ -83,9 +91,9 @@ export class FormTracker extends BaseTracker {
         continue;
       }
 
-      if (element.type === "checkbox" && element.checked) {
+      if (element.type === "checkbox") {
         this.processCheckbox(element);
-      } else if (element.type === "radio" && element.checked) {
+      } else if (element.type === "radio") {
         this.processRadio(element);
       } else if (element.type === "select-one") {
         this.processSelectOne(element as unknown as HTMLSelectElement);
