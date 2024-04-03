@@ -23,10 +23,13 @@ export class FormErrorTracker extends FormTracker {
       return false;
     }
 
-    const form = document.forms[0];
-    const submitUrl = this.getSubmitUrl(form);
-    let fields: FormField[] = [];
+    const form = this.getFormElement();
 
+    if (!form) {
+      return false;
+    }
+
+    let fields: FormField[] = [];
     if (form?.elements) {
       fields = this.getErrorFields(form);
     } else {
@@ -37,6 +40,9 @@ export class FormErrorTracker extends FormTracker {
       console.log("form or fields not found");
       return false;
     }
+
+    const submitUrl = this.getSubmitUrl(form);
+
     try {
       for (const field of fields) {
         const formErrorTrackerEvent: FormEventInterface = {
@@ -57,7 +63,6 @@ export class FormErrorTracker extends FormTracker {
             "link_path_parts.5": this.getDomainPath(submitUrl, 4),
           },
         };
-
         this.pushToDataLayer(formErrorTrackerEvent);
       }
       return true;

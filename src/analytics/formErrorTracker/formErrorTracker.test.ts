@@ -30,6 +30,7 @@ describe("FormErrorTracker", () => {
   test("form error tracker should define a DL for each field in form", () => {
     window.DI.analyticsGa4.cookie.consent = true;
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       '<div class="govuk-form-group govuk-form-group--error">' +
       "<fieldset>" +
@@ -72,7 +73,8 @@ describe("FormErrorTracker", () => {
       '  <input type ="password" id="password" name="password" /></input>' +
       "</div>" +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form>" +
+      "</div>";
 
     const dataLayerEventCheckbox: FormEventInterface = {
       event: "event_data",
@@ -196,6 +198,7 @@ describe("FormErrorTracker", () => {
     window.DI.analyticsGa4.cookie.consent = true;
 
     document.body.innerHTML =
+      '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
       '<div class="govuk-form-group govuk-form-group--error">' +
       "<fieldset>" +
@@ -208,7 +211,8 @@ describe("FormErrorTracker", () => {
       "</fieldset>" +
       "</div>" +
       '  <button id="button" type="submit">submit</button>' +
-      "</form>";
+      "</form>" +
+      "</div>";
 
     const dataLayerEvent: FormEventInterface = {
       event: "event_data",
