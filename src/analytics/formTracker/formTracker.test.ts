@@ -460,6 +460,26 @@ describe("FormTracker", () => {
     );
   });
 
+  test("getHeadingText should return h1 content if it has a rel attribute matching commonId", () => {
+    // create h1 with rel attribute
+
+    const h1 = document.createElement("h1");
+    h1.textContent = "H1 with rel attribute";
+    h1.setAttribute("rel", "example");
+
+    document.body.appendChild(h1);
+
+    expect(instance.getHeadingText("example_1")).toBe("H1 with rel attribute");
+  });
+
+  test("getHeadingText should return undefined if there is no h1/h2 with a rel attribute matching commonId", () => {
+    // create h2
+    const h2 = document.createElement("h2");
+    document.body.appendChild(h2);
+
+    expect(instance.getHeadingText("example_1")).toBe("undefined");
+  });
+
   test("getSectionValue should return label text if field is not within a fieldset ", () => {
     const formField: FormField = {
       id: "fieldId",
@@ -524,12 +544,12 @@ describe("FormTracker", () => {
       id: "fieldId",
       name: "fieldName",
       value: "fieldValue",
-      type: "radio buttons",
+      type: "radio",
     };
 
     // Create radio and set ID attribute to the same as label FOR attribute
     const radio = document.createElement("input");
-    radio.type = "radio buttons";
+    radio.type = "radio";
     radio.id = formField.id;
 
     const label = document.createElement("label");
@@ -542,6 +562,38 @@ describe("FormTracker", () => {
     const h1 = document.createElement("h1");
     h1.textContent = "Hello, World!";
     h1.setAttribute("rel", formField.id);
+    document.body.appendChild(h1);
+    expect(instance.getSectionValue(formField)).toBe("Hello, World!");
+  });
+  test("getSectionValue should return h1 with rel attribute matching element.id if there is a radio button without a legend, inside a fieldset", () => {
+    const formField: FormField = {
+      id: "fieldId-1",
+      name: "fieldName",
+      value: "fieldValue",
+      type: "radio",
+    };
+
+    // Create radio and set ID attribute to the same as label FOR attribute
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.id = formField.id;
+
+    const label = document.createElement("label");
+    label.htmlFor = formField.id; // Associates the label with the radio by matching their IDs
+    label.textContent = "Your Label Text"; // Set the label text
+
+    // Create fieldset element
+    const fieldset = document.createElement("fieldset");
+
+    // Append the radio and label to the fieldset
+    fieldset.appendChild(radio);
+    fieldset.appendChild(label);
+
+    // Append the fieldset to the document
+    document.body.appendChild(fieldset);
+    const h1 = document.createElement("h1");
+    h1.textContent = "Hello, World!";
+    h1.setAttribute("rel", "fieldId");
     document.body.appendChild(h1);
     expect(instance.getSectionValue(formField)).toBe("Hello, World!");
   });
@@ -632,12 +684,12 @@ describe("FormTracker", () => {
       id: "fieldId",
       name: "fieldName",
       value: "fieldValue",
-      type: "radio buttons",
+      type: "radio",
     };
 
     // Create checkbox and set ID attribute to the same as label FOR attribute
     const radio = document.createElement("input");
-    radio.type = "radio buttons";
+    radio.type = "radio";
     radio.id = formField.id;
 
     const label = document.createElement("label");

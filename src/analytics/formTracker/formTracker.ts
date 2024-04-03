@@ -176,6 +176,28 @@ export class FormTracker extends BaseTracker {
     return label;
   }
   /**
+   * Get the heading text associated with the specified HTML element ID.
+   *
+   * @param {string} elementId - The ID of the HTML element.
+   * @return {string} The heading text of the element, or "undefined" if not found.
+   */
+
+  getHeadingText = (elementId: string): string => {
+    const commonId = elementId.split("-")[0];
+    const h1OrH2WithRel = document.querySelector(
+      `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
+    );
+    if (h1OrH2WithRel?.textContent) return h1OrH2WithRel.textContent.trim();
+
+    const firstH1 = document.querySelector("h1");
+    if (firstH1?.textContent) return firstH1.textContent.trim();
+
+    const firstH2 = document.querySelector("h2");
+    if (firstH2?.textContent) return firstH2.textContent.trim();
+
+    return "undefined";
+  };
+  /**
    * Get the section value from the label or legend associated with the HTML form element.
    *
    * @param {FormField} element - The form field.
@@ -185,37 +207,23 @@ export class FormTracker extends BaseTracker {
     const field = document.getElementById(element.id);
     const fieldset = field?.closest("fieldset");
     const isCheckboxType = element.type === "checkbox";
-    const isRadioType = element.type === "radio buttons";
+    const isRadioType = element.type === "radio";
     const isDateType = element.type === "date";
+
     if (fieldset) {
-      // If it's a child of a fieldset e.g radio button/ checkbox, look for the legend
+      // If it's a child of a fieldset ,look for the legend if not check for backup conditions
       const legendElement = fieldset.querySelector("legend");
       if (legendElement?.textContent) {
         return legendElement.textContent.trim();
       }
-      // if it is a checkbox or radio which does not have a legend, then check for the below conditions
+
+      return this.getHeadingText(element.id);
+
+      // if it is a checkbox or radio or date not in a fieldset, then check for backup conditions
     } else if (isCheckboxType || isRadioType || isDateType) {
-      // Look for h1 or h2 with rel attribute matching element.id
-      const h1OrH2WithRel = document.querySelector(
-        `h1[rel="${element.id}"], h2[rel="${element.id}"]`,
-      );
-      if (h1OrH2WithRel?.textContent) {
-        return h1OrH2WithRel.textContent.trim();
-      }
-
-      // If not found, get text content of the first h1
-      const firstH1 = document.querySelector("h1");
-      if (firstH1?.textContent) {
-        return firstH1.textContent.trim();
-      }
-
-      // If not found, get text content of the first h2
-      const firstH2 = document.querySelector("h2");
-      if (firstH2?.textContent) {
-        return firstH2.textContent.trim();
-      }
+      return this.getHeadingText(element.id);
     } else {
-      // If not within a fieldset and not a checkbox or radio button then,e.g free text field, dropdown check for label
+      // If not within a fieldset and not a checkbox / radio button/ date/s field ,e.g free text field or dropdown check for label
       const labelElement = document.querySelector(`label[for="${element.id}"]`);
       if (labelElement?.textContent) {
         return labelElement.textContent.trim();
