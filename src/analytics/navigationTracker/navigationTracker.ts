@@ -36,6 +36,19 @@ export class NavigationTracker extends BaseTracker {
       "govuk-header__logotype",
     ]);
 
+    /*
+     * Navigation tracker is only for links and navigation buttons outside of error summary list
+     */
+    if (
+      element.parentElement &&
+      element.parentElement.parentElement &&
+      element.parentElement.parentElement.className.includes(
+        "govuk-error-summary__list",
+      )
+    ) {
+      return false;
+    }
+
     /**
      * Navigation tracker is only for links and navigation buttons
      */
