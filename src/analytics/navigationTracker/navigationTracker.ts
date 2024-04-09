@@ -141,11 +141,15 @@ export class NavigationTracker extends BaseTracker {
    * @return {boolean} Returns true if the URL is an external link, false otherwise.
    */
   isExternalLink(url: string): boolean {
+    const signinAccountUkUrl = "signin.account.gov.uk";
     if (!url) {
       return false;
     }
 
-    if (url.includes(window.location.hostname)) {
+    if (
+      url.includes(window.location.hostname) ||
+      url.includes(signinAccountUkUrl)
+    ) {
       return false;
     }
     return true;

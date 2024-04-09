@@ -197,6 +197,11 @@ describe("isExternalLink", () => {
     expect(newInstance.isExternalLink(url)).toBe(false);
   });
 
+  test("should return false for signin account links", () => {
+    const url = "http://signin.account.gov.uk/cookies";
+    expect(newInstance.isExternalLink(url)).toBe(false);
+  });
+
   test("should return true for external links", () => {
     const url = "https://google.com";
     expect(newInstance.isExternalLink(url)).toBe(true);
