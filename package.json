@@ -1,6 +1,6 @@
 {
   "name": "@govuk-one-login/one-login-analytics",
-  "version": "0.0.10",
+  "version": "1.0.0",
   "description": "Reusable GA4 package for GDS One Login",
   "main": "lib/analytics.js",
   "type": "module",
