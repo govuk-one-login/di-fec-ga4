@@ -63,5 +63,8 @@
     "hooks": {
       "pre-commit": "npm run precommit"
     }
+  },
+  "dependencies": {
+    "copy-webpack-plugin": "^12.0.2"
   }
 }
