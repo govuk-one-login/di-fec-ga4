@@ -57,7 +57,7 @@ The package is owned by the DI Frontend Capability team, part of the development
 
 1. Install NPM package
    ```sh
-   npm install @govuk-one-login/one-login-analytics
+   npm install @govuk-one-login/frontend-analytics
    ```
 2. Configure your node application's startup file (example: app.js or index.js) and add a new virtual directory:
 
@@ -67,7 +67,7 @@ The package is owned by the DI Frontend Capability team, part of the development
      express.static(
        path.join(
          __dirname,
-         "../node_modules/@govuk-one-login/one-login-analytics/lib",
+         "../node_modules/@govuk-one-login/frontend-analytics/lib",
        ),
      ),
    );

@@ -1,5 +1,5 @@
 {
-  "name": "@govuk-one-login/one-login-analytics",
+  "name": "@govuk-one-login/frontend-analytics",
   "version": "1.0.2",
   "description": "Reusable GA4 package for GDS One Login",
   "main": "lib/analytics.js",
