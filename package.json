@@ -23,12 +23,12 @@
     "lib"
   ],
   "keywords": [
-    "one-login",
+    "govuk-one-login",
     "gds",
     "ga4",
     "google analytics 4",
-    "onelogin",
-    "one login"
+    "govukonelogin",
+    "gouk one login"
   ],
   "author": "DI Frontend Capability Team",
   "license": "ISC",
