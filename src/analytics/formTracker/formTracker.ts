@@ -266,30 +266,24 @@ export class FormTracker extends BaseTracker {
    * @return {boolean} Returns true if the fields represent a date field, false otherwise.
    */
   isDateFields(fields: FormField[]): boolean {
-    //date is composed of 3 fields
-    if (fields.length !== 3) {
-      return false;
-    }
-    //all field ids need to be linked to the same prefix id
-    const idPrefix_field1 = fields[0].id.split("-")[0];
-    const idPrefix_field2 = fields[1].id.split("-")[0];
-    const idPrefix_field3 = fields[2].id.split("-")[0];
-    if (
-      idPrefix_field1 !== idPrefix_field2 ||
-      idPrefix_field1 !== idPrefix_field3 ||
-      idPrefix_field2 !== idPrefix_field3
-    ) {
-      return false;
-    }
-    //fields needs to finish with -day, -month, -year
-    const idSuffix_field1 = fields[0].id.split("-").pop();
-    const idSuffix_field2 = fields[1].id.split("-").pop();
-    const idSuffix_field3 = fields[2].id.split("-").pop();
+    //get 3 date fields
+    const dayField = fields.find((field) => field.id.endsWith("day"));
+    const monthField = fields.find((field) => field.id.endsWith("month"));
+    const yearField = fields.find((field) => field.id.endsWith("year"));
 
+    //check if we have the 3 date fields
+    if (!dayField || !monthField || !yearField) {
+      return false;
+    }
+
+    //all field ids need to be linked to the same prefix id
+    const idPrefix_dayField = dayField.id.split("-")[0];
+    const idPrefix_monthField = monthField.id.split("-")[0];
+    const idPrefix_yearField = yearField.id.split("-")[0];
     if (
-      idSuffix_field1 !== "day" ||
-      idSuffix_field2 !== "month" ||
-      idSuffix_field3 !== "year"
+      idPrefix_dayField !== idPrefix_monthField ||
+      idPrefix_dayField !== idPrefix_yearField ||
+      idPrefix_monthField !== idPrefix_yearField
     ) {
       return false;
     }
@@ -303,14 +297,38 @@ export class FormTracker extends BaseTracker {
    * @return {FormField[]} array containing the combined date field
    */
   combineDateFields(fields: FormField[]): FormField[] {
-    const combineDateField: FormField[] = [
-      {
-        id: fields[0].id,
-        name: fields[0].id.split("-")[0],
-        value: `${fields[0].value}-${fields[1].value}-${fields[2].value}`,
-        type: "date",
-      },
-    ];
-    return combineDateField;
+    let newArrayFields: FormField[] = [];
+    fields.forEach((field) => {
+      //if dash is in the name
+      if (field.name.includes("-")) {
+        //split the name
+        const fieldName = field.name.split("-")[0];
+        if (!newArrayFields.find((field) => field.name === fieldName)) {
+          //get day month and year
+          const dayField = fields.find(
+            (field) => field.id === `${fieldName}-day`,
+          );
+          const monthField = fields.find(
+            (field) => field.id === `${fieldName}-month`,
+          );
+          const yearField = fields.find(
+            (field) => field.id === `${fieldName}-year`,
+          );
+          if (dayField && monthField && yearField) {
+            const combinedDateField: FormField = {
+              id: `${fieldName}-day`,
+              name: fieldName,
+              value: `${dayField.value}-${monthField.value}-${yearField.value}`,
+              type: "date",
+            };
+            newArrayFields.push(combinedDateField);
+          }
+        }
+      } else {
+        //not a date field
+        newArrayFields.push(field);
+      }
+    });
+    return newArrayFields;
   }
 }
