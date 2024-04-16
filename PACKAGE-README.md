@@ -171,6 +171,32 @@ window.DI.analyticsGa4.pageViewTracker.trackOnPageLoad({
 });
 ```
 
+A Nunjuck component can be used for a reusable solution. The ga4-opl component, available in the "components" folder, lets you add Page view tracking code with just one line of code.
+Steps:
+
+1. Add the components folder of this package into your path views array.
+2. Import the component into your base files.
+3. Add ga4OnPageLoad function at the end of your views.
+
+Example:
+
+```js
+{
+  {
+    ga4OnPageLoad({
+      nonce: scriptNonce,
+      statusCode: "200",
+      englishPageTitle: pageTitleName,
+      taxonomyLevel1: "authentication",
+      taxonomyLevel2: "feedback",
+      contentId: "e08d04e6-b24f-4bad-9955-1eb860771747",
+      loggedInStatus: false,
+      dynamic: false,
+    });
+  }
+}
+```
+
 ### Navigation Tracker
 
 Navigation tracking allows us to see exactly how often each navigation link is used. It's triggered by a listener on the click event.
@@ -202,8 +228,8 @@ If a checkbox or radio field has been implemented without a legend, please follo
 2. Set the `rel` attribute value to match the `id` of the field.
 
 **Example:**
-(
 
+```js
 <h2 rel="consentCheckbox">Section Title</h2>
 <div class="govuk-form-group">
   <div class="govuk-checkboxes" data-module="govuk-checkboxes">
@@ -214,7 +240,8 @@ If a checkbox or radio field has been implemented without a legend, please follo
       </label>
     </div>
   </div>
-</div>)
+</div>
+```
 
 ### Form Change Tracker
 
@@ -234,8 +261,8 @@ If a checkbox or radio field has been implemented without a legend, please follo
 2. Set the `rel` attribute value to match the `id` of the field.
 
 **Example:**
-(
 
+```js
 <h2 rel="consentCheckbox">Section Title</h2>
 <div class="govuk-form-group">
   <div class="govuk-checkboxes" data-module="govuk-checkboxes">
@@ -246,7 +273,8 @@ If a checkbox or radio field has been implemented without a legend, please follo
       </label>
     </div>
   </div>
-</div>)
+</div>
+```
 
 ### Universal Analytics compability
 

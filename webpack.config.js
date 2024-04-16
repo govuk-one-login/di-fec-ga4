@@ -1,6 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import TerserPlugin from "terser-webpack-plugin";
+import CopyPlugin from "copy-webpack-plugin";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,6 +11,13 @@ const config = {
     path: path.resolve(__dirname, "dist/lib"),
     filename: "analytics.js",
   },
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: "./src/components", to: "../components" }, //nunjuck components
+      ],
+    }),
+  ],
   module: {
     rules: [
       {
