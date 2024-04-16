@@ -6,7 +6,7 @@
 <br />
 <div align="center">
   
-<h3 align="center">GOV UK One Login GA4 Implementation</h3>
+<h3 align="center">GOV.UK One Login GA4 Implementation</h3>
   <p align="center">
     This package enables GOV UK LOGIN frontend Node.js applications to use Google Tag Manager and Google Analytics 4.
     <br />
@@ -41,11 +41,11 @@
 
 ## About The Project
 
-The GDS One Login GA4 (Google Analytics 4) node package is a shared, reusable solution created to facilitate the upgrade from GAU to GA4 across the One Login programme as GAU is being retired mid 2024.
+The GDS Frontend Analytics (Google Analytics 4) node package is a shared, reusable solution created to facilitate the upgrade from GAU to GA4 across the GOV.UK One Login programme as GAU is being retired mid 2024.
 
-The purpose of this package is to make it as easy as possible for the various pods that make up the One Login journey to upgrade their analytics while having as minimal an impact as possible on the dev teams time and effort.
+The purpose of this package is to make it as easy as possible for the various pods that make up the GOV.UK One Login journey to upgrade their analytics while having as minimal an impact as possible on the dev teams time and effort.
 
-The package is owned by the DI Frontend Capability team, part of the development of this tool involves ongoing discovery with the pods responsible for maintaining the frontend repositories that make up the One Login journey. As more information is collated, the package and documentation will be updated. As such, it is considered a WIP and the pods will be notified when a stable release is ready.
+The package is owned by the DI Frontend Capability team, part of the development of this tool involves ongoing discovery with the pods responsible for maintaining the frontend repositories that make up the GOV.UK One Login journey. As more information is collated, the package and documentation will be updated. As such, it is considered a WIP and the pods will be notified when a stable release is ready.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
