@@ -90,6 +90,6 @@ export class SelectContentTracker extends BaseTracker {
    */
 
   getActionValue(element: HTMLDetailsElement): string {
-    return element.open ? "open" : "closed";
+    return element.open ? "opened" : "closed";
   }
 }

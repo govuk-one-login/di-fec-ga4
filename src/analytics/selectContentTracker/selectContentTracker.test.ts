@@ -80,7 +80,7 @@ describe("selectContentTracker", () => {
         url: "undefined",
         text: "Details Summary Text",
         section: "undefined",
-        action: "open",
+        action: "opened",
         external: "undefined",
         link_domain: "undefined",
         "link_path_parts.1": "undefined",
@@ -99,7 +99,7 @@ describe("selectContentTracker", () => {
         url: "undefined",
         text: "Details Summary Text 2",
         section: "undefined",
-        action: "open",
+        action: "opened",
         external: "undefined",
         link_domain: "undefined",
         "link_path_parts.1": "undefined",
@@ -180,12 +180,12 @@ describe("getActionValue", () => {
     cancelable: true,
   });
 
-  test("should return open if details element has been toggled open", () => {
+  test("should return opened if details element has been toggled open", () => {
     const details = document.createElement("details");
     details.open = true;
     details.dispatchEvent(action);
     const element = action.target as HTMLDetailsElement;
-    expect(newInstance.getActionValue(element)).toBe("open");
+    expect(newInstance.getActionValue(element)).toBe("opened");
   });
 
   test("should return closed if details element has been closed", () => {
