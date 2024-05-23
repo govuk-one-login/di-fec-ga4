@@ -2,6 +2,7 @@ import { Cookie } from "../../cookie/cookie";
 import { FormResponseTracker } from "../formResponseTracker/formResponseTracker";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
+import { SelectContentTracker } from "../selectContentTracker/selectContentTracker";
 import { OptionsInterface } from "./core.interface";
 
 export class Analytics {
@@ -11,6 +12,7 @@ export class Analytics {
   navigationTracker: NavigationTracker | undefined;
   cookie: Cookie | undefined;
   formResponseTracker: FormResponseTracker | undefined;
+  selectContentTracker: SelectContentTracker | undefined;
 
   /**
    * Initializes a new instance of the class.
@@ -29,6 +31,7 @@ export class Analytics {
     if (!options.disableGa4Tracking) {
       this.formResponseTracker = new FormResponseTracker();
       this.navigationTracker = new NavigationTracker();
+      this.selectContentTracker = new SelectContentTracker();
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);
       }
