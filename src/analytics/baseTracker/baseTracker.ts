@@ -25,7 +25,6 @@ export class BaseTracker {
       | NavigationEventInterface
       | FormEventInterface,
   ): boolean {
-    console.log("running pushToDataLayer");
     window.dataLayer = window.dataLayer || [];
     try {
       window.dataLayer.push(event);

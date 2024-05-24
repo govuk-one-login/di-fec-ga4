@@ -37,7 +37,6 @@ export class FormErrorTracker extends FormTracker {
     }
 
     if (!fields.length) {
-      console.log("form or fields not found");
       return false;
     }
 
