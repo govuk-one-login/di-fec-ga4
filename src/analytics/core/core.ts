@@ -17,8 +17,6 @@ export class Analytics {
    * Initializes a new instance of the class.
    *
    * @param {string} gtmId - The GTM ID for the instance.
-   * @param {boolean} isDataSensitive - Is KBV Enabled
-   *
    */
   constructor(gtmId: string, options: OptionsInterface = {}) {
     this.gtmId = gtmId;
