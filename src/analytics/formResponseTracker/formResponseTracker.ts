@@ -124,8 +124,8 @@ export class FormResponseTracker extends FormTracker {
   /**
    * Redacts field value if data is flagged as sensitive
    *
-   * @param {SubmitEvent} event - The SubmitEvent object containing the button.
-   * @return {string} The label of the button, or "undefined" if it is not found.
+   * @param {any} string- Text field input
+   * @return {string} The text field or undefined
    */
   redactPII(parameter: any): string {
     return this.isDataSensitive ? "undefined" : parameter.trim();
