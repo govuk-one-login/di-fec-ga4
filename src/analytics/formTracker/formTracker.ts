@@ -6,7 +6,7 @@ export class FormTracker extends BaseTracker {
   DROPDOWN_FIELD_TYPE = "drop-down list";
   RADIO_FIELD_TYPE = "radio buttons";
 
-  constructor() {
+  constructor(isDataSensitive: boolean = false) {
     super();
   }
 

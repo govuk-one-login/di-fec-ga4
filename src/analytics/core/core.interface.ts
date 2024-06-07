@@ -7,4 +7,5 @@ export interface OptionsInterface {
   disableGa4Tracking?: boolean;
   disableUaTracking?: boolean;
   cookieDomain?: string;
+  isDataSensitive?: boolean;
 }

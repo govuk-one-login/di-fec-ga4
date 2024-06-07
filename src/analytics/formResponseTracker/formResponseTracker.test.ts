@@ -191,7 +191,7 @@ describe("form with radio buttons", () => {
 
   const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
 
-  test("datalayer event should be defined", () => {
+  test("datalayer event should be defined as default", () => {
     const instance = new FormResponseTracker();
     document.body.innerHTML =
       '<div id="main-content">' +
@@ -213,6 +213,45 @@ describe("form with radio buttons", () => {
         type: "radio buttons",
         url: "http://localhost/test-url",
         text: "test label male",
+        section: "test label questions",
+        action: "undefined",
+        external: "false",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
+      },
+    };
+    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+  });
+
+  test("datalayer event should redact information if data is flagged as sensitive", () => {
+    const isDataSensitive = true;
+    // KBV flag is set to true
+    const instance = new FormResponseTracker(isDataSensitive);
+
+    document.body.innerHTML =
+      '<div id="main-content">' +
+      '<form action="/test-url" method="post">' +
+      "<fieldset>" +
+      "  <legend>test label questions</legend>" +
+      '  <label for="male">test label male</label>' +
+      '  <input type="radio" id="male" name="male" value="Male" checked/>' +
+      '  <label for="female">test label female</label>' +
+      '  <input type="radio" id="female" name="female" value="Male"/>' +
+      "</fieldset>";
+    '  <button id="button" type="submit">submit</button>' + "</form></div>";
+    document.dispatchEvent(action);
+
+    const dataLayerEvent: FormEventInterface = {
+      event: "event_data",
+      event_data: {
+        event_name: "form_response",
+        type: "radio buttons",
+        url: "http://localhost/test-url",
+        text: "undefined",
         section: "test label questions",
         action: "undefined",
         external: "false",

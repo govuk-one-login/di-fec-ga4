@@ -6,6 +6,7 @@ import { OptionsInterface } from "./core.interface";
 
 export class Analytics {
   gtmId: string;
+  isDataSensitive: boolean | undefined;
   uaContainerId: string | undefined;
   pageViewTracker: PageViewTracker | undefined;
   navigationTracker: NavigationTracker | undefined;
@@ -16,18 +17,21 @@ export class Analytics {
    * Initializes a new instance of the class.
    *
    * @param {string} gtmId - The GTM ID for the instance.
+   * @param {boolean} isDataSensitive - Is KBV Enabled
+   *
    */
   constructor(gtmId: string, options: OptionsInterface = {}) {
     this.gtmId = gtmId;
 
     this.cookie = new Cookie(options.cookieDomain);
+    this.isDataSensitive = Boolean(options.isDataSensitive);
 
     this.pageViewTracker = new PageViewTracker({
       disableGa4Tracking: options.disableGa4Tracking,
     });
 
     if (!options.disableGa4Tracking) {
-      this.formResponseTracker = new FormResponseTracker();
+      this.formResponseTracker = new FormResponseTracker(this.isDataSensitive);
       this.navigationTracker = new NavigationTracker();
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);
