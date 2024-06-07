@@ -12,7 +12,7 @@ export class FormResponseTracker extends FormTracker {
 
   /**
    * Initializes a new instance of the FormResponseTracker class.
-   *  * @param {boolean} isDataSensitive - Is sensitve data data
+   *  * @param {boolean} isDataSensitive - Flag if data is sensitive
    *  * @return {void}
    */
   constructor(isDataSensitive: boolean = false) {
