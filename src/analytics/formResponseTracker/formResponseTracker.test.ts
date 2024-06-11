@@ -231,7 +231,6 @@ describe("form with radio buttons", () => {
 
   test("datalayer event should redact information if data is flagged as sensitive", () => {
     const isDataSensitive = true;
-    // KBV flag is set to true
     const instance = new FormResponseTracker(isDataSensitive);
 
     document.body.innerHTML =
