@@ -91,7 +91,7 @@ The package is owned by the DI Frontend Capability team, part of the development
 
    window.DI.appInit can take another parameter: an object of settings. That can be used if you want to disable some options. This is the property of this settings object:
 
-   - isDataSensitive (boolean): specify if from response tracker can be collect form inputs for tracking purposes
+   - isDataSensitive (boolean): specify if form response tracker can be collect form inputs for tracking purposes (default set to true, this will redact PII)
    - disableGa4Tracking (boolean): disable GA4 trackers
    - disableUaTracking (boolean): disable Universal Analytics tracker
    - cookieDomain (string): specify the domain the analytics consent cookie should be raised against (default is "account.gov.uk")
