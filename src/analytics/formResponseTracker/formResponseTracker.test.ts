@@ -179,7 +179,7 @@ describe("FormResponseTracker", () => {
   );
 
   test("new instance should call initialiseEventListener", () => {
-    const instance = new FormResponseTracker();
+    const instance = new FormResponseTracker(true);
     expect(instance.initialiseEventListener).toBeCalled();
   });
 });
@@ -446,7 +446,7 @@ describe("Cookie Management", () => {
     cancelable: true,
   });
   const spy = jest.spyOn(FormResponseTracker.prototype, "trackFormResponse");
-  const instance = new FormResponseTracker();
+  const instance = new FormResponseTracker(true);
 
   test("trackFormResponse should return false if not cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
@@ -469,7 +469,7 @@ describe("cancel event if form is invalid", () => {
     cancelable: true,
   });
   const spy = jest.spyOn(FormResponseTracker.prototype, "trackFormResponse");
-  const instance = new FormResponseTracker();
+  const instance = new FormResponseTracker(true);
 
   test("trackFormResponse should return false if form is invalid", () => {
     window.DI.analyticsGa4.cookie.consent = true;

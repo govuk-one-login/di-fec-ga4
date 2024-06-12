@@ -34,6 +34,9 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
+    <li>
+      <a href="#updating-to-v2">Updating to V2</a>
+    </li>
   </ol>
 </details>
 
@@ -284,3 +287,36 @@ More information:
 https://govukverify.atlassian.net/wiki/spaces/DIFC/pages/3843227661/Universal+Analytics+compatibility
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Updating to V2
+
+In V2 all form responses are treated as sensitive by default, and specific text content is removed. This is in contrast to V1 where by default a more complex algorithm was used to determine what data to strip. This is needed to support teams who aren't confident that there can be no PII represented in their forms.
+
+If you are confident that your forms cannot contain PII and you want the original behaviour after the upgrade to v2, you will need to explicitly set the `isDataSensitive` flag to false.
+
+```javascript
+// v1.0.0
+window.DI.appInit(
+  {
+    ga4ContainerId: "{{ ga4ContainerId }}",
+    uaContainerId: "{{ uaContainerId }}",
+  },
+  {
+    cookieDomain: "{{ cookieDomain }}",
+  },
+);
+
+// is equivalent to...
+
+// v2.0.0
+window.DI.appInit(
+  {
+    ga4ContainerId: "{{ ga4ContainerId }}",
+    uaContainerId: "{{ uaContainerId }}",
+  },
+  {
+    cookieDomain: "{{ cookieDomain }}",
+    isDataSensitive: false,
+  },
+);
+```

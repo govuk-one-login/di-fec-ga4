@@ -15,7 +15,7 @@ export class FormResponseTracker extends FormTracker {
    *  * @param {boolean} isDataSensitive - Flag if data is sensitive
    *  * @return {void}
    */
-  constructor(isDataSensitive: boolean = true) {
+  constructor(isDataSensitive: boolean) {
     super();
     this.isDataSensitive = isDataSensitive;
     this.initialiseEventListener();

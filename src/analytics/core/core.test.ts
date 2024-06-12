@@ -8,12 +8,12 @@ describe("should initialize the ga4 class", () => {
   const gtmId = "GTM-XXXX";
 
   test("gtmId property", () => {
-    const newInstance = new Analytics(gtmId);
+    const newInstance = new Analytics(gtmId, {});
     expect(newInstance.gtmId).toEqual(gtmId);
   });
 
   test("pageViewTracker property", () => {
-    const newInstance = new Analytics(gtmId);
+    const newInstance = new Analytics(gtmId, {});
     expect(newInstance.pageViewTracker).toBeInstanceOf(PageViewTracker);
   });
 
@@ -22,7 +22,7 @@ describe("should initialize the ga4 class", () => {
   });
 
   test("tag manager script added to document", () => {
-    const newInstance = new Analytics(gtmId);
+    const newInstance = new Analytics(gtmId, {});
     newInstance.loadGtmScript(newInstance.gtmId);
     expect(document.getElementsByTagName("script")[0].src).toEqual(
       "https://www.googletagmanager.com/gtm.js?id=GTM-XXXX",

@@ -18,7 +18,7 @@ export class Analytics {
    *
    * @param {string} gtmId - The GTM ID for the instance.
    */
-  constructor(gtmId: string, options: OptionsInterface = {}) {
+  constructor(gtmId: string, options: OptionsInterface) {
     this.gtmId = gtmId;
 
     this.cookie = new Cookie(options.cookieDomain);
