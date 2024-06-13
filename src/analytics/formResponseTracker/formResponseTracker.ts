@@ -8,14 +8,16 @@ import {
 export class FormResponseTracker extends FormTracker {
   eventName: string = "form_response";
   eventType: string = "event_data";
+  isDataSensitive: boolean;
 
   /**
    * Initializes a new instance of the FormResponseTracker class.
-   *
-   * @return {void}
+   *  * @param {boolean} isDataSensitive - Flag if data is sensitive
+   *  * @return {void}
    */
-  constructor() {
+  constructor(isDataSensitive: boolean) {
     super();
+    this.isDataSensitive = isDataSensitive;
     this.initialiseEventListener();
   }
 
@@ -81,7 +83,9 @@ export class FormResponseTracker extends FormTracker {
             event_name: this.eventName,
             type: validateParameter(this.getFieldType([field]), 100),
             url: validateParameter(submitUrl, 100),
-            text: validateParameter(this.getFieldValue([field]), 100),
+            text: this.redactPII(
+              validateParameter(this.getFieldValue([field]), 100),
+            ),
             section: validateParameter(this.getSectionValue(field), 100),
             action: validateParameter(this.getButtonLabel(event), 100),
             external: "false",
@@ -115,5 +119,15 @@ export class FormResponseTracker extends FormTracker {
     return event.submitter?.textContent
       ? event.submitter.textContent.trim()
       : "undefined";
+  }
+
+  /**
+   * Redacts field value if data is flagged as sensitive
+   *
+   * @param {string} string - Text field input
+   * @return {string} The text field or undefined
+   */
+  redactPII(parameter: string): string {
+    return this.isDataSensitive ? "undefined" : parameter.trim();
   }
 }

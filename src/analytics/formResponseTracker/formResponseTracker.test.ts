@@ -17,7 +17,8 @@ describe("form with multiple fields", () => {
   const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
 
   test("event fired and data layer defined for each of the fields", () => {
-    const instance = new FormResponseTracker();
+    const isDataSensitive = false;
+    const instance = new FormResponseTracker(isDataSensitive);
     document.body.innerHTML =
       '<div id="main-content">' +
       '<form action= "/test-url" method= "post">' +
@@ -178,7 +179,7 @@ describe("FormResponseTracker", () => {
   );
 
   test("new instance should call initialiseEventListener", () => {
-    const instance = new FormResponseTracker();
+    const instance = new FormResponseTracker(true);
     expect(instance.initialiseEventListener).toBeCalled();
   });
 });
@@ -191,8 +192,9 @@ describe("form with radio buttons", () => {
 
   const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
 
-  test("datalayer event should be defined", () => {
-    const instance = new FormResponseTracker();
+  test("datalayer event should be defined as default", () => {
+    const isDataSensitive = false;
+    const instance = new FormResponseTracker(isDataSensitive);
     document.body.innerHTML =
       '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
@@ -226,6 +228,44 @@ describe("form with radio buttons", () => {
     };
     expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
   });
+
+  test("datalayer event should redact information if data is flagged as sensitive", () => {
+    const isDataSensitive = true;
+    const instance = new FormResponseTracker(isDataSensitive);
+
+    document.body.innerHTML =
+      '<div id="main-content">' +
+      '<form action="/test-url" method="post">' +
+      "<fieldset>" +
+      "  <legend>test label questions</legend>" +
+      '  <label for="male">test label male</label>' +
+      '  <input type="radio" id="male" name="male" value="Male" checked/>' +
+      '  <label for="female">test label female</label>' +
+      '  <input type="radio" id="female" name="female" value="Male"/>' +
+      "</fieldset>";
+    '  <button id="button" type="submit">submit</button>' + "</form></div>";
+    document.dispatchEvent(action);
+
+    const dataLayerEvent: FormEventInterface = {
+      event: "event_data",
+      event_data: {
+        event_name: "form_response",
+        type: "radio buttons",
+        url: "http://localhost/test-url",
+        text: "undefined",
+        section: "test label questions",
+        action: "undefined",
+        external: "false",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/test-url",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
+      },
+    };
+    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+  });
 });
 
 describe("form with input checkbox", () => {
@@ -237,7 +277,8 @@ describe("form with input checkbox", () => {
   const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
 
   test("datalayer event should be defined", () => {
-    const instance = new FormResponseTracker();
+    const isDataSensitive = false;
+    const instance = new FormResponseTracker(isDataSensitive);
 
     document.body.innerHTML =
       '<div id="main-content">' +
@@ -282,7 +323,8 @@ describe("form with input text", () => {
   const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
 
   test("datalayer event should be defined", () => {
-    const instance = new FormResponseTracker();
+    const isDataSensitive = false;
+    const instance = new FormResponseTracker(isDataSensitive);
     document.body.innerHTML =
       '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
@@ -323,7 +365,8 @@ describe("form with input textarea", () => {
   const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
 
   test("datalayer event should be defined", () => {
-    const instance = new FormResponseTracker();
+    const isDataSensitive = false;
+    const instance = new FormResponseTracker(isDataSensitive);
     document.body.innerHTML =
       '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
@@ -364,7 +407,8 @@ describe("form with dropdown", () => {
   const spy = jest.spyOn(FormResponseTracker.prototype, "pushToDataLayer");
 
   test("datalayer event should be defined", () => {
-    const instance = new FormResponseTracker();
+    const isDataSensitive = false;
+    const instance = new FormResponseTracker(isDataSensitive);
     document.body.innerHTML =
       '<div id="main-content">' +
       '<form action="/test-url" method="post">' +
@@ -402,7 +446,7 @@ describe("Cookie Management", () => {
     cancelable: true,
   });
   const spy = jest.spyOn(FormResponseTracker.prototype, "trackFormResponse");
-  const instance = new FormResponseTracker();
+  const instance = new FormResponseTracker(true);
 
   test("trackFormResponse should return false if not cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
@@ -425,7 +469,7 @@ describe("cancel event if form is invalid", () => {
     cancelable: true,
   });
   const spy = jest.spyOn(FormResponseTracker.prototype, "trackFormResponse");
-  const instance = new FormResponseTracker();
+  const instance = new FormResponseTracker(true);
 
   test("trackFormResponse should return false if form is invalid", () => {
     window.DI.analyticsGa4.cookie.consent = true;
