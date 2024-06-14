@@ -93,21 +93,21 @@ export class FormTracker extends BaseTracker {
    */
 
   public getFormFields(form: HTMLFormElement): FormField[] {
-    for (let i = 0; i < form.elements.length; i++) {
-      const element = form.elements[i] as HTMLInputElement;
+    for (const element of form.elements) {
+      const inputElement = element as HTMLInputElement;
 
-      if (this.isExcludedType(element)) {
+      if (this.isExcludedType(inputElement)) {
         continue;
       }
 
-      if (element.type === "checkbox") {
-        this.processCheckbox(element);
-      } else if (element.type === "radio") {
-        this.processRadio(element);
-      } else if (element.type === "select-one") {
-        this.processSelectOne(element as unknown as HTMLSelectElement);
+      if (inputElement.type === "checkbox") {
+        this.processCheckbox(inputElement);
+      } else if (inputElement.type === "radio") {
+        this.processRadio(inputElement);
+      } else if (inputElement.type === "select-one") {
+        this.processSelectOne(inputElement as unknown as HTMLSelectElement);
       } else {
-        this.processTextElement(element);
+        this.processTextElement(inputElement);
       }
     }
 
