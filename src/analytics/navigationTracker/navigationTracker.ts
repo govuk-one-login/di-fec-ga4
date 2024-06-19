@@ -39,10 +39,9 @@ export class NavigationTracker extends BaseTracker {
     /*
      * Navigation tracker is only for links and navigation buttons outside of error summary list
      */
+
     if (
-      element.parentElement &&
-      element.parentElement.parentElement &&
-      element.parentElement.parentElement.className.includes(
+      element.parentElement?.parentElement?.className.includes(
         "govuk-error-summary__list",
       )
     ) {
@@ -67,15 +66,16 @@ export class NavigationTracker extends BaseTracker {
       element.tagName === "BUTTON" &&
       element.attributes.getNamedItem("data-link")
     ) {
-      element.href =
-        `${window.location.protocol}//${
-          window.location.host
-        }${element.attributes.getNamedItem("data-link")?.value}` || "undefined";
+      const dataLinkValue = element.attributes.getNamedItem("data-link")?.value;
+      if (dataLinkValue) {
+        element.href = `${window.location.protocol}//${window.location.host}${dataLinkValue}`;
+      } else {
+        element.href = "undefined";
+      }
     }
 
     // Ignore links that don't have an inbound or outbound href
     if (
-      !element.href ||
       !element.href?.length ||
       element.href === "#" ||
       element.href === window.location.href + "#"
