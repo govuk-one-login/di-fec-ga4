@@ -217,8 +217,14 @@ describe("isHeaderMenuBarLink", () => {
     expect(newInstance.isHeaderMenuBarLink(element)).toBe(true);
   });
 
-  test("should return false if link is not inside the header tag", () => {
-    document.body.innerHTML = `<header></header><a id="testLink">Link to GOV.UK</a>`;
+  test("should return true if link is inside the nav tag", () => {
+    document.body.innerHTML = `<nav><a id="testLink">Link to GOV.UK</a></nav>`;
+    const element = document.getElementById("testLink") as HTMLElement;
+    expect(newInstance.isHeaderMenuBarLink(element)).toBe(true);
+  });
+
+  test("should return false if link is not inside the header or nav tag", () => {
+    document.body.innerHTML = `<div><a id="testLink">Link to GOV.UK</a></div>`;
     const element = document.getElementById("testLink") as HTMLElement;
     expect(newInstance.isHeaderMenuBarLink(element)).toBe(false);
   });

@@ -227,9 +227,15 @@ export class NavigationTracker extends BaseTracker {
     const header = document.getElementsByTagName("header")[0];
     const nav = document.getElementsByTagName("nav")[0];
 
-    return (
-      (header && header.contains(element)) || (nav && nav.contains(element))
-    );
+    if (header && header.contains(element)) {
+      return true;
+    }
+
+    if (nav && nav.contains(element)) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
