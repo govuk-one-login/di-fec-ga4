@@ -225,7 +225,11 @@ export class NavigationTracker extends BaseTracker {
    */
   isHeaderMenuBarLink(element: HTMLElement): boolean {
     const header = document.getElementsByTagName("header")[0];
-    return header && header.contains(element);
+    const nav = document.getElementsByTagName("nav")[0];
+
+    return (
+      (header && header.contains(element)) || (nav && nav.contains(element))
+    );
   }
 
   /**
