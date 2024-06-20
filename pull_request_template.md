@@ -2,7 +2,7 @@
 
 ### Tickets
 
-(DFC-**)[https://govukverify.atlassian.net/browse/DFC-**]
+[DFC-\*\*](https://govukverify.atlassian.net/browse/DFC-**)
 
 ### Steps to Reproduce
 
