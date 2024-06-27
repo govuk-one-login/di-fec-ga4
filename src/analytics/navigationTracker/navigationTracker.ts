@@ -227,15 +227,7 @@ export class NavigationTracker extends BaseTracker {
     const header = document.querySelector("header");
     const nav = document.querySelector("nav");
 
-    if (header && header.contains(element)) {
-      return true;
-    }
-
-    if (nav && nav.contains(element)) {
-      return true;
-    }
-
-    return false;
+    return header?.contains(element) || nav?.contains(element) || false;
   }
 
   /**
