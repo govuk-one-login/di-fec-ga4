@@ -17,6 +17,7 @@ export interface PageViewEventInterface {
     updated_at?: string;
     relying_party?: string;
   };
+  // "gtm.allowlist": string[];
 }
 
 export interface PageViewParametersInterface {
@@ -27,4 +28,11 @@ export interface PageViewParametersInterface {
   content_id: string;
   logged_in_status: boolean;
   dynamic: boolean;
+}
+
+export interface GTMInitInterface {
+  event: string;
+  "gtm.allowlist": string[];
+  "gtm.blocklist": string[];
+  "gtm.start": number;
 }
