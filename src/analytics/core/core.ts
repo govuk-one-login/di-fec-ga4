@@ -29,6 +29,12 @@ export class Analytics {
     });
 
     if (!options.disableGa4Tracking) {
+      this.pageViewTracker.pushToDataLayer({
+        "gtm.allowlist": ["google"],
+        "gtm.blocklist": ["adm", "awct", "sp", "gclidw", "gcs", "opt"],
+        "gtm.start": new Date().getTime(),
+        event: "gtm.js",
+      });
       this.formResponseTracker = new FormResponseTracker(this.isDataSensitive);
       this.navigationTracker = new NavigationTracker();
       if (this.cookie.consent) {

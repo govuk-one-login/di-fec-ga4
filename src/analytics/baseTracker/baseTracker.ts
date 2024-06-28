@@ -1,6 +1,7 @@
 import { PageViewEventInterface } from "../pageViewTracker/pageViewTracker.interface";
 import { NavigationEventInterface } from "../navigationTracker/navigationTracker.interface";
 import { FormEventInterface } from "../formTracker/formTracker.interface";
+import { GTMInitInterface } from "../pageViewTracker/pageViewTracker.interface";
 
 declare global {
   interface Window {
@@ -23,7 +24,8 @@ export class BaseTracker {
     event:
       | PageViewEventInterface
       | NavigationEventInterface
-      | FormEventInterface,
+      | FormEventInterface
+      | GTMInitInterface,
   ): boolean {
     window.dataLayer = window.dataLayer || [];
     try {
