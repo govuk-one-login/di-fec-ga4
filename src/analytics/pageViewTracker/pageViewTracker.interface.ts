@@ -17,7 +17,6 @@ export interface PageViewEventInterface {
     updated_at?: string;
     relying_party?: string;
   };
-  // "gtm.allowlist": string[];
 }
 
 export interface PageViewParametersInterface {
