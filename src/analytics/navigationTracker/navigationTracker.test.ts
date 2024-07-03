@@ -95,6 +95,18 @@ describe("navigationTracker", () => {
     href.dispatchEvent(action);
   });
 
+  //test trackNavigation doesn't accept change links
+  test("trackNavigation should return false if it is a change link", () => {
+    document.body.innerHTML = "<div></div>";
+    const href = document.createElement("A");
+    href.innerHTML = "Change answer";
+    href.setAttribute("href", "http://localhost?edit=true");
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackNavigation(event)).toBe(false);
+    });
+    href.dispatchEvent(action);
+  });
+
   //test pushToDataLayer is called
   test("pushToDataLayer is called", () => {
     const href = document.createElement("A");
