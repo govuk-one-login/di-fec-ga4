@@ -1,4 +1,5 @@
 import { Cookie } from "../../cookie/cookie";
+import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
 import { FormResponseTracker } from "../formResponseTracker/formResponseTracker";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
@@ -10,6 +11,7 @@ export class Analytics {
   uaContainerId: string | undefined;
   pageViewTracker: PageViewTracker | undefined;
   navigationTracker: NavigationTracker | undefined;
+  formChangeTracker: FormChangeTracker | undefined;
   cookie: Cookie | undefined;
   formResponseTracker: FormResponseTracker | undefined;
 
@@ -31,6 +33,7 @@ export class Analytics {
     if (!options.disableGa4Tracking) {
       this.formResponseTracker = new FormResponseTracker(this.isDataSensitive);
       this.navigationTracker = new NavigationTracker();
+      this.formChangeTracker = new FormChangeTracker();
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);
       }

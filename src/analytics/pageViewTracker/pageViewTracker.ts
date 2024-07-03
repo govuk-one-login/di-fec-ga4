@@ -4,7 +4,6 @@ import {
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
 import { validateParameter } from "../../utils/validateParameter";
-import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
 import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
 
 export class PageViewTracker extends BaseTracker {
@@ -61,12 +60,6 @@ export class PageViewTracker extends BaseTracker {
         relying_party: this.getRelyingParty(),
       },
     };
-
-    //trigger form change tracking
-    if (document.location.href.includes("edit=true")) {
-      const formChangeTracker = new FormChangeTracker();
-      formChangeTracker.trackFormChange();
-    }
 
     try {
       this.pushToDataLayer(pageViewTrackerEvent);

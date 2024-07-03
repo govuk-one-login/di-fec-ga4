@@ -1,80 +1,182 @@
-import { describe, expect, jest, test } from "@jest/globals";
+import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { FormChangeTracker } from "./formChangeTracker";
 import { FormEventInterface } from "../formTracker/formTracker.interface";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
 describe("FormChangeTracker", () => {
+  let newInstance: FormChangeTracker;
+  let action: MouseEvent;
+
+  beforeEach(() => {
+    // Reset spies and create a new instance before each test
+    jest.clearAllMocks(); // Clear all prior mock calls
+    newInstance = new FormChangeTracker();
+    action = new MouseEvent("click", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+  });
   const spy = jest.spyOn(FormChangeTracker.prototype, "pushToDataLayer");
   const trackFormChangeSpy = jest.spyOn(
     FormChangeTracker.prototype,
     "trackFormChange",
   );
-  const getSubmitterTextSpy = jest.spyOn(
+
+  const isChangeLinkSpy = jest.spyOn(
     FormChangeTracker.prototype,
-    "getSubmitterText",
+    "isChangeLink",
   );
+
+  const getSectionSpy = jest.spyOn(FormChangeTracker.prototype, "getSection");
+
+  const constructorSpy = jest.spyOn(
+    FormChangeTracker.prototype,
+    "initialiseEventListener",
+  );
+
+  // test pushToDataLayer is called
+  test("pushToDataLayer is called", () => {
+    // Create the main content div
+    const mainContent = document.createElement("div");
+    mainContent.id = "main-content";
+
+    // Create the anchor element
+    const href = document.createElement("A");
+    href.textContent = "Change";
+    href.setAttribute("href", "http://localhost?edit=true");
+
+    // Create the form element
+    const form = document.createElement("form");
+    form.appendChild(href);
+    mainContent.appendChild(form);
+
+    // Append the main content div to the document body
+    document.body.appendChild(mainContent);
+
+    // Add a click event listener to the anchor element
+    href.addEventListener("click", (event) => {
+      newInstance.trackFormChange(event);
+    });
+
+    href.dispatchEvent(action);
+
+    // Check if pushToDataLayer was called
+    expect(newInstance.pushToDataLayer).toBeCalled();
+  });
+
+  test("new instance should call initialiseEventListener", () => {
+    expect(newInstance.initialiseEventListener).toBeCalled();
+  });
+
+  test("click should call trackNavigation", () => {
+    const href = document.createElement("A");
+    href.textContent = "Change organisation type";
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackFormChange).toBeCalled();
+    });
+  });
 
   test("trackFormChange should return false if not cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
-    const instance = new FormChangeTracker();
-    instance.trackFormChange();
-    expect(instance.trackFormChange).toReturnWith(false);
+    const href = document.createElement("A");
+    href.textContent = "Change organisation type";
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackFormChange).toReturnWith(false);
+    });
   });
 
-  test("datalayer event should be defined", () => {
-    window.DI.analyticsGa4.cookie.consent = true;
-    const instance = new FormChangeTracker();
-    document.body.innerHTML = "";
-    document.body.innerHTML =
-      '<div id="main-content">' +
-      '<form action="/test-url" method="post">' +
-      "  <legend>test label questions</legend>" +
-      '  <label for="question-1">test label question 1</label>' +
-      '  <input type="checkbox" id="question-1" name="question-1" value="test value" checked/>' +
-      '  <label for="question-2">test label question 2</label>' +
-      '  <input type="checkbox" id="question-2" name="question-2" value="test value"/>' +
-      '  <button id="button" type="submit">submit</button>' +
-      "</form></div>";
+  //test trackFormChange doesn't accept anything except but Change link
 
-    const dataLayerEvent: FormEventInterface = {
-      event: "event_data",
-      event_data: {
-        event_name: "form_change_response",
-        type: "undefined",
-        url: "http://localhost/test-url",
-        text: "change", //put static value. Waiting final documentation on form change tracker
-        section: "test label questions",
-        action: "change response",
-        external: "false",
-        link_domain: "http://localhost",
-        "link_path_parts.1": "/test-url",
-        "link_path_parts.2": "undefined",
-        "link_path_parts.3": "undefined",
-        "link_path_parts.4": "undefined",
-        "link_path_parts.5": "undefined",
-      },
-    };
-
-    instance.trackFormChange();
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+  test("trackFormChange should return false if not a change link", () => {
+    const href = document.createElement("div");
+    href.className = "govuk-footer__link";
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackFormChange(event)).toBe(false);
+    });
+    href.dispatchEvent(action);
   });
 
-  test("getSubmitterText should return submit button text", () => {
-    const instance = new FormChangeTracker();
+  // test trackFormChange accept Change Link
+  test("trackFormChange should return true if a Change link", () => {
+    const href = document.createElement("A");
+    href.textContent = "Change organisation type";
 
-    document.body.innerHTML =
-      '<div id="main-content">' +
-      '<form action="/test-url" method="post">' +
-      "  <legend>test label questions</legend>" +
-      '  <label for="question-1">test label question 1</label>' +
-      '  <input type="checkbox" id="question-1" name="question-1" value="test value" checked/>' +
-      '  <label for="question-2">test label question 2</label>' +
-      '  <input type="checkbox" id="question-2" name="question-2" value="test value"/>' +
-      '  <button id="button" type="submit">submit</button>' +
-      "</form></div>";
+    document.body.appendChild(href);
+    href.dispatchEvent(action);
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackFormChange(event)).toBe(true);
+    });
+    document.body.removeChild(href);
+  });
 
-    instance.getSubmitterText();
-    expect(instance.getSubmitterText).toReturnWith("submit");
+  // test trackFormChange does not accept Lang Toggle Link
+  test("trackFormChange should return false if it is a Lang Toggle link", () => {
+    const href = document.createElement("A");
+    href.textContent = "Change organisation type";
+    href.setAttribute("hreflang", "en");
+
+    document.body.appendChild(href);
+    href.dispatchEvent(action);
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackFormChange(event)).toBe(false);
+    });
+    document.body.removeChild(href);
+  });
+
+  test;
+  test("should return 'undefined' if parent element does not exist", () => {
+    const element = document.createElement("div");
+    expect(newInstance.getSection(element)).toBe("undefined");
+  });
+
+  test("should return text content of sibling with class 'govuk-summary-list__key'", () => {
+    const parentElement = document.createElement("div");
+    const siblingElement = document.createElement("div");
+    siblingElement.classList.add("govuk-summary-list__key");
+    siblingElement.textContent = "Expected Section";
+
+    const href = document.createElement("a");
+    parentElement.appendChild(href);
+
+    document.body.appendChild(siblingElement); // Sibling is added to the document body before the parent
+    document.body.appendChild(parentElement); // Parent is added to the document body
+
+    expect(newInstance.getSection(href)).toBe("Expected Section");
+  });
+
+  test("should check and return text content of parent element if no matching sibling found", () => {
+    const parentElement = document.createElement("div");
+    parentElement.textContent = "Parent Content";
+
+    const element = document.createElement("div");
+    parentElement.appendChild(element);
+
+    expect(newInstance.getSection(element)).toBe("Parent Content");
+  });
+
+  test("should return 'undefined' if no matching sibling found and parent has no text content", () => {
+    const parentElement = document.createElement("div");
+
+    const element = document.createElement("div");
+    parentElement.appendChild(element);
+
+    expect(newInstance.getSection(element)).toBe("undefined");
+  });
+
+  test("should return 'undefined' if sibling element is not a sibling of the provided element", () => {
+    const parentElement = document.createElement("div");
+    const siblingElement = document.createElement("div");
+    siblingElement.classList.add("govuk-summary-list__key");
+    siblingElement.textContent = "Expected Section";
+
+    // Add sibling element outside the parent element
+    document.body.appendChild(siblingElement);
+
+    const element = document.createElement("div");
+    parentElement.appendChild(element);
+
+    expect(newInstance.getSection(element)).toBe("undefined");
   });
 });

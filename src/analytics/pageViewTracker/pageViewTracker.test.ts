@@ -4,7 +4,6 @@ import {
   PageViewParametersInterface,
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
-import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
 import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
@@ -147,18 +146,6 @@ describe("Cookie Management", () => {
     };
     instance.trackOnPageLoad(parameters);
     expect(instance.trackOnPageLoad).toReturnWith(false);
-  });
-});
-
-describe("Form Change Tracker Trigger", () => {
-  const spy = jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
-
-  test("FormChange tracker is not triggered", () => {
-    const instance = new PageViewTracker();
-    const formChangeTracker = new FormChangeTracker();
-
-    instance.trackOnPageLoad(parameters);
-    expect(formChangeTracker.trackFormChange).not.toHaveBeenCalled();
   });
 });
 
