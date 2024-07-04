@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
+import "jest-localstorage-mock";
 import { PageViewTracker } from "./pageViewTracker";
 import {
   PageViewParametersInterface,
@@ -232,5 +233,21 @@ describe("Form Error Tracker Trigger", () => {
 
     instance.trackOnPageLoad(parameters);
     expect(formErrorTracker.trackFormError).not.toHaveBeenCalled();
+  });
+});
+
+describe("Persisting taxonomy level 2 values", () => {
+  const instance = new PageViewTracker();
+  test("Taxonomy level 2 is saved to localStorage", () => {
+    instance.trackOnPageLoad(parameters);
+    expect(localStorage.getItem("taxonomyLevel2")).toBe("taxo2");
+  });
+
+  test("Taxonomy level 2 is not saved to localStorage if value === 'persisted from previous page'", () => {
+    parameters.taxonomy_level2 = "persisted from previous page";
+    instance.trackOnPageLoad(parameters);
+    expect(localStorage.getItem("taxonomyLevel2")).not.toBe(
+      "persisted from previous page",
+    );
   });
 });
