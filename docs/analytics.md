@@ -46,5 +46,5 @@ The `analytics.js` file has to be included in the base nunjucks template (e.g: `
 which makes available all the javascript functions described above on the global window object in the browser.
 
 We then call our `appInit` (`src/index.ts`) function (which is now accessible on the global window
-object) in the same base nunjucks template which initialises analytics and the cookie banner. We pass the `containerId`s and `disableGa4Tracking` as parameters, `disableGa4Tracking`, `disableUaTracking` and `domain` as options;
+object) in the same base nunjucks template which initialises analytics and the cookie banner. We pass the `containerId`s and `enableGa4Tracking` as parameters, `enableGa4Tracking`, `enableUaTracking` and `domain` as options;
 these values can be injected by your `setLocal` middleware functions which grabs these values from the current environment.
