@@ -23,7 +23,7 @@ const appInit = function (
       defaultedOptions,
     );
 
-    if (!defaultedOptions.disableUaTracking) {
+    if (defaultedOptions.enableUaTracking) {
       window.DI.analyticsGa4.uaContainerId = settings.uaContainerId;
       window.DI.analyticsUa.init();
     }

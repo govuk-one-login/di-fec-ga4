@@ -4,8 +4,8 @@ export interface AppConfigInterface {
 }
 
 export interface OptionsInterface {
-  disableGa4Tracking?: boolean;
-  disableUaTracking?: boolean;
+  enableGa4Tracking?: boolean;
+  enableUaTracking?: boolean;
   cookieDomain?: string;
   isDataSensitive?: boolean;
   enableFormChangeTracking: boolean;

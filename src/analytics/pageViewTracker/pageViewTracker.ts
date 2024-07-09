@@ -9,13 +9,13 @@ import { OptionsInterface } from "../core/core.interface";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
-  disableGa4Tracking: boolean = false;
+  enableGa4Tracking: boolean;
   enableFormErrorTracking: boolean;
   enablePageViewTracking: boolean;
 
   constructor(options: OptionsInterface) {
     super();
-    this.disableGa4Tracking = options.disableGa4Tracking || false;
+    this.enableGa4Tracking = options.enableGa4Tracking || false;
     this.enableFormErrorTracking = options.enableFormErrorTracking;
     this.enablePageViewTracking = options.enablePageViewTracking;
   }
@@ -26,7 +26,6 @@ export class PageViewTracker extends BaseTracker {
    * @param {PageViewParametersInterface} parameters - The parameters for the page view event.
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
-
   trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
     if (
       window.DI.analyticsGa4.cookie.hasCookie &&
@@ -34,7 +33,7 @@ export class PageViewTracker extends BaseTracker {
     ) {
       return false;
     }
-    if (this.disableGa4Tracking) {
+    if (!this.enableGa4Tracking) {
       return false;
     }
 
