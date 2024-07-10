@@ -36,12 +36,14 @@ export class Analytics {
 
     this.pageViewTracker = new PageViewTracker({
       enableGa4Tracking: options.enableGa4Tracking,
+      enableUaTracking: options.enableUaTracking,
       enableFormChangeTracking: options.enableFormChangeTracking,
       enableFormErrorTracking: options.enableFormErrorTracking,
       enableFormResponseTracking: options.enableFormResponseTracking,
       enableNavigationTracking: options.enableNavigationTracking,
       enablePageViewTracking: options.enablePageViewTracking,
       enableSelectContentTracking: options.enableSelectContentTracking,
+      cookieDomain: options.cookieDomain,
     });
 
     if (options.enableGa4Tracking) {
