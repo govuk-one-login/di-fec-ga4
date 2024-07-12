@@ -38,23 +38,14 @@ describe("FormChangeTracker", () => {
 
   // test pushToDataLayer is called
   test("pushToDataLayer is called", () => {
-    // Create the main content div
-    const mainContent = document.createElement("div");
-    mainContent.id = "main-content";
-
-    // Create the anchor element
-    const href = document.createElement("A");
-    href.textContent = "Change";
-    href.setAttribute("href", "http://localhost?edit=true");
-
-    // Create the form element
-    const form = document.createElement("form");
-    form.appendChild(href);
-    mainContent.appendChild(form);
-
-    // Append the main content div to the document body
-    document.body.appendChild(mainContent);
-
+    document.body.innerHTML = `
+  <main id="main-content">
+    <form>
+      <a id="change_link" href="http://localhost?edit=true">Change</a>
+    </form>
+  </main>
+`;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
     // Add a click event listener to the anchor element
     href.addEventListener("click", (event) => {
       newInstance.trackFormChange(event);
@@ -100,83 +91,71 @@ describe("FormChangeTracker", () => {
 
   // test trackFormChange accept Change Link
   test("trackFormChange should return true if a Change link", () => {
-    const href = document.createElement("A");
-    href.textContent = "Change organisation type";
-
-    document.body.appendChild(href);
+    document.body.innerHTML = `<a id="change_link" href="http://localhost?edit=true">Change</a>`;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
     href.dispatchEvent(action);
     href.addEventListener("click", (event) => {
       expect(newInstance.trackFormChange(event)).toBe(true);
     });
-    document.body.removeChild(href);
   });
 
   // test trackFormChange does not accept Lang Toggle Link
   test("trackFormChange should return false if it is a Lang Toggle link", () => {
-    const href = document.createElement("A");
-    href.textContent = "Change organisation type";
-    href.setAttribute("hreflang", "en");
-
-    document.body.appendChild(href);
+    document.body.innerHTML = `<a id="change_link" href="http://localhost?edit=true hreflang="en">Change</a>`;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
     href.dispatchEvent(action);
     href.addEventListener("click", (event) => {
       expect(newInstance.trackFormChange(event)).toBe(false);
     });
-    document.body.removeChild(href);
   });
 
-  test;
   test("should return 'undefined' if parent element does not exist", () => {
-    const element = document.createElement("div");
-    expect(newInstance.getSection(element)).toBe("undefined");
+    document.body.innerHTML = `<a id="change_link" href="http://localhost?edit=true">Change</a>`;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
+    expect(newInstance.getSection(href)).toBe("undefined");
   });
 
   test("should return text content of sibling with class 'govuk-summary-list__key'", () => {
-    const parentElement = document.createElement("div");
-    const siblingElement = document.createElement("div");
-    siblingElement.classList.add("govuk-summary-list__key");
-    siblingElement.textContent = "Expected Section";
-
-    const href = document.createElement("a");
-    parentElement.appendChild(href);
-
-    document.body.appendChild(siblingElement); // Sibling is added to the document body before the parent
-    document.body.appendChild(parentElement); // Parent is added to the document body
-
+    document.body.innerHTML = `
+    <div class="govuk-summary-list__key">Expected Section</div>
+    <div>
+      <a id="change_link">Change</a>
+    </div>
+  `;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
     expect(newInstance.getSection(href)).toBe("Expected Section");
   });
 
   test("should check and return text content of parent element if no matching sibling found", () => {
-    const parentElement = document.createElement("div");
-    parentElement.textContent = "Parent Content";
-
-    const element = document.createElement("div");
-    parentElement.appendChild(element);
-
-    expect(newInstance.getSection(element)).toBe("Parent Content");
+    document.body.innerHTML = `  
+    <div>
+    Postcode
+      <a id="change_link">Change</a> 
+    </div>
+  `;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
+    expect(newInstance.getSection(href)).toBe("Postcode");
   });
 
   test("should return 'undefined' if no matching sibling found and parent has no text content", () => {
-    const parentElement = document.createElement("div");
+    document.body.innerHTML = `
+      <div>
+        <a id="change_link">Change</a>
+      </div>
+    `;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
 
-    const element = document.createElement("div");
-    parentElement.appendChild(element);
-
-    expect(newInstance.getSection(element)).toBe("undefined");
+    expect(newInstance.getSection(href)).toBe("undefined");
   });
 
-  test("should return 'undefined' if sibling element is not a sibling of the provided element", () => {
-    const parentElement = document.createElement("div");
-    const siblingElement = document.createElement("div");
-    siblingElement.classList.add("govuk-summary-list__key");
-    siblingElement.textContent = "Expected Section";
-
-    // Add sibling element outside the parent element
-    document.body.appendChild(siblingElement);
-
-    const element = document.createElement("div");
-    parentElement.appendChild(element);
-
-    expect(newInstance.getSection(element)).toBe("undefined");
+  test("should return 'undefined' if summary list key has no text content", () => {
+    document.body.innerHTML = `
+    <div class="govuk-summary-list__key"></div>
+    <div>
+      <a id="change_link">Change</a>
+    </div>
+  `;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
+    expect(newInstance.getSection(href)).toBe("undefined");
   });
 });
