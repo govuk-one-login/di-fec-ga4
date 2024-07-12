@@ -100,7 +100,7 @@ describe("should return the good parameter values", () => {
 
 describe("should check for changeLink", () => {
   const newInstance = new BaseTracker();
-  test("should return true if element is not a change link", () => {
+  test("should return true if element is a change link", () => {
     const href = document.createElement("a");
     href.setAttribute("href", "http://localhost?edit=true");
     expect(newInstance.isChangeLink(href)).toBe(true);
