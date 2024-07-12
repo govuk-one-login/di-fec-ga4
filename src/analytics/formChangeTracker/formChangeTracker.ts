@@ -78,16 +78,22 @@ export class FormChangeTracker extends FormTracker {
       return "undefined";
     }
 
-    let siblingElement = parentElement?.previousElementSibling;
-    while (siblingElement) {
-      if (siblingElement.classList.contains("govuk-summary-list__key")) {
-        const sectionValue = siblingElement.textContent?.trim() || "undefined";
+    let parentSiblingElement = parentElement?.previousElementSibling;
+    while (parentSiblingElement) {
+      if (parentSiblingElement.classList.contains("govuk-summary-list__key")) {
+        const sectionValue =
+          parentSiblingElement.textContent?.trim() || "undefined";
         return sectionValue;
       }
-      siblingElement = siblingElement.previousElementSibling;
+      parentSiblingElement = parentSiblingElement.previousElementSibling;
     }
     // If no matching sibling is found, check the parent element
-    const parentTextContent = parentElement.textContent?.trim() || "undefined";
-    return parentTextContent;
+    let parentTextContent = "";
+    for (let node of parentElement.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        parentTextContent += node.textContent?.trim() || "";
+      }
+    }
+    return parentTextContent || "undefined";
   }
 }
