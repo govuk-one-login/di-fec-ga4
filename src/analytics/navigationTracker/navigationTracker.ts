@@ -4,9 +4,11 @@ import { validateParameter } from "../../utils/validateParameter";
 
 export class NavigationTracker extends BaseTracker {
   eventName: string = "event_data";
+  enableNavigationTracking: boolean;
 
-  constructor() {
+  constructor(enableNavigationTracking: boolean) {
     super();
+    this.enableNavigationTracking = enableNavigationTracking;
     this.initialiseEventListener();
   }
 
@@ -28,6 +30,9 @@ export class NavigationTracker extends BaseTracker {
    */
   trackNavigation(event: Event): boolean {
     if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
+    if (!this.enableNavigationTracking) {
       return false;
     }
 
