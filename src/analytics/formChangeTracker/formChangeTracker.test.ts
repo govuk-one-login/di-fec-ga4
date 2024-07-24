@@ -1,16 +1,36 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { FormChangeTracker } from "./formChangeTracker";
-import { FormEventInterface } from "../formTracker/formTracker.interface";
 
-window.DI = { analyticsGa4: { cookie: { consent: true } } };
+function createForm() {
+  document.body.innerHTML = `
+    <main id="main-content">
+      <form>
+        <a id="change_link" href="http://localhost?edit=true">Change</a>
+      </form>
+    </main>
+  `;
+
+  return {
+    changeLink: document.getElementById("change_link")!,
+    form: document.getElementsByTagName("form")[0],
+  };
+}
 
 describe("FormChangeTracker", () => {
   let newInstance: FormChangeTracker;
   let action: MouseEvent;
 
   beforeEach(() => {
-    // Reset spies and create a new instance before each test
-    jest.clearAllMocks(); // Clear all prior mock calls
+    jest.clearAllMocks();
+
+    window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
+    jest.spyOn(FormChangeTracker.prototype, "pushToDataLayer");
+    jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
+    jest.spyOn(FormChangeTracker.prototype, "isChangeLink");
+    jest.spyOn(FormChangeTracker.prototype, "getSection");
+    jest.spyOn(FormChangeTracker.prototype, "initialiseEventListener");
+
     newInstance = new FormChangeTracker();
     action = new MouseEvent("click", {
       view: window,
@@ -18,95 +38,64 @@ describe("FormChangeTracker", () => {
       cancelable: true,
     });
   });
-  const spy = jest.spyOn(FormChangeTracker.prototype, "pushToDataLayer");
-  const trackFormChangeSpy = jest.spyOn(
-    FormChangeTracker.prototype,
-    "trackFormChange",
-  );
-
-  const isChangeLinkSpy = jest.spyOn(
-    FormChangeTracker.prototype,
-    "isChangeLink",
-  );
-
-  const getSectionSpy = jest.spyOn(FormChangeTracker.prototype, "getSection");
-
-  const constructorSpy = jest.spyOn(
-    FormChangeTracker.prototype,
-    "initialiseEventListener",
-  );
-
-  // test pushToDataLayer is called
-  test("pushToDataLayer is called", () => {
-    document.body.innerHTML = `
-  <main id="main-content">
-    <form>
-      <a id="change_link" href="http://localhost?edit=true">Change</a>
-    </form>
-  </main>
-`;
-    const href = document.getElementById("change_link") as HTMLAnchorElement;
-    // Add a click event listener to the anchor element
-    href.addEventListener("click", (event) => {
-      newInstance.trackFormChange(event);
-    });
-
-    href.dispatchEvent(action);
-
-    // Check if pushToDataLayer was called
-    expect(newInstance.pushToDataLayer).toBeCalled();
-  });
 
   test("new instance should call initialiseEventListener", () => {
     expect(newInstance.initialiseEventListener).toBeCalled();
   });
 
-  test("click should call trackNavigation", () => {
-    const href = document.createElement("A");
-    href.textContent = "Change organisation type";
-    href.addEventListener("click", (event) => {
-      expect(newInstance.trackFormChange).toBeCalled();
+  test("pushToDataLayer is called", () => {
+    const { changeLink } = createForm();
+    changeLink.dispatchEvent(action);
+    expect(newInstance.pushToDataLayer).toBeCalledWith({
+      event: "event_data",
+      event_data: {
+        action: "change response",
+        event_name: "form_change_response",
+        external: "false",
+        link_domain: "http://localhost",
+        "link_path_parts.1": "/",
+        "link_path_parts.2": "undefined",
+        "link_path_parts.3": "undefined",
+        "link_path_parts.4": "undefined",
+        "link_path_parts.5": "undefined",
+        section: "undefined",
+        text: "change",
+        type: "undefined",
+        url: "http://localhost/?edit=true",
+      },
     });
   });
 
   test("trackFormChange should return false if not cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
-    const href = document.createElement("A");
-    href.textContent = "Change organisation type";
-    href.addEventListener("click", (event) => {
-      expect(newInstance.trackFormChange).toReturnWith(false);
-    });
+    const { changeLink } = createForm();
+    changeLink.dispatchEvent(action);
+    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
   });
-
-  //test trackFormChange doesn't accept anything except but Change link
 
   test("trackFormChange should return false if not a change link", () => {
+    const { form } = createForm();
+
     const href = document.createElement("div");
     href.className = "govuk-footer__link";
-    href.addEventListener("click", (event) => {
-      expect(newInstance.trackFormChange(event)).toBe(false);
-    });
+    form.appendChild(href);
+
     href.dispatchEvent(action);
+
+    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
   });
 
-  // test trackFormChange accept Change Link
   test("trackFormChange should return true if a Change link", () => {
-    document.body.innerHTML = `<a id="change_link" href="http://localhost?edit=true">Change</a>`;
-    const href = document.getElementById("change_link") as HTMLAnchorElement;
-    href.dispatchEvent(action);
-    href.addEventListener("click", (event) => {
-      expect(newInstance.trackFormChange(event)).toBe(true);
-    });
+    const { changeLink } = createForm();
+    changeLink.dispatchEvent(action);
+    expect(newInstance.pushToDataLayer).toHaveBeenCalled();
   });
 
-  // test trackFormChange does not accept Lang Toggle Link
   test("trackFormChange should return false if it is a Lang Toggle link", () => {
-    document.body.innerHTML = `<a id="change_link" href="http://localhost?edit=true hreflang="en">Change</a>`;
-    const href = document.getElementById("change_link") as HTMLAnchorElement;
-    href.dispatchEvent(action);
-    href.addEventListener("click", (event) => {
-      expect(newInstance.trackFormChange(event)).toBe(false);
-    });
+    const { changeLink } = createForm();
+    changeLink.setAttribute("hreflang", "en");
+    changeLink.dispatchEvent(action);
+    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
   });
 
   test("should return 'undefined' if parent element does not exist", () => {
