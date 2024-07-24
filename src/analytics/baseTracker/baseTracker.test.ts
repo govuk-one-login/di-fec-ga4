@@ -97,3 +97,17 @@ describe("should return the good parameter values", () => {
     expect(location).toEqual("undefined");
   });
 });
+
+describe("should check for changeLink", () => {
+  const newInstance = new BaseTracker();
+  test("should return true if element is a change link", () => {
+    const href = document.createElement("a");
+    href.setAttribute("href", "http://localhost?edit=true");
+    expect(newInstance.isChangeLink(href)).toBe(true);
+  });
+  test("should return false if element is not a change link", () => {
+    const href = document.createElement("a");
+    href.setAttribute("href", "http://localhost");
+    expect(newInstance.isChangeLink(href)).toBe(false);
+  });
+});
