@@ -4,7 +4,6 @@ import {
   PageViewParametersInterface,
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
-import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
 import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
 import { OptionsInterface } from "../core/core.interface";
 
@@ -173,57 +172,8 @@ describe("Cookie Management", () => {
   });
 });
 
-describe("Form Change Tracker Trigger", () => {
-  test("FormChange tracker is not triggered", () => {
-    const spy = jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
-    const instance = new PageViewTracker(options);
-    const formChangeTracker = new FormChangeTracker();
 
-    instance.trackOnPageLoad(parameters);
-    expect(formChangeTracker.trackFormChange).not.toHaveBeenCalled();
-  });
 
-  // !!! FAILING TEST
-
-  // test("FormChange tracker is activated", () => {
-  //   Object.defineProperty(window, "location", {
-  //     value: new URL("http://example.com?edit=true"),
-  //     writable: true,
-  //     configurable: true
-  //   });
-
-  //   const instance = new PageViewTracker({
-  //     ...options,
-  //     enableFormChangeTracking: true
-  //   });
-
-  //   const formChangeTracker = new FormChangeTracker();
-  //   const spy = jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
-
-  //   instance.trackOnPageLoad(parameters);
-
-  //   expect(formChangeTracker.trackFormChange).toBeCalled();
-  // });
-  test("FormChange tracker is deactivated", () => {
-    Object.defineProperty(window, "location", {
-      value: new URL("http://example.com?edit=true"),
-      writable: true,
-      configurable: true,
-    });
-
-    const instance = new PageViewTracker({
-      ...options,
-      enableFormChangeTracking: false,
-    });
-
-    const formChangeTracker = new FormChangeTracker();
-    const spy = jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
-
-    instance.trackOnPageLoad(parameters);
-
-    expect(formChangeTracker.trackFormChange).not.toBeCalled();
-  });
-});
 
 describe("Form Error Tracker Trigger", () => {
   const spy = jest.spyOn(FormErrorTracker.prototype, "trackFormError");

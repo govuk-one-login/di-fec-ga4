@@ -86,4 +86,13 @@ export class BaseTracker {
     const domainPath = newUrl.pathname.substring(start, end);
     return domainPath.length ? domainPath : "undefined";
   }
+
+  //check for change links used by both navigationTracker and formChangeTracker
+  isChangeLink(element: HTMLElement): boolean {
+    if (element.tagName === "A") {
+      let anchorElement = element as HTMLAnchorElement;
+      return new URL(anchorElement.href).searchParams.get("edit") === "true";
+    }
+    return false;
+  }
 }

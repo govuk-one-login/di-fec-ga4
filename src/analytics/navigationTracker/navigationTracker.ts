@@ -88,6 +88,11 @@ export class NavigationTracker extends BaseTracker {
       element.href = "undefined";
     }
 
+    // Ignore change links
+    if (this.isChangeLink(element)) {
+      return false;
+    }
+
     const navigationTrackerEvent: NavigationEventInterface = {
       event: this.eventName,
       event_data: {
