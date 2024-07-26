@@ -69,8 +69,8 @@ export class PageViewTracker extends BaseTracker {
         dynamic: parameters.dynamic.toString(),
         first_published_at: this.getFirstPublishedAt(),
         updated_at: this.getUpdatedAt(),
-        relying_party: this.getRelyingParty()
-      }
+        relying_party: this.getRelyingParty(),
+      },
     };
 
     try {
