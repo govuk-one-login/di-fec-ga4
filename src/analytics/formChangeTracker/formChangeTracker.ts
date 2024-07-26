@@ -1,13 +1,16 @@
 import { validateParameter } from "../../utils/validateParameter";
 import { FormTracker } from "../formTracker/formTracker";
 import { FormEventInterface } from "../formTracker/formTracker.interface";
+import { OptionsInterface } from "../core/core.interface";
 
 export class FormChangeTracker extends FormTracker {
   eventName: string = "form_change_response";
   eventType: string = "event_data";
+  enableFormChangeTracking: boolean;
 
-  constructor() {
+  constructor(enableFormChangeTracking: boolean) {
     super();
+    this.enableFormChangeTracking = enableFormChangeTracking;
     this.initialiseEventListener();
   }
 
@@ -22,6 +25,10 @@ export class FormChangeTracker extends FormTracker {
    */
   trackFormChange(event: Event): boolean {
     if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
+
+    if (!this.enableFormChangeTracking) {
       return false;
     }
 
@@ -57,8 +64,8 @@ export class FormChangeTracker extends FormTracker {
         "link_path_parts.2": this.getDomainPath(element.href, 1),
         "link_path_parts.3": this.getDomainPath(element.href, 2),
         "link_path_parts.4": this.getDomainPath(element.href, 3),
-        "link_path_parts.5": this.getDomainPath(element.href, 4),
-      },
+        "link_path_parts.5": this.getDomainPath(element.href, 4)
+      }
     };
 
     try {
