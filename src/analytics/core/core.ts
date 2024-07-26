@@ -29,7 +29,7 @@ export class Analytics {
     this.cookie = new Cookie(options.cookieDomain);
     this.isDataSensitive = Boolean(options.isDataSensitive);
     this.enableFormResponseTracking = Boolean(
-      options.enableFormResponseTracking
+      options.enableFormResponseTracking,
     );
     this.enableNavigationTracking = Boolean(options.enableNavigationTracking);
     this.enableFormChangeTracking = Boolean(options.enableFormChangeTracking);
@@ -41,7 +41,7 @@ export class Analytics {
       enableFormResponseTracking: options.enableFormResponseTracking,
       enableNavigationTracking: options.enableNavigationTracking,
       enablePageViewTracking: options.enablePageViewTracking,
-      enableSelectContentTracking: options.enableSelectContentTracking
+      enableSelectContentTracking: options.enableSelectContentTracking,
     });
 
     if (!options.disableGa4Tracking) {
@@ -49,17 +49,17 @@ export class Analytics {
         "gtm.allowlist": ["google"],
         "gtm.blocklist": ["adm", "awct", "sp", "gclidw", "gcs", "opt"],
         "gtm.start": new Date().getTime(),
-        event: "gtm.js"
+        event: "gtm.js",
       });
       this.formResponseTracker = new FormResponseTracker(
         this.isDataSensitive,
-        this.enableFormResponseTracking
+        this.enableFormResponseTracking,
       );
       this.navigationTracker = new NavigationTracker(
-        this.enableNavigationTracking
+        this.enableNavigationTracking,
       );
       this.formChangeTracker = new FormChangeTracker(
-        this.enableFormChangeTracking
+        this.enableFormChangeTracking,
       );
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);

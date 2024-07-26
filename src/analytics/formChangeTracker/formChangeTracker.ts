@@ -64,8 +64,8 @@ export class FormChangeTracker extends FormTracker {
         "link_path_parts.2": this.getDomainPath(element.href, 1),
         "link_path_parts.3": this.getDomainPath(element.href, 2),
         "link_path_parts.4": this.getDomainPath(element.href, 3),
-        "link_path_parts.5": this.getDomainPath(element.href, 4)
-      }
+        "link_path_parts.5": this.getDomainPath(element.href, 4),
+      },
     };
 
     try {

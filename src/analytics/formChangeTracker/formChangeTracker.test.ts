@@ -36,7 +36,7 @@ describe("FormChangeTracker", () => {
     action = new MouseEvent("click", {
       view: window,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
   });
 
