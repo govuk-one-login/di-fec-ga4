@@ -10,14 +10,12 @@ import { OptionsInterface } from "../core/core.interface";
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
   disableGa4Tracking: boolean = false;
-  enableFormChangeTracking: boolean;
   enableFormErrorTracking: boolean;
   enablePageViewTracking: boolean;
 
   constructor(options: OptionsInterface) {
     super();
     this.disableGa4Tracking = options.disableGa4Tracking || false;
-    this.enableFormChangeTracking = options.enableFormChangeTracking;
     this.enableFormErrorTracking = options.enableFormErrorTracking;
     this.enablePageViewTracking = options.enablePageViewTracking;
   }
@@ -45,7 +43,9 @@ export class PageViewTracker extends BaseTracker {
     }
 
     //trigger form error tracking
+
     const errorTrigger = document.getElementsByClassName("govuk-error-message");
+
     if (errorTrigger.length && this.enableFormErrorTracking) {
       const formErrorTracker = new FormErrorTracker();
       formErrorTracker.trackFormError();
@@ -69,8 +69,8 @@ export class PageViewTracker extends BaseTracker {
         dynamic: parameters.dynamic.toString(),
         first_published_at: this.getFirstPublishedAt(),
         updated_at: this.getUpdatedAt(),
-        relying_party: this.getRelyingParty(),
-      },
+        relying_party: this.getRelyingParty()
+      }
     };
 
     try {
