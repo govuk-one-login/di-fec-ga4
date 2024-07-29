@@ -1,17 +1,15 @@
+import logger from "loglevel";
 import { validateParameter } from "../../utils/validateParameter";
 import { FormTracker } from "../formTracker/formTracker";
 import {
   FormEventInterface,
   FormField,
 } from "../formTracker/formTracker.interface";
+import { BaseTracker } from "../baseTracker/baseTracker";
 
 export class FormErrorTracker extends FormTracker {
   eventName: string = "form_error";
   eventType: string = "event_data";
-
-  constructor() {
-    super();
-  }
 
   /**
    * Tracks error in a form and sends data to the analytics platform.
@@ -23,7 +21,7 @@ export class FormErrorTracker extends FormTracker {
       return false;
     }
 
-    const form = this.getFormElement();
+    const form = FormTracker.getFormElement();
 
     if (!form) {
       return false;
@@ -31,7 +29,7 @@ export class FormErrorTracker extends FormTracker {
 
     let fields: FormField[] = [];
     if (form?.elements) {
-      fields = this.getErrorFields(form);
+      fields = FormErrorTracker.getErrorFields();
     } else {
       return false;
     }
@@ -40,33 +38,36 @@ export class FormErrorTracker extends FormTracker {
       return false;
     }
 
-    const submitUrl = this.getSubmitUrl(form);
+    const submitUrl = FormTracker.getSubmitUrl(form);
 
     try {
-      for (const field of fields) {
+      fields.forEach((field) => {
         const formErrorTrackerEvent: FormEventInterface = {
           event: this.eventType,
           event_data: {
             event_name: this.eventName,
             type: validateParameter(this.getFieldType([field]), 100),
             url: validateParameter(submitUrl, 100),
-            text: validateParameter(this.getErrorMessage(field), 100),
-            section: validateParameter(this.getSectionValue(field), 100),
+            text: validateParameter(
+              FormErrorTracker.getErrorMessage(field),
+              100,
+            ),
+            section: validateParameter(FormTracker.getSectionValue(field), 100),
             action: "error",
             external: "false",
-            link_domain: this.getDomain(submitUrl),
-            "link_path_parts.1": this.getDomainPath(submitUrl, 0),
-            "link_path_parts.2": this.getDomainPath(submitUrl, 1),
-            "link_path_parts.3": this.getDomainPath(submitUrl, 2),
-            "link_path_parts.4": this.getDomainPath(submitUrl, 3),
-            "link_path_parts.5": this.getDomainPath(submitUrl, 4),
+            link_domain: BaseTracker.getDomain(submitUrl),
+            "link_path_parts.1": BaseTracker.getDomainPath(submitUrl, 0),
+            "link_path_parts.2": BaseTracker.getDomainPath(submitUrl, 1),
+            "link_path_parts.3": BaseTracker.getDomainPath(submitUrl, 2),
+            "link_path_parts.4": BaseTracker.getDomainPath(submitUrl, 3),
+            "link_path_parts.5": BaseTracker.getDomainPath(submitUrl, 4),
           },
         };
-        this.pushToDataLayer(formErrorTrackerEvent);
-      }
+        BaseTracker.pushToDataLayer(formErrorTrackerEvent);
+      });
       return true;
     } catch (err) {
-      console.error("Error in trackFormError", err);
+      logger.error("Error in trackFormError", err);
       return false;
     }
   }
@@ -78,35 +79,31 @@ export class FormErrorTracker extends FormTracker {
    * @return returns a string representing the text content of the error message associated with the specified form field. 
    * If no error message is found, it returns the string "undefined
   */
-
-  getErrorMessage(field: FormField) {
+  static getErrorMessage(field: FormField) {
     const error = document.getElementById(`${field.id}-error`);
     if (error) {
       return error?.textContent?.trim();
-    } else {
-      // If no error message is found, try to find an error message using the "parent" id of the form field
-      const fieldNameInput = field.id.split("-");
-      if (fieldNameInput.length > 1) {
-        const error = document.getElementById(`${fieldNameInput[0]}-error`);
-        if (error) {
-          return error?.textContent?.trim();
-        }
-      }
-
-      return "undefined";
     }
+    // If no error message is found, try to find an error message using the "parent" id of the form field
+    const fieldNameInput = field.id.split("-");
+    if (fieldNameInput.length > 1) {
+      const inputError = document.getElementById(`${fieldNameInput[0]}-error`);
+      if (inputError) {
+        return inputError?.textContent?.trim();
+      }
+    }
+
+    return "undefined";
   }
 
   /**
    * Querys first input, textarea, or select element within each form group that has an error message.
    * If element is found, creates a FormField object with information about the element
    * (id, name, value, type) and pushes this FormField object into the errorFields array.
-
-   * @param {form: HTMLFormElement} - The HTML form element.
+   *
    * @return {FormField[]} elements - The array containing information about form fields associated with errors..
    */
-
-  getErrorFields(form: HTMLFormElement): FormField[] {
+  static getErrorFields(): FormField[] {
     const errorFields: FormField[] = [];
     const formGroups = document.querySelectorAll(".govuk-form-group--error");
 

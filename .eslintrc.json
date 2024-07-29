@@ -1,40 +1,60 @@
 {
-	"parserOptions": {
-		"parser": "@typescript-eslint/parser",
-		"sourceType": "module",
-		"ecmaVersion": 2022
-	},
-	"env": {
-		"node": true,
-		"es6": true
-	},
-	"plugins": ["@typescript-eslint"],
-	"extends": ["airbnb/base", "plugin:@typescript-eslint/recommended", "prettier"],
-	"rules": {
-		"linebreak-style": 0,
-		"arrow-parens": 0,
-		"max-len": 0,
-		"@typescript-eslint/no-explicit-any": 0,
-		"@typescript-eslint/ban-ts-comment": 0
-	},
-	"overrides": [
-		{
-			"files": ["test/*.spec.ts"],
-			"rules": {
-				"import/extensions": 0,
-				"no-undef": 0
-			}
-		}
-	],
-	"settings": {
-		"import/parsers": {
-			"@typescript-eslint/parser": [".ts", ".js"]
-		},
-		"import/resolver": {
-			"node": {
-				"paths": ["src"],
-				"extensions": [".js", ".ts"]
-			}
-		}
-	}
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "sourceType": "module",
+    "ecmaVersion": 2022
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "airbnb/base",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "arrow-parens": 0,
+    "import/extensions": 0,
+    "import/prefer-default-export": 0,
+    "linebreak-style": 0,
+    "lines-between-class-members": [
+      "error",
+      {
+        "enforce": [
+          {
+            "blankLine": "never",
+            "prev": "field",
+            "next": "field"
+          }
+        ]
+      }
+    ],
+    "max-len": 0,
+    "no-plusplus": 0
+  },
+  "overrides": [
+    {
+      "files": ["*.spec.ts", "*.test.ts"],
+      "rules": {
+        "import/no-extraneous-dependencies": 0,
+        "no-new": 0,
+        "no-undef": 0
+      }
+    }
+  ],
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".js"]
+    },
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".ts"]
+      }
+    }
+  }
 }

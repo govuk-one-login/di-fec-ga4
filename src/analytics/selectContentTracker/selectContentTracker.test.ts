@@ -1,6 +1,7 @@
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import { SelectContentTracker } from "./selectContentTracker";
 import { SelectContentEventInterface } from "./selectContentTracker.interface";
+import { BaseTracker } from "../baseTracker/baseTracker";
 
 describe("selectContentTracker", () => {
   let newInstance: SelectContentTracker;
@@ -16,7 +17,7 @@ describe("selectContentTracker", () => {
       bubbles: true,
       cancelable: true,
     });
-    jest.spyOn(SelectContentTracker.prototype, "pushToDataLayer");
+    jest.spyOn(BaseTracker, "pushToDataLayer");
     jest.spyOn(SelectContentTracker.prototype, "trackSelectContent");
     jest.spyOn(SelectContentTracker.prototype, "initialiseEventListener");
   });
@@ -51,7 +52,7 @@ describe("selectContentTracker", () => {
 
   test("toggle should call trackSelectContent", () => {
     const details = document.createElement("details");
-    details.addEventListener("toggle", (event) => {
+    details.addEventListener("toggle", () => {
       expect(newInstance.trackSelectContent).toBeCalled();
     });
   });
@@ -61,7 +62,7 @@ describe("selectContentTracker", () => {
       newInstance.trackSelectContent(event);
     });
     details.dispatchEvent(action);
-    expect(newInstance.pushToDataLayer).toBeCalled();
+    expect(BaseTracker.pushToDataLayer).toBeCalled();
   });
   test("should push data to data layer for each details component", () => {
     const span1 = document.createElement("span");
@@ -118,14 +119,14 @@ describe("selectContentTracker", () => {
       newInstance.trackSelectContent(event);
     });
     firstDetails.dispatchEvent(action);
-    expect(newInstance.pushToDataLayer).toBeCalledWith(
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(
       dataLayerEventFirstDetails,
     );
     secondDetails.addEventListener("toggle", (event) => {
       newInstance.trackSelectContent(event);
     });
     secondDetails.dispatchEvent(action);
-    expect(newInstance.pushToDataLayer).toBeCalledWith(
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(
       dataLayerEventSecondDetails,
     );
   });
@@ -133,23 +134,18 @@ describe("selectContentTracker", () => {
 
 describe("Cookie Management", () => {
   test("trackSelectContent should return false if not cookie consent", () => {
-    const spy = jest.spyOn(
-      SelectContentTracker.prototype,
-      "trackSelectContent",
-    );
+    jest.spyOn(SelectContentTracker.prototype, "trackSelectContent");
     window.DI.analyticsGa4.cookie.consent = false;
     const enableSelectContentTracking = true;
     const instance = new SelectContentTracker(enableSelectContentTracking);
     const details = document.createElement("details");
-    details.addEventListener("toggle", (event) => {
+    details.addEventListener("toggle", () => {
       expect(instance.trackSelectContent).toReturnWith(false);
     });
   });
 });
 
 describe("getSummaryText", () => {
-  const enableSelectContentTracking = true;
-  const newInstance = new SelectContentTracker(enableSelectContentTracking);
   const action = new MouseEvent("toggle", {
     view: window,
     bubbles: true,
@@ -164,7 +160,9 @@ describe("getSummaryText", () => {
     details.appendChild(span);
     details.dispatchEvent(action);
     const element = action.target as HTMLDetailsElement;
-    expect(newInstance.getSummaryText(element)).toBe("Details Summary Text");
+    expect(SelectContentTracker.getSummaryText(element)).toBe(
+      "Details Summary Text",
+    );
   });
 
   test("should return undefined if no element with class of govuk-details__summary-text", () => {
@@ -174,13 +172,11 @@ describe("getSummaryText", () => {
     details.appendChild(span);
     details.dispatchEvent(action);
     const element = action.target as HTMLDetailsElement;
-    expect(newInstance.getSummaryText(element)).toBe("undefined");
+    expect(SelectContentTracker.getSummaryText(element)).toBe("undefined");
   });
 });
 
 describe("getActionValue", () => {
-  const enableSelectContentTracking = true;
-  const newInstance = new SelectContentTracker(enableSelectContentTracking);
   const action = new MouseEvent("toggle", {
     view: window,
     bubbles: true,
@@ -192,13 +188,13 @@ describe("getActionValue", () => {
     details.open = true;
     details.dispatchEvent(action);
     const element = action.target as HTMLDetailsElement;
-    expect(newInstance.getActionValue(element)).toBe("opened");
+    expect(SelectContentTracker.getActionValue(element)).toBe("opened");
   });
 
   test("should return closed if details element has been closed", () => {
     const details = document.createElement("details");
     details.dispatchEvent(action);
     const element = action.target as HTMLDetailsElement;
-    expect(newInstance.getActionValue(element)).toBe("closed");
+    expect(SelectContentTracker.getActionValue(element)).toBe("closed");
   });
 });

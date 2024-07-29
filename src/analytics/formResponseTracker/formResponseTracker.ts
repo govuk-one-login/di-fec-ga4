@@ -1,9 +1,11 @@
+import logger from "loglevel";
 import { validateParameter } from "../../utils/validateParameter";
 import { FormTracker } from "../formTracker/formTracker";
 import {
   FormEventInterface,
   FormField,
 } from "../formTracker/formTracker.interface";
+import { BaseTracker } from "../baseTracker/baseTracker";
 
 export class FormResponseTracker extends FormTracker {
   eventName: string = "form_response";
@@ -50,7 +52,7 @@ export class FormResponseTracker extends FormTracker {
       return false;
     }
 
-    const form = this.getFormElement();
+    const form = FormTracker.getFormElement();
 
     if (!form) {
       return false;
@@ -68,21 +70,20 @@ export class FormResponseTracker extends FormTracker {
       return false;
     }
 
-    //check if form is valid
-    if (!this.isFormValid(fields)) {
+    // check if form is valid
+    if (!FormTracker.isFormValid(fields)) {
       return false;
     }
 
-    //manage date (day/month/year) fields
-    if (this.isDateFields(fields)) {
-      fields = this.combineDateFields(fields);
+    // manage date (day/month/year) fields
+    if (FormTracker.isDateFields(fields)) {
+      fields = FormTracker.combineDateFields(fields);
     }
 
-    const submitUrl = this.getSubmitUrl(form);
+    const submitUrl = FormTracker.getSubmitUrl(form);
 
     try {
-      // Iterate through each form field and generate an event for each
-      for (const field of fields) {
+      fields.forEach((field) => {
         const formResponseTrackerEvent: FormEventInterface = {
           event: this.eventType,
           event_data: {
@@ -90,27 +91,30 @@ export class FormResponseTracker extends FormTracker {
             type: validateParameter(this.getFieldType([field]), 100),
             url: validateParameter(submitUrl, 100),
             text: this.redactPII(
-              validateParameter(this.getFieldValue([field]), 100),
+              validateParameter(FormTracker.getFieldValue([field]), 100),
             ),
-            section: validateParameter(this.getSectionValue(field), 100),
-            action: validateParameter(this.getButtonLabel(event), 100),
+            section: validateParameter(FormTracker.getSectionValue(field), 100),
+            action: validateParameter(
+              FormResponseTracker.getButtonLabel(event),
+              100,
+            ),
             external: "false",
-            link_domain: this.getDomain(submitUrl),
-            "link_path_parts.1": this.getDomainPath(submitUrl, 0),
-            "link_path_parts.2": this.getDomainPath(submitUrl, 1),
-            "link_path_parts.3": this.getDomainPath(submitUrl, 2),
-            "link_path_parts.4": this.getDomainPath(submitUrl, 3),
-            "link_path_parts.5": this.getDomainPath(submitUrl, 4),
+            link_domain: BaseTracker.getDomain(submitUrl),
+            "link_path_parts.1": BaseTracker.getDomainPath(submitUrl, 0),
+            "link_path_parts.2": BaseTracker.getDomainPath(submitUrl, 1),
+            "link_path_parts.3": BaseTracker.getDomainPath(submitUrl, 2),
+            "link_path_parts.4": BaseTracker.getDomainPath(submitUrl, 3),
+            "link_path_parts.5": BaseTracker.getDomainPath(submitUrl, 4),
           },
         };
 
         // Push the event to the data layer for each field
-        this.pushToDataLayer(formResponseTrackerEvent);
-      }
+        BaseTracker.pushToDataLayer(formResponseTrackerEvent);
+      });
 
       return true;
     } catch (err) {
-      console.error("Error in trackFormResponse", err);
+      logger.error("Error in trackFormResponse", err);
       return false;
     }
   }
@@ -121,7 +125,7 @@ export class FormResponseTracker extends FormTracker {
    * @param {SubmitEvent} event - The SubmitEvent object containing the button.
    * @return {string} The label of the button, or "undefined" if it is not found.
    */
-  getButtonLabel(event: SubmitEvent): string {
+  static getButtonLabel(event: SubmitEvent): string {
     return event.submitter?.textContent
       ? event.submitter.textContent.trim()
       : "undefined";

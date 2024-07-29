@@ -44,7 +44,7 @@ describe("should initialize the ga4 class", () => {
   test("tag manager script not added to document", () => {
     options.enableGa4Tracking = false;
     document.body = document.createElement("body");
-    const newInstance = new Analytics(gtmId, options);
+    new Analytics(gtmId, options);
     expect(document.getElementsByTagName("script").length).toEqual(0);
   });
 
