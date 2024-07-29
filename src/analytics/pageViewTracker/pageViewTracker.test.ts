@@ -10,7 +10,9 @@ import { OptionsInterface } from "../core/core.interface";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
-const parameters: PageViewParametersInterface = {
+const getParameters = (
+  override?: Partial<PageViewParametersInterface>,
+): PageViewParametersInterface => ({
   statusCode: 200,
   englishPageTitle: "home",
   taxonomy_level1: "taxo1",
@@ -18,7 +20,9 @@ const parameters: PageViewParametersInterface = {
   content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
   logged_in_status: true,
   dynamic: true,
-};
+  ...(override || {}),
+});
+
 const options: OptionsInterface = {
   disableGa4Tracking: false,
   disableUaTracking: false,
@@ -39,16 +43,17 @@ describe("pageViewTracker", () => {
       ...options,
       enablePageViewTracking: false,
     });
-    instance.trackOnPageLoad(parameters);
+    instance.trackOnPageLoad(getParameters());
     expect(instance.trackOnPageLoad).toReturnWith(false);
   });
 
   test("pushToDataLayer is called", () => {
-    newInstance.trackOnPageLoad(parameters);
+    newInstance.trackOnPageLoad(getParameters());
     expect(newInstance.pushToDataLayer).toBeCalled();
   });
 
   test("pushToDataLayer is called with the good data", () => {
+    const parameters = getParameters();
     const dataLayerEvent: PageViewEventInterface = {
       event: newInstance.eventName,
       page_view: {
@@ -72,7 +77,7 @@ describe("pageViewTracker", () => {
         relying_party: newInstance.getRelyingParty(),
       },
     };
-    newInstance.trackOnPageLoad(parameters);
+    newInstance.trackOnPageLoad(getParameters());
     expect(newInstance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
   });
 
@@ -133,7 +138,7 @@ describe("pageViewTracker test disable ga4 tracking option", () => {
       ...options,
       disableGa4Tracking: true,
     });
-    instance.trackOnPageLoad(parameters);
+    instance.trackOnPageLoad(getParameters());
     expect(instance.trackOnPageLoad).toReturnWith(false);
   });
 });
@@ -148,30 +153,7 @@ describe("Cookie Management", () => {
     window.DI.analyticsGa4.cookie.consent = false;
     window.DI.analyticsGa4.cookie.hasCookie = true;
     const instance = new PageViewTracker(options);
-    const dataLayerEvent: PageViewEventInterface = {
-      event: instance.eventName,
-      page_view: {
-        language: instance.getLanguage(),
-        location: instance.getLocation(),
-        organisations: instance.organisations,
-        primary_publishing_organisation:
-          instance.primary_publishing_organisation,
-        referrer: instance.getReferrer(),
-        status_code: parameters.statusCode.toString(),
-        title: parameters.englishPageTitle,
-        taxonomy_level1: parameters.taxonomy_level1,
-        taxonomy_level2: parameters.taxonomy_level2,
-        content_id: parameters.content_id,
-        logged_in_status: instance.getLoggedInStatus(
-          parameters.logged_in_status,
-        ),
-        dynamic: parameters.dynamic.toString(),
-        first_published_at: instance.getFirstPublishedAt(),
-        updated_at: instance.getUpdatedAt(),
-        relying_party: instance.getRelyingParty(),
-      },
-    };
-    instance.trackOnPageLoad(parameters);
+    instance.trackOnPageLoad(getParameters());
     expect(instance.trackOnPageLoad).toReturnWith(false);
   });
 });
@@ -193,7 +175,7 @@ describe("Form Error Tracker Trigger", () => {
 
     document.body.innerHTML =
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
-    instance.trackOnPageLoad(parameters);
+    instance.trackOnPageLoad(getParameters());
     expect(instance.trackOnPageLoad).toReturnWith(false);
   });
 
@@ -201,7 +183,7 @@ describe("Form Error Tracker Trigger", () => {
     document.body.innerHTML =
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
 
-    instance.trackOnPageLoad(parameters);
+    instance.trackOnPageLoad(getParameters());
     expect(formErrorTracker.trackFormError).toHaveBeenCalled();
   });
   test("FormError tracker is activated even if pageView is disabled", () => {
@@ -212,13 +194,13 @@ describe("Form Error Tracker Trigger", () => {
       enablePageViewTracking: false,
     });
 
-    instance.trackOnPageLoad(parameters);
+    instance.trackOnPageLoad(getParameters());
     expect(formErrorTracker.trackFormError).toHaveBeenCalled();
   });
 
   test("FormError tracker is not triggered", () => {
     document.body.innerHTML = "";
-    instance.trackOnPageLoad(parameters);
+    instance.trackOnPageLoad(getParameters());
     expect(formErrorTracker.trackFormError).not.toBeCalled();
   });
 
@@ -231,21 +213,86 @@ describe("Form Error Tracker Trigger", () => {
       enableFormErrorTracking: false,
     });
 
-    instance.trackOnPageLoad(parameters);
+    instance.trackOnPageLoad(getParameters());
     expect(formErrorTracker.trackFormError).not.toHaveBeenCalled();
   });
 });
 
 describe("Persisting taxonomy level 2 values", () => {
-  const instance = new PageViewTracker();
+  beforeEach(() => {
+    window.DI = {
+      analyticsGa4: { cookie: { consent: true } },
+    };
+    document.body.innerHTML = "<p></p>";
+    jest.clearAllMocks();
+    jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
+  });
+
+  test("Taxonomy level 2 is persisted from previous page", () => {
+    const instance = new PageViewTracker(options);
+    instance.trackOnPageLoad(getParameters());
+    instance.trackOnPageLoad(
+      getParameters({
+        taxonomy_level2: "persisted from previous page",
+      }),
+    );
+    expect(instance.pushToDataLayer).toHaveBeenNthCalledWith(1, {
+      event: "page_view_ga4",
+      page_view: {
+        content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
+        dynamic: "true",
+        first_published_at: instance.getFirstPublishedAt(),
+        language: "undefined",
+        location: "http://localhost/",
+        logged_in_status: "logged in",
+        organisations: "<OT1056>",
+        primary_publishing_organisation:
+          "government digital service - digital identity",
+        referrer: "undefined",
+        relying_party: "localhost",
+        status_code: "200",
+        taxonomy_level1: "taxo1",
+        taxonomy_level2: "taxo2",
+        title: "home",
+        updated_at: instance.getUpdatedAt(),
+      },
+    });
+    expect(instance.pushToDataLayer).toHaveBeenNthCalledWith(2, {
+      event: "page_view_ga4",
+      page_view: {
+        content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
+        dynamic: "true",
+        first_published_at: instance.getFirstPublishedAt(),
+        language: "undefined",
+        location: "http://localhost/",
+        logged_in_status: "logged in",
+        organisations: "<OT1056>",
+        primary_publishing_organisation:
+          "government digital service - digital identity",
+        referrer: "undefined",
+        relying_party: "localhost",
+        status_code: "200",
+        taxonomy_level1: "taxo1",
+        taxonomy_level2: "taxo2",
+        title: "home",
+        updated_at: instance.getUpdatedAt(),
+      },
+    });
+  });
+
   test("Taxonomy level 2 is saved to localStorage", () => {
-    instance.trackOnPageLoad(parameters);
+    const instance = new PageViewTracker(options);
+    instance.trackOnPageLoad(getParameters());
     expect(localStorage.getItem("taxonomyLevel2")).toBe("taxo2");
   });
 
   test("Taxonomy level 2 is not saved to localStorage if value === 'persisted from previous page'", () => {
-    parameters.taxonomy_level2 = "persisted from previous page";
-    instance.trackOnPageLoad(parameters);
+    const instance = new PageViewTracker(options);
+    instance.trackOnPageLoad(
+      getParameters({
+        taxonomy_level2: "persisted from previous page",
+      }),
+    );
     expect(localStorage.getItem("taxonomyLevel2")).not.toBe(
       "persisted from previous page",
     );
