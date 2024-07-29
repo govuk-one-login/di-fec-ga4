@@ -6,7 +6,7 @@ import { stripPIIFromString } from "./pii-remover";
 
 export function validateParameter(parameter: any, maxLength: number) {
   let validatedParameter = parameter || "undefined";
-  const length = parameter.length;
+  const { length } = parameter;
   const type = typeof parameter;
 
   if (type !== "string") {

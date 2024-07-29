@@ -11,17 +11,21 @@
 	"plugins": ["@typescript-eslint"],
 	"extends": ["airbnb/base", "plugin:@typescript-eslint/recommended", "prettier"],
 	"rules": {
-		"linebreak-style": 0,
-		"arrow-parens": 0,
-		"max-len": 0,
+		"@typescript-eslint/ban-ts-comment": 0,
 		"@typescript-eslint/no-explicit-any": 0,
-		"@typescript-eslint/ban-ts-comment": 0
+		"arrow-parens": 0,
+		"import/extensions": 0,
+		"import/prefer-default-export": 0,
+		"linebreak-style": 0,
+		"max-len": 0,
+		"no-plusplus": 0
 	},
 	"overrides": [
 		{
-			"files": ["test/*.spec.ts"],
+			"files": ["*.spec.ts","*.test.ts"],
 			"rules": {
-				"import/extensions": 0,
+				"import/no-extraneous-dependencies": 0,
+				"no-new": 0,
 				"no-undef": 0
 			}
 		}

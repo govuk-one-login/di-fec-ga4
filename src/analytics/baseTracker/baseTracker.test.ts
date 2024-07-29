@@ -3,7 +3,6 @@ import { BaseTracker } from "./baseTracker";
 import { PageViewEventInterface } from "../pageViewTracker/pageViewTracker.interface";
 
 describe("should push to dataLayer", () => {
-  const newInstance = new BaseTracker();
   test("Push", () => {
     const pageViewTrackerDataLayerEvent: PageViewEventInterface = {
       event: "page_view_ga4",
@@ -26,23 +25,21 @@ describe("should push to dataLayer", () => {
         relying_party: "Relying Party",
       },
     };
-    newInstance.pushToDataLayer(pageViewTrackerDataLayerEvent);
+    BaseTracker.pushToDataLayer(pageViewTrackerDataLayerEvent);
     expect(pageViewTrackerDataLayerEvent).toEqual(window.dataLayer[0]);
   });
 });
 
 describe("should return the good parameter values", () => {
-  const newInstance = new BaseTracker();
-
   test("Get Language from html tag", () => {
     document.documentElement.lang = "ws";
-    const languageCode = newInstance.getLanguage();
+    const languageCode = BaseTracker.getLanguage();
     expect(languageCode).toEqual(document.documentElement.lang);
   });
 
   test("Get en as a default Language", () => {
     document.documentElement.lang = "";
-    const languageCode = newInstance.getLanguage();
+    const languageCode = BaseTracker.getLanguage();
     expect(languageCode).toEqual("undefined");
   });
 
@@ -51,7 +48,7 @@ describe("should return the good parameter values", () => {
       value: new URL("http://localhost/"),
       configurable: true,
     });
-    const location = newInstance.getLocation();
+    const location = BaseTracker.getLocation();
     expect(location).toEqual(window.location.href);
   });
 
@@ -60,24 +57,24 @@ describe("should return the good parameter values", () => {
       value: new URL("http://localhost/"),
       configurable: true,
     });
-    const location = newInstance.getLocation();
+    const location = BaseTracker.getLocation();
     expect(location).toEqual(window.location.href);
   });
 
   test("Get domain from element url", () => {
-    const location = newInstance.getDomain(
+    const location = BaseTracker.getDomain(
       "https://signin.account.gov.uk/enter-email-create",
     );
     expect(location).toEqual("https://signin.account.gov.uk");
   });
 
   test("Getdomain needs to return undefined if url = undefined", () => {
-    const location = newInstance.getDomain("undefined");
+    const location = BaseTracker.getDomain("undefined");
     expect(location).toEqual("undefined");
   });
 
   test("Get url path from 0 to 500 max from element url", () => {
-    const location = newInstance.getDomainPath(
+    const location = BaseTracker.getDomainPath(
       "https://signin.account.gov.uk/enter-email-create",
       0,
     );
@@ -85,12 +82,12 @@ describe("should return the good parameter values", () => {
   });
 
   test("Get domain path needs to return undefined if url = undefined", () => {
-    const location = newInstance.getDomainPath("undefined", 0);
+    const location = BaseTracker.getDomainPath("undefined", 0);
     expect(location).toEqual("undefined");
   });
 
   test("Get undefined if url path part is not found from element url", () => {
-    const location = newInstance.getDomainPath(
+    const location = BaseTracker.getDomainPath(
       "https://signin.account.gov.uk/enter-email-create",
       1,
     );
@@ -99,15 +96,14 @@ describe("should return the good parameter values", () => {
 });
 
 describe("should check for changeLink", () => {
-  const newInstance = new BaseTracker();
   test("should return true if element is a change link", () => {
     const href = document.createElement("a");
     href.setAttribute("href", "http://localhost?edit=true");
-    expect(newInstance.isChangeLink(href)).toBe(true);
+    expect(BaseTracker.isChangeLink(href)).toBe(true);
   });
   test("should return false if element is not a change link", () => {
     const href = document.createElement("a");
     href.setAttribute("href", "http://localhost");
-    expect(newInstance.isChangeLink(href)).toBe(false);
+    expect(BaseTracker.isChangeLink(href)).toBe(false);
   });
 });

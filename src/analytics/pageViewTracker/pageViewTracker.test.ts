@@ -7,6 +7,7 @@ import {
 } from "./pageViewTracker.interface";
 import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
 import { OptionsInterface } from "../core/core.interface";
+import { BaseTracker } from "../baseTracker/baseTracker";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
@@ -37,7 +38,7 @@ const options: OptionsInterface = {
 
 describe("pageViewTracker", () => {
   const newInstance = new PageViewTracker(options);
-  const spy = jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
+  jest.spyOn(BaseTracker, "pushToDataLayer");
   test("pageView is deactivated", () => {
     const instance = new PageViewTracker({
       ...options,
@@ -49,7 +50,7 @@ describe("pageViewTracker", () => {
 
   test("pushToDataLayer is called", () => {
     newInstance.trackOnPageLoad(getParameters());
-    expect(newInstance.pushToDataLayer).toBeCalled();
+    expect(BaseTracker.pushToDataLayer).toBeCalled();
   });
 
   test("pushToDataLayer is called with the good data", () => {
@@ -57,52 +58,52 @@ describe("pageViewTracker", () => {
     const dataLayerEvent: PageViewEventInterface = {
       event: newInstance.eventName,
       page_view: {
-        language: newInstance.getLanguage(),
-        location: newInstance.getLocation(),
+        language: BaseTracker.getLanguage(),
+        location: BaseTracker.getLocation(),
         organisations: newInstance.organisations,
         primary_publishing_organisation:
           newInstance.primary_publishing_organisation,
-        referrer: newInstance.getReferrer(),
+        referrer: BaseTracker.getReferrer(),
         status_code: parameters.statusCode.toString(),
         title: parameters.englishPageTitle,
         taxonomy_level1: parameters.taxonomy_level1,
         taxonomy_level2: parameters.taxonomy_level2,
         content_id: parameters.content_id,
-        logged_in_status: newInstance.getLoggedInStatus(
+        logged_in_status: PageViewTracker.getLoggedInStatus(
           parameters.logged_in_status,
         ),
         dynamic: parameters.dynamic.toString(),
-        first_published_at: newInstance.getFirstPublishedAt(),
-        updated_at: newInstance.getUpdatedAt(),
-        relying_party: newInstance.getRelyingParty(),
+        first_published_at: PageViewTracker.getFirstPublishedAt(),
+        updated_at: PageViewTracker.getUpdatedAt(),
+        relying_party: PageViewTracker.getRelyingParty(),
       },
     };
     newInstance.trackOnPageLoad(getParameters());
-    expect(newInstance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(dataLayerEvent);
   });
 
   test("getLoggedInStatus returns the good data if logged in", () => {
-    const status = newInstance.getLoggedInStatus(true);
+    const status = PageViewTracker.getLoggedInStatus(true);
     expect(status).toBe("logged in");
   });
 
   test("getLoggedInStatus returns the good data if logged out", () => {
-    const status = newInstance.getLoggedInStatus(false);
+    const status = PageViewTracker.getLoggedInStatus(false);
     expect(status).toBe("logged out");
   });
 
   test("getLoggedInStatus returns the good data if loggedinstatus is undefined", () => {
-    const status = newInstance.getLoggedInStatus(undefined);
+    const status = PageViewTracker.getLoggedInStatus(undefined);
     expect(status).toBe("undefined");
   });
 
   test("getRelyingParty returns the good data", () => {
-    const relyingParty = newInstance.getRelyingParty();
+    const relyingParty = PageViewTracker.getRelyingParty();
     expect(relyingParty).toBe("localhost");
   });
 
   test("getFirstPublishedAt returns undefined if first published-at tag doesn't exists", () => {
-    const firstPublishedAt = newInstance.getFirstPublishedAt();
+    const firstPublishedAt = PageViewTracker.getFirstPublishedAt();
     expect(firstPublishedAt).toBe("undefined");
   });
 
@@ -111,12 +112,12 @@ describe("pageViewTracker", () => {
     newTag.setAttribute("name", "govuk:first-published-at");
     newTag.setAttribute("content", "2022-09-01T00:00:00.000Z");
     document.head.appendChild(newTag);
-    const firstPublishedAt = newInstance.getFirstPublishedAt();
+    const firstPublishedAt = PageViewTracker.getFirstPublishedAt();
     expect(firstPublishedAt).toBe("2022-09-01T00:00:00.000Z");
   });
 
   test("getUpdatedAt returns undefined if updated-at tag doesn't exists", () => {
-    const updatedAt = newInstance.getUpdatedAt();
+    const updatedAt = PageViewTracker.getUpdatedAt();
     expect(updatedAt).toBe("undefined");
   });
 
@@ -125,13 +126,13 @@ describe("pageViewTracker", () => {
     newTag.setAttribute("name", "govuk:updated-at");
     newTag.setAttribute("content", "2022-09-02T00:00:00.000Z");
     document.head.appendChild(newTag);
-    const updatedAt = newInstance.getUpdatedAt();
+    const updatedAt = PageViewTracker.getUpdatedAt();
     expect(updatedAt).toBe("2022-09-02T00:00:00.000Z");
   });
 });
 
 describe("pageViewTracker test disable ga4 tracking option", () => {
-  const spy = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
+  jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
 
   test("pushToDataLayer should not be called", () => {
     const instance = new PageViewTracker({
@@ -189,12 +190,12 @@ describe("Form Error Tracker Trigger", () => {
   test("FormError tracker is activated even if pageView is disabled", () => {
     document.body.innerHTML =
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
-    const instance = new PageViewTracker({
+    const newInstance = new PageViewTracker({
       ...options,
       enablePageViewTracking: false,
     });
 
-    instance.trackOnPageLoad(getParameters());
+    newInstance.trackOnPageLoad(getParameters());
     expect(formErrorTracker.trackFormError).toHaveBeenCalled();
   });
 
@@ -208,12 +209,12 @@ describe("Form Error Tracker Trigger", () => {
     document.body.innerHTML =
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
 
-    const instance = new PageViewTracker({
+    const newInstance = new PageViewTracker({
       ...options,
       enableFormErrorTracking: false,
     });
 
-    instance.trackOnPageLoad(getParameters());
+    newInstance.trackOnPageLoad(getParameters());
     expect(formErrorTracker.trackFormError).not.toHaveBeenCalled();
   });
 });
@@ -225,7 +226,7 @@ describe("Persisting taxonomy level 2 values", () => {
     };
     document.body.innerHTML = "<p></p>";
     jest.clearAllMocks();
-    jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
+    jest.spyOn(BaseTracker, "pushToDataLayer");
   });
 
   test("Taxonomy level 2 is persisted from previous page", () => {
@@ -236,12 +237,12 @@ describe("Persisting taxonomy level 2 values", () => {
         taxonomy_level2: "persisted from previous page",
       }),
     );
-    expect(instance.pushToDataLayer).toHaveBeenNthCalledWith(1, {
+    expect(BaseTracker.pushToDataLayer).toHaveBeenNthCalledWith(1, {
       event: "page_view_ga4",
       page_view: {
         content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
         dynamic: "true",
-        first_published_at: instance.getFirstPublishedAt(),
+        first_published_at: PageViewTracker.getFirstPublishedAt(),
         language: "undefined",
         location: "http://localhost/",
         logged_in_status: "logged in",
@@ -254,15 +255,15 @@ describe("Persisting taxonomy level 2 values", () => {
         taxonomy_level1: "taxo1",
         taxonomy_level2: "taxo2",
         title: "home",
-        updated_at: instance.getUpdatedAt(),
+        updated_at: PageViewTracker.getUpdatedAt(),
       },
     });
-    expect(instance.pushToDataLayer).toHaveBeenNthCalledWith(2, {
+    expect(BaseTracker.pushToDataLayer).toHaveBeenNthCalledWith(2, {
       event: "page_view_ga4",
       page_view: {
         content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
         dynamic: "true",
-        first_published_at: instance.getFirstPublishedAt(),
+        first_published_at: PageViewTracker.getFirstPublishedAt(),
         language: "undefined",
         location: "http://localhost/",
         logged_in_status: "logged in",
@@ -275,7 +276,7 @@ describe("Persisting taxonomy level 2 values", () => {
         taxonomy_level1: "taxo1",
         taxonomy_level2: "taxo2",
         title: "home",
-        updated_at: instance.getUpdatedAt(),
+        updated_at: PageViewTracker.getUpdatedAt(),
       },
     });
   });
