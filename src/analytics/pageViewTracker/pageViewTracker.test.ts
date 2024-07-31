@@ -208,7 +208,7 @@ describe("Form Error Tracker Trigger", () => {
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
     const instance = new PageViewTracker({
       ...options,
-      enablePageViewTracking: false
+      enablePageViewTracking: false,
     });
 
     instance.trackOnPageLoad(parameters);

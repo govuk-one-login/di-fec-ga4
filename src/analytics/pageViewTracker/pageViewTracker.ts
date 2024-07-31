@@ -35,7 +35,7 @@ export class PageViewTracker extends BaseTracker {
     if (!this.enablePageViewTracking) {
       //trigger form error tracking if pageView is disabled
       const errorTrigger = document.getElementsByClassName(
-        "govuk-error-message"
+        "govuk-error-message",
       );
 
       if (errorTrigger.length && this.enableFormErrorTracking) {
@@ -80,8 +80,8 @@ export class PageViewTracker extends BaseTracker {
         dynamic: parameters.dynamic.toString(),
         first_published_at: this.getFirstPublishedAt(),
         updated_at: this.getUpdatedAt(),
-        relying_party: this.getRelyingParty()
-      }
+        relying_party: this.getRelyingParty(),
+      },
     };
 
     try {
