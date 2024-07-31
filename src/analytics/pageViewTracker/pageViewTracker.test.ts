@@ -203,6 +203,17 @@ describe("Form Error Tracker Trigger", () => {
     instance.trackOnPageLoad(parameters);
     expect(formErrorTracker.trackFormError).toHaveBeenCalled();
   });
+  test("FormError tracker is activated even if pageView is disabled", () => {
+    document.body.innerHTML =
+      '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
+    const instance = new PageViewTracker({
+      ...options,
+      enablePageViewTracking: false
+    });
+
+    instance.trackOnPageLoad(parameters);
+    expect(formErrorTracker.trackFormError).toHaveBeenCalled();
+  });
 
   test("FormError tracker is not triggered", () => {
     document.body.innerHTML = "";

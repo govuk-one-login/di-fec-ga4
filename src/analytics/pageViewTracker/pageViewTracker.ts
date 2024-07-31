@@ -31,7 +31,28 @@ export class PageViewTracker extends BaseTracker {
     if (this.disableGa4Tracking) {
       return false;
     }
+
     if (!this.enablePageViewTracking) {
+      //trigger form error tracking if pageView is disabled
+      const errorTrigger = document.getElementsByClassName(
+        "govuk-error-message"
+      );
+
+      if (errorTrigger.length && this.enableFormErrorTracking) {
+        const formErrorTracker = new FormErrorTracker();
+        formErrorTracker.trackFormError();
+        return false;
+      }
+
+      return false;
+    }
+
+    //trigger form error tracking if pageView is enabled
+    const errorTrigger = document.getElementsByClassName("govuk-error-message");
+
+    if (errorTrigger.length && this.enableFormErrorTracking) {
+      const formErrorTracker = new FormErrorTracker();
+      formErrorTracker.trackFormError();
       return false;
     }
 
@@ -39,16 +60,6 @@ export class PageViewTracker extends BaseTracker {
       window.DI.analyticsGa4.cookie.hasCookie &&
       !window.DI.analyticsGa4.cookie.consent
     ) {
-      return false;
-    }
-
-    //trigger form error tracking
-
-    const errorTrigger = document.getElementsByClassName("govuk-error-message");
-
-    if (errorTrigger.length && this.enableFormErrorTracking) {
-      const formErrorTracker = new FormErrorTracker();
-      formErrorTracker.trackFormError();
       return false;
     }
 
@@ -69,8 +80,8 @@ export class PageViewTracker extends BaseTracker {
         dynamic: parameters.dynamic.toString(),
         first_published_at: this.getFirstPublishedAt(),
         updated_at: this.getUpdatedAt(),
-        relying_party: this.getRelyingParty(),
-      },
+        relying_party: this.getRelyingParty()
+      }
     };
 
     try {
