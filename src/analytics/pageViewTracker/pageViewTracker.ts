@@ -28,6 +28,12 @@ export class PageViewTracker extends BaseTracker {
    */
 
   trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
+    if (
+      window.DI.analyticsGa4.cookie.hasCookie &&
+      !window.DI.analyticsGa4.cookie.consent
+    ) {
+      return false;
+    }
     if (this.disableGa4Tracking) {
       return false;
     }
@@ -42,13 +48,6 @@ export class PageViewTracker extends BaseTracker {
     }
 
     if (!this.enablePageViewTracking) {
-      return false;
-    }
-
-    if (
-      window.DI.analyticsGa4.cookie.hasCookie &&
-      !window.DI.analyticsGa4.cookie.consent
-    ) {
       return false;
     }
 
