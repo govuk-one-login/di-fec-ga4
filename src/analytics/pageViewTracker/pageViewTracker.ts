@@ -32,27 +32,16 @@ export class PageViewTracker extends BaseTracker {
       return false;
     }
 
-    if (!this.enablePageViewTracking) {
-      //trigger form error tracking if pageView is disabled
-      const errorTrigger = document.getElementsByClassName(
-        "govuk-error-message",
-      );
-
-      if (errorTrigger.length && this.enableFormErrorTracking) {
-        const formErrorTracker = new FormErrorTracker();
-        formErrorTracker.trackFormError();
-        return false;
-      }
-
-      return false;
-    }
-
     //trigger form error tracking if pageView is enabled
     const errorTrigger = document.getElementsByClassName("govuk-error-message");
 
     if (errorTrigger.length && this.enableFormErrorTracking) {
       const formErrorTracker = new FormErrorTracker();
       formErrorTracker.trackFormError();
+      return false;
+    }
+
+    if (!this.enablePageViewTracking) {
       return false;
     }
 
