@@ -13,7 +13,7 @@ declare global {
 
 const appInit = function (
   settings: AppConfigInterface,
-  options: OptionsInterface = {},
+  options: OptionsInterface,
 ): boolean {
   const defaultedOptions = applyDefaults(options, { isDataSensitive: true });
 

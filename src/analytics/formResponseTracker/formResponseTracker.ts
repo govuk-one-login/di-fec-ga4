@@ -9,15 +9,17 @@ export class FormResponseTracker extends FormTracker {
   eventName: string = "form_response";
   eventType: string = "event_data";
   isDataSensitive: boolean;
+  enableFormResponseTracking: boolean;
 
   /**
    * Initializes a new instance of the FormResponseTracker class.
    *  * @param {boolean} isDataSensitive - Flag if data is sensitive
    *  * @return {void}
    */
-  constructor(isDataSensitive: boolean) {
+  constructor(isDataSensitive: boolean, enableFormResponseTracking: boolean) {
     super();
     this.isDataSensitive = isDataSensitive;
+    this.enableFormResponseTracking = enableFormResponseTracking;
     this.initialiseEventListener();
   }
 
@@ -41,6 +43,10 @@ export class FormResponseTracker extends FormTracker {
    */
   trackFormResponse(event: SubmitEvent): boolean {
     if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
+
+    if (!this.enableFormResponseTracking) {
       return false;
     }
 

@@ -5,6 +5,7 @@ import {
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
 import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
+import { OptionsInterface } from "../core/core.interface";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
@@ -17,10 +18,29 @@ const parameters: PageViewParametersInterface = {
   logged_in_status: true,
   dynamic: true,
 };
+const options: OptionsInterface = {
+  disableGa4Tracking: false,
+  disableUaTracking: false,
+  cookieDomain: "localhost",
+  enableFormChangeTracking: true,
+  enableFormErrorTracking: true,
+  enableFormResponseTracking: true,
+  enableNavigationTracking: true,
+  enablePageViewTracking: true,
+  enableSelectContentTracking: true,
+};
 
 describe("pageViewTracker", () => {
-  const newInstance = new PageViewTracker();
+  const newInstance = new PageViewTracker(options);
   const spy = jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
+  test("pageView is deactivated", () => {
+    const instance = new PageViewTracker({
+      ...options,
+      enablePageViewTracking: false,
+    });
+    instance.trackOnPageLoad(parameters);
+    expect(instance.trackOnPageLoad).toReturnWith(false);
+  });
 
   test("pushToDataLayer is called", () => {
     newInstance.trackOnPageLoad(parameters);
@@ -108,19 +128,25 @@ describe("pageViewTracker test disable ga4 tracking option", () => {
   const spy = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
 
   test("pushToDataLayer should not be called", () => {
-    const instance = new PageViewTracker({ disableGa4Tracking: true });
+    const instance = new PageViewTracker({
+      ...options,
+      disableGa4Tracking: true,
+    });
     instance.trackOnPageLoad(parameters);
     expect(instance.trackOnPageLoad).toReturnWith(false);
   });
 });
 
 describe("Cookie Management", () => {
-  const spy = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
+  jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
+  beforeEach(() => {
+    window.DI.analyticsGa4.cookie.consent = true;
+  });
 
   test("trackOnPageLoad should return false if visitor rejects cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
     window.DI.analyticsGa4.cookie.hasCookie = true;
-    const instance = new PageViewTracker();
+    const instance = new PageViewTracker(options);
     const dataLayerEvent: PageViewEventInterface = {
       event: instance.eventName,
       page_view: {
@@ -150,26 +176,60 @@ describe("Cookie Management", () => {
 });
 
 describe("Form Error Tracker Trigger", () => {
+  let instance: PageViewTracker;
+  let formErrorTracker: FormErrorTracker;
+
   beforeEach(() => {
-    // Remove any existing elements from document.body if needed
-    document.body.innerHTML = "";
+    jest.clearAllMocks();
+    window.DI.analyticsGa4.cookie.consent = true;
+    jest.spyOn(FormErrorTracker.prototype, "trackFormError");
+    instance = new PageViewTracker(options);
+    formErrorTracker = new FormErrorTracker();
   });
 
-  const spy = jest.spyOn(FormErrorTracker.prototype, "trackFormError");
-  const instance = new PageViewTracker();
-  const formErrorTracker = new FormErrorTracker();
-  window.DI.analyticsGa4.cookie.consent = true;
-  window.DI.analyticsGa4.cookie.hasCookie = true;
-
   test("trackOnPageLoad should called form error function and return false if form error message exists", () => {
-    const spy2 = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
+    jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
+
     document.body.innerHTML =
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
     instance.trackOnPageLoad(parameters);
     expect(instance.trackOnPageLoad).toReturnWith(false);
   });
 
+  test("FormError tracker is activated", () => {
+    document.body.innerHTML =
+      '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
+
+    instance.trackOnPageLoad(parameters);
+    expect(formErrorTracker.trackFormError).toHaveBeenCalled();
+  });
+  test("FormError tracker is activated even if pageView is disabled", () => {
+    document.body.innerHTML =
+      '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
+    const instance = new PageViewTracker({
+      ...options,
+      enablePageViewTracking: false,
+    });
+
+    instance.trackOnPageLoad(parameters);
+    expect(formErrorTracker.trackFormError).toHaveBeenCalled();
+  });
+
   test("FormError tracker is not triggered", () => {
+    document.body.innerHTML = "";
+    instance.trackOnPageLoad(parameters);
+    expect(formErrorTracker.trackFormError).not.toBeCalled();
+  });
+
+  test("FormError tracker is deactivated", () => {
+    document.body.innerHTML =
+      '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
+
+    const instance = new PageViewTracker({
+      ...options,
+      enableFormErrorTracking: false,
+    });
+
     instance.trackOnPageLoad(parameters);
     expect(formErrorTracker.trackFormError).not.toHaveBeenCalled();
   });

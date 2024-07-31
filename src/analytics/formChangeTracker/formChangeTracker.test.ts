@@ -31,12 +31,18 @@ describe("FormChangeTracker", () => {
     jest.spyOn(FormChangeTracker.prototype, "getSection");
     jest.spyOn(FormChangeTracker.prototype, "initialiseEventListener");
 
-    newInstance = new FormChangeTracker();
+    const enableFormChangeTracking = true;
+    newInstance = new FormChangeTracker(enableFormChangeTracking);
     action = new MouseEvent("click", {
       view: window,
       bubbles: true,
       cancelable: true,
     });
+  });
+
+  test("form change should be deactivated, if flag is set to false", () => {
+    const instance = new FormChangeTracker(false);
+    expect(instance.trackFormChange).not.toBeCalled();
   });
 
   test("new instance should call initialiseEventListener", () => {

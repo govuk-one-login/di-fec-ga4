@@ -5,13 +5,19 @@ import {
 } from "./pageViewTracker.interface";
 import { validateParameter } from "../../utils/validateParameter";
 import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
+import { OptionsInterface } from "../core/core.interface";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
   disableGa4Tracking: boolean = false;
-  constructor(options: { disableGa4Tracking?: boolean } = {}) {
+  enableFormErrorTracking: boolean;
+  enablePageViewTracking: boolean;
+
+  constructor(options: OptionsInterface) {
     super();
     this.disableGa4Tracking = options.disableGa4Tracking || false;
+    this.enableFormErrorTracking = options.enableFormErrorTracking;
+    this.enablePageViewTracking = options.enablePageViewTracking;
   }
 
   /**
@@ -20,23 +26,28 @@ export class PageViewTracker extends BaseTracker {
    * @param {PageViewParametersInterface} parameters - The parameters for the page view event.
    * @return {boolean} Returns true if the event was successfully tracked, false otherwise.
    */
-  trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
-    if (this.disableGa4Tracking) {
-      return false;
-    }
 
+  trackOnPageLoad(parameters: PageViewParametersInterface): boolean {
     if (
       window.DI.analyticsGa4.cookie.hasCookie &&
       !window.DI.analyticsGa4.cookie.consent
     ) {
       return false;
     }
+    if (this.disableGa4Tracking) {
+      return false;
+    }
 
-    //trigger form error tracking
+    //trigger form error tracking if pageView is enabled
     const errorTrigger = document.getElementsByClassName("govuk-error-message");
-    if (errorTrigger.length) {
+
+    if (errorTrigger.length && this.enableFormErrorTracking) {
       const formErrorTracker = new FormErrorTracker();
       formErrorTracker.trackFormError();
+      return false;
+    }
+
+    if (!this.enablePageViewTracking) {
       return false;
     }
 

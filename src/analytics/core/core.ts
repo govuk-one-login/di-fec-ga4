@@ -8,6 +8,9 @@ import { OptionsInterface } from "./core.interface";
 export class Analytics {
   gtmId: string;
   isDataSensitive: boolean | undefined;
+  enableFormResponseTracking: boolean;
+  enableNavigationTracking: boolean;
+  enableFormChangeTracking: boolean;
   uaContainerId: string | undefined;
   pageViewTracker: PageViewTracker | undefined;
   navigationTracker: NavigationTracker | undefined;
@@ -25,9 +28,20 @@ export class Analytics {
 
     this.cookie = new Cookie(options.cookieDomain);
     this.isDataSensitive = Boolean(options.isDataSensitive);
+    this.enableFormResponseTracking = Boolean(
+      options.enableFormResponseTracking,
+    );
+    this.enableNavigationTracking = Boolean(options.enableNavigationTracking);
+    this.enableFormChangeTracking = Boolean(options.enableFormChangeTracking);
 
     this.pageViewTracker = new PageViewTracker({
       disableGa4Tracking: options.disableGa4Tracking,
+      enableFormChangeTracking: options.enableFormChangeTracking,
+      enableFormErrorTracking: options.enableFormErrorTracking,
+      enableFormResponseTracking: options.enableFormResponseTracking,
+      enableNavigationTracking: options.enableNavigationTracking,
+      enablePageViewTracking: options.enablePageViewTracking,
+      enableSelectContentTracking: options.enableSelectContentTracking,
     });
 
     if (!options.disableGa4Tracking) {
@@ -37,9 +51,16 @@ export class Analytics {
         "gtm.start": new Date().getTime(),
         event: "gtm.js",
       });
-      this.formResponseTracker = new FormResponseTracker(this.isDataSensitive);
-      this.navigationTracker = new NavigationTracker();
-      this.formChangeTracker = new FormChangeTracker();
+      this.formResponseTracker = new FormResponseTracker(
+        this.isDataSensitive,
+        this.enableFormResponseTracking,
+      );
+      this.navigationTracker = new NavigationTracker(
+        this.enableNavigationTracking,
+      );
+      this.formChangeTracker = new FormChangeTracker(
+        this.enableFormChangeTracking,
+      );
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);
       }
