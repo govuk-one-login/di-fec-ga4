@@ -12,7 +12,7 @@ export class Analytics {
   enableFormResponseTracking: boolean;
   enableNavigationTracking: boolean;
   enableFormChangeTracking: boolean;
-  enableSelectContentTracking:boolean;
+  enableSelectContentTracking: boolean;
   uaContainerId: string | undefined;
   pageViewTracker: PageViewTracker | undefined;
   navigationTracker: NavigationTracker | undefined;
@@ -37,7 +37,7 @@ export class Analytics {
     this.enableNavigationTracking = Boolean(options.enableNavigationTracking);
     this.enableFormChangeTracking = Boolean(options.enableFormChangeTracking);
     this.enableSelectContentTracking = Boolean(
-      options.enableSelectContentTracking
+      options.enableSelectContentTracking,
     );
 
     this.pageViewTracker = new PageViewTracker({
@@ -67,7 +67,7 @@ export class Analytics {
       this.formChangeTracker = new FormChangeTracker(
         this.enableFormChangeTracking,
       );
-       this.selectContentTracker = new SelectContentTracker();
+      this.selectContentTracker = new SelectContentTracker();
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);
       }
