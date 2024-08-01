@@ -67,7 +67,9 @@ export class Analytics {
       this.formChangeTracker = new FormChangeTracker(
         this.enableFormChangeTracking,
       );
-      this.selectContentTracker = new SelectContentTracker();
+      this.selectContentTracker = new SelectContentTracker(
+        this.enableSelectContentTracking,
+      );
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);
       }

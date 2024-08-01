@@ -1,29 +1,33 @@
-import { describe, expect, jest, test } from "@jest/globals";
+import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import { SelectContentTracker } from "./selectContentTracker";
 import { SelectContentEventInterface } from "./selectContentTracker.interface";
 
-window.DI = { analyticsGa4: { cookie: { consent: true } } };
-
 describe("selectContentTracker", () => {
-  const newInstance = new SelectContentTracker();
-  const action = new MouseEvent("toggle", {
-    view: window,
-    bubbles: true,
-    cancelable: true,
+  let newInstance: SelectContentTracker;
+  let action: MouseEvent;
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
+    newInstance = new SelectContentTracker(true);
+    action = new MouseEvent("toggle", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    jest.spyOn(SelectContentTracker.prototype, "pushToDataLayer");
+    jest.spyOn(SelectContentTracker.prototype, "trackSelectContent");
+    jest.spyOn(SelectContentTracker.prototype, "initialiseEventListener");
   });
-  const spy = jest.spyOn(SelectContentTracker.prototype, "pushToDataLayer");
-  const spyTrackNavigation = jest.spyOn(
-    SelectContentTracker.prototype,
-    "trackSelectContent",
-  );
-  const constructorSpy = jest.spyOn(
-    SelectContentTracker.prototype,
-    "initialiseEventListener",
-  );
 
   test("new instance should call event listener", () => {
-    const instance = new SelectContentTracker();
-    expect(newInstance.initialiseEventListener).toBeCalled();
+    const instance = new SelectContentTracker(true);
+    expect(instance.initialiseEventListener).toBeCalled();
+  });
+  test("should be disabled when flag set to false", () => {
+    const instance = new SelectContentTracker(false);
+    expect(instance.trackSelectContent).not.toBeCalled();
   });
 
   test("initialiseEventListener should attach event listener to each details element", () => {
@@ -134,7 +138,8 @@ describe("Cookie Management", () => {
       "trackSelectContent",
     );
     window.DI.analyticsGa4.cookie.consent = false;
-    const instance = new SelectContentTracker();
+    const enableSelectContentTracking = true;
+    const instance = new SelectContentTracker(enableSelectContentTracking);
     const details = document.createElement("details");
     details.addEventListener("toggle", (event) => {
       expect(instance.trackSelectContent).toReturnWith(false);
@@ -143,7 +148,8 @@ describe("Cookie Management", () => {
 });
 
 describe("getSummaryText", () => {
-  const newInstance = new SelectContentTracker();
+  const enableSelectContentTracking = true;
+  const newInstance = new SelectContentTracker(enableSelectContentTracking);
   const action = new MouseEvent("toggle", {
     view: window,
     bubbles: true,
@@ -173,7 +179,8 @@ describe("getSummaryText", () => {
 });
 
 describe("getActionValue", () => {
-  const newInstance = new SelectContentTracker();
+  const enableSelectContentTracking = true;
+  const newInstance = new SelectContentTracker(enableSelectContentTracking);
   const action = new MouseEvent("toggle", {
     view: window,
     bubbles: true,

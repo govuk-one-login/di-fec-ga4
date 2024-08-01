@@ -4,9 +4,11 @@ import { SelectContentEventInterface } from "./selectContentTracker.interface";
 export class SelectContentTracker extends BaseTracker {
   eventName: string = "select_content";
   eventType: string = "event_data";
+  enableSelectContentTracking: boolean;
 
-  constructor() {
+  constructor(enableSelectContentTracking: boolean) {
     super();
+    this.enableSelectContentTracking = enableSelectContentTracking;
     this.initialiseEventListener();
   }
   /**
@@ -35,6 +37,9 @@ export class SelectContentTracker extends BaseTracker {
 
   trackSelectContent(event: Event): boolean {
     if (!window.DI.analyticsGa4.cookie.consent) {
+      return false;
+    }
+    if (!this.enableSelectContentTracking) {
       return false;
     }
 
