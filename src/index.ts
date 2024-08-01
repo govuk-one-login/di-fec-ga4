@@ -3,6 +3,7 @@ import {
   OptionsInterface,
 } from "./analytics/core/core.interface";
 import { Analytics } from "./analytics/core/core";
+import { applyDefaults } from "./utils/applyDefaults";
 
 declare global {
   interface Window {
@@ -14,10 +15,15 @@ const appInit = function (
   settings: AppConfigInterface,
   options: OptionsInterface,
 ): boolean {
-  try {
-    window.DI.analyticsGa4 = new Analytics(settings.ga4ContainerId, options);
+  const defaultedOptions = applyDefaults(options, { isDataSensitive: true });
 
-    if (options && !options.disableUaTracking) {
+  try {
+    window.DI.analyticsGa4 = new Analytics(
+      settings.ga4ContainerId,
+      defaultedOptions,
+    );
+
+    if (!defaultedOptions.disableUaTracking) {
       window.DI.analyticsGa4.uaContainerId = settings.uaContainerId;
       window.DI.analyticsUa.init();
     }

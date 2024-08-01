@@ -28,3 +28,10 @@ export interface PageViewParametersInterface {
   logged_in_status: boolean;
   dynamic: boolean;
 }
+
+export interface GTMInitInterface {
+  event: string;
+  "gtm.allowlist": string[];
+  "gtm.blocklist": string[];
+  "gtm.start": number;
+}

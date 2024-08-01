@@ -4,9 +4,11 @@ import { validateParameter } from "../../utils/validateParameter";
 
 export class NavigationTracker extends BaseTracker {
   eventName: string = "event_data";
+  enableNavigationTracking: boolean;
 
-  constructor() {
+  constructor(enableNavigationTracking: boolean) {
     super();
+    this.enableNavigationTracking = enableNavigationTracking;
     this.initialiseEventListener();
   }
 
@@ -30,6 +32,9 @@ export class NavigationTracker extends BaseTracker {
     if (!window.DI.analyticsGa4.cookie.consent) {
       return false;
     }
+    if (!this.enableNavigationTracking) {
+      return false;
+    }
 
     let element: HTMLLinkElement = event.target as HTMLLinkElement;
     element = this.getParentElementIfSpecificClass(element, [
@@ -39,10 +44,9 @@ export class NavigationTracker extends BaseTracker {
     /*
      * Navigation tracker is only for links and navigation buttons outside of error summary list
      */
+
     if (
-      element.parentElement &&
-      element.parentElement.parentElement &&
-      element.parentElement.parentElement.className.includes(
+      element.parentElement?.parentElement?.className.includes(
         "govuk-error-summary__list",
       )
     ) {
@@ -67,20 +71,26 @@ export class NavigationTracker extends BaseTracker {
       element.tagName === "BUTTON" &&
       element.attributes.getNamedItem("data-link")
     ) {
-      element.href =
-        `${window.location.protocol}//${
-          window.location.host
-        }${element.attributes.getNamedItem("data-link")?.value}` || "undefined";
+      const dataLinkValue = element.attributes.getNamedItem("data-link")?.value;
+      if (dataLinkValue) {
+        element.href = `${window.location.protocol}//${window.location.host}${dataLinkValue}`;
+      } else {
+        element.href = "undefined";
+      }
     }
 
     // Ignore links that don't have an inbound or outbound href
     if (
-      !element.href ||
       !element.href?.length ||
       element.href === "#" ||
       element.href === window.location.href + "#"
     ) {
       element.href = "undefined";
+    }
+
+    // Ignore change links
+    if (this.isChangeLink(element)) {
+      return false;
     }
 
     const navigationTrackerEvent: NavigationEventInterface = {
@@ -221,11 +231,13 @@ export class NavigationTracker extends BaseTracker {
    * Determines if the given element is a header link
    *
    * @param {string} element - The HTML link element to get the type of.
-   * @return {boolean} Returns true if the header tag contains this element, false otherwise.
+   * @return {boolean} Returns true if the header or nav tag contains this element, false otherwise.
    */
   isHeaderMenuBarLink(element: HTMLElement): boolean {
-    const header = document.getElementsByTagName("header")[0];
-    return header && header.contains(element);
+    const header = document.querySelector("header");
+    const nav = document.querySelector("nav");
+
+    return header?.contains(element) || nav?.contains(element) || false;
   }
 
   /**

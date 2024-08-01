@@ -1,80 +1,156 @@
-import { describe, expect, jest, test } from "@jest/globals";
+import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { FormChangeTracker } from "./formChangeTracker";
-import { FormEventInterface } from "../formTracker/formTracker.interface";
 
-window.DI = { analyticsGa4: { cookie: { consent: true } } };
+function createForm() {
+  document.body.innerHTML = `
+    <main id="main-content">
+      <form>
+        <a id="change_link" href="http://localhost?edit=true">Change</a>
+      </form>
+    </main>
+  `;
+
+  return {
+    changeLink: document.getElementById("change_link")!,
+    form: document.getElementsByTagName("form")[0],
+  };
+}
 
 describe("FormChangeTracker", () => {
-  const spy = jest.spyOn(FormChangeTracker.prototype, "pushToDataLayer");
-  const trackFormChangeSpy = jest.spyOn(
-    FormChangeTracker.prototype,
-    "trackFormChange",
-  );
-  const getSubmitterTextSpy = jest.spyOn(
-    FormChangeTracker.prototype,
-    "getSubmitterText",
-  );
+  let newInstance: FormChangeTracker;
+  let action: MouseEvent;
 
-  test("trackFormChange should return false if not cookie consent", () => {
-    window.DI.analyticsGa4.cookie.consent = false;
-    const instance = new FormChangeTracker();
-    instance.trackFormChange();
-    expect(instance.trackFormChange).toReturnWith(false);
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    window.DI = { analyticsGa4: { cookie: { consent: true } } };
+
+    jest.spyOn(FormChangeTracker.prototype, "pushToDataLayer");
+    jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
+    jest.spyOn(FormChangeTracker.prototype, "isChangeLink");
+    jest.spyOn(FormChangeTracker.prototype, "getSection");
+    jest.spyOn(FormChangeTracker.prototype, "initialiseEventListener");
+
+    const enableFormChangeTracking = true;
+    newInstance = new FormChangeTracker(enableFormChangeTracking);
+    action = new MouseEvent("click", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
   });
 
-  test("datalayer event should be defined", () => {
-    window.DI.analyticsGa4.cookie.consent = true;
-    const instance = new FormChangeTracker();
-    document.body.innerHTML = "";
-    document.body.innerHTML =
-      '<div id="main-content">' +
-      '<form action="/test-url" method="post">' +
-      "  <legend>test label questions</legend>" +
-      '  <label for="question-1">test label question 1</label>' +
-      '  <input type="checkbox" id="question-1" name="question-1" value="test value" checked/>' +
-      '  <label for="question-2">test label question 2</label>' +
-      '  <input type="checkbox" id="question-2" name="question-2" value="test value"/>' +
-      '  <button id="button" type="submit">submit</button>' +
-      "</form></div>";
+  test("form change should be deactivated, if flag is set to false", () => {
+    const instance = new FormChangeTracker(false);
+    expect(instance.trackFormChange).not.toBeCalled();
+  });
 
-    const dataLayerEvent: FormEventInterface = {
+  test("new instance should call initialiseEventListener", () => {
+    expect(newInstance.initialiseEventListener).toBeCalled();
+  });
+
+  test("pushToDataLayer is called", () => {
+    const { changeLink } = createForm();
+    changeLink.dispatchEvent(action);
+    expect(newInstance.pushToDataLayer).toBeCalledWith({
       event: "event_data",
       event_data: {
-        event_name: "form_change_response",
-        type: "undefined",
-        url: "http://localhost/test-url",
-        text: "change", //put static value. Waiting final documentation on form change tracker
-        section: "test label questions",
         action: "change response",
+        event_name: "form_change_response",
         external: "false",
         link_domain: "http://localhost",
-        "link_path_parts.1": "/test-url",
+        "link_path_parts.1": "/",
         "link_path_parts.2": "undefined",
         "link_path_parts.3": "undefined",
         "link_path_parts.4": "undefined",
         "link_path_parts.5": "undefined",
+        section: "undefined",
+        text: "change",
+        type: "undefined",
+        url: "http://localhost/?edit=true",
       },
-    };
-
-    instance.trackFormChange();
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+    });
   });
 
-  test("getSubmitterText should return submit button text", () => {
-    const instance = new FormChangeTracker();
+  test("trackFormChange should return false if not cookie consent", () => {
+    window.DI.analyticsGa4.cookie.consent = false;
+    const { changeLink } = createForm();
+    changeLink.dispatchEvent(action);
+    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
+  });
 
-    document.body.innerHTML =
-      '<div id="main-content">' +
-      '<form action="/test-url" method="post">' +
-      "  <legend>test label questions</legend>" +
-      '  <label for="question-1">test label question 1</label>' +
-      '  <input type="checkbox" id="question-1" name="question-1" value="test value" checked/>' +
-      '  <label for="question-2">test label question 2</label>' +
-      '  <input type="checkbox" id="question-2" name="question-2" value="test value"/>' +
-      '  <button id="button" type="submit">submit</button>' +
-      "</form></div>";
+  test("trackFormChange should return false if not a change link", () => {
+    const { form } = createForm();
 
-    instance.getSubmitterText();
-    expect(instance.getSubmitterText).toReturnWith("submit");
+    const href = document.createElement("div");
+    href.className = "govuk-footer__link";
+    form.appendChild(href);
+
+    href.dispatchEvent(action);
+
+    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
+  });
+
+  test("trackFormChange should return true if a Change link", () => {
+    const { changeLink } = createForm();
+    changeLink.dispatchEvent(action);
+    expect(newInstance.pushToDataLayer).toHaveBeenCalled();
+  });
+
+  test("trackFormChange should return false if it is a Lang Toggle link", () => {
+    const { changeLink } = createForm();
+    changeLink.setAttribute("hreflang", "en");
+    changeLink.dispatchEvent(action);
+    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
+  });
+
+  test("should return 'undefined' if parent element does not exist", () => {
+    document.body.innerHTML = `<a id="change_link" href="http://localhost?edit=true">Change</a>`;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
+    expect(newInstance.getSection(href)).toBe("undefined");
+  });
+
+  test("should return text content of sibling with class 'govuk-summary-list__key'", () => {
+    document.body.innerHTML = `
+    <div class="govuk-summary-list__key">Expected Section</div>
+    <div>
+      <a id="change_link">Change</a>
+    </div>
+  `;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
+    expect(newInstance.getSection(href)).toBe("Expected Section");
+  });
+
+  test("should check and return text content of parent element if no matching sibling found", () => {
+    document.body.innerHTML = `  
+    <div>
+    Postcode
+      <a id="change_link">Change</a> 
+    </div>
+  `;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
+    expect(newInstance.getSection(href)).toBe("Postcode");
+  });
+
+  test("should return 'undefined' if no matching sibling found and parent has no text content", () => {
+    document.body.innerHTML = `
+      <div>
+        <a id="change_link">Change</a>
+      </div>
+    `;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
+
+    expect(newInstance.getSection(href)).toBe("undefined");
+  });
+
+  test("should return 'undefined' if summary list key has no text content", () => {
+    document.body.innerHTML = `
+    <div class="govuk-summary-list__key"></div>
+    <div>
+      <a id="change_link">Change</a>
+    </div>
+  `;
+    const href = document.getElementById("change_link") as HTMLAnchorElement;
+    expect(newInstance.getSection(href)).toBe("undefined");
   });
 });

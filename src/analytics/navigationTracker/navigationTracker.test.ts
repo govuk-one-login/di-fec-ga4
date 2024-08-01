@@ -4,7 +4,8 @@ import { NavigationTracker } from "./navigationTracker";
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
 describe("navigationTracker", () => {
-  const newInstance = new NavigationTracker();
+  const enableNavigationTracking = true;
+  const newInstance = new NavigationTracker(enableNavigationTracking);
   const action = new MouseEvent("click", {
     view: window,
     bubbles: true,
@@ -21,7 +22,7 @@ describe("navigationTracker", () => {
   );
 
   test("new instance should call initialiseEventListener", () => {
-    const instance = new NavigationTracker();
+    const instance = new NavigationTracker(true);
     expect(newInstance.initialiseEventListener).toBeCalled();
   });
 
@@ -45,7 +46,19 @@ describe("navigationTracker", () => {
       expect(newInstance.pushToDataLayer).toBeCalled();
     });
   });
-
+  //test trackNavigation return false if tracker is deactivated
+  test("trackNavigation return false if tracker is deactivated", () => {
+    const instance = new NavigationTracker(false);
+    const href = document.createElement("BUTTON");
+    href.setAttribute("data-nav", "true");
+    href.setAttribute("data-link", "/next-url");
+    href.innerHTML = "Continue";
+    href.setAttribute("href", "http://localhost");
+    href.addEventListener("click", (event) => {
+      expect(instance.trackNavigation(event)).toBe(false);
+    });
+    href.dispatchEvent(action);
+  });
   //test trackNavigation doesn't accept anything except button or link
   test("trackNavigation should return false if not a link or a button", () => {
     const href = document.createElement("div");
@@ -95,6 +108,18 @@ describe("navigationTracker", () => {
     href.dispatchEvent(action);
   });
 
+  //test trackNavigation doesn't accept change links
+  test("trackNavigation should return false if it is a change link", () => {
+    document.body.innerHTML = "<div></div>";
+    const href = document.createElement("A");
+    href.innerHTML = "Change answer";
+    href.setAttribute("href", "http://localhost?edit=true");
+    href.addEventListener("click", (event) => {
+      expect(newInstance.trackNavigation(event)).toBe(false);
+    });
+    href.dispatchEvent(action);
+  });
+
   //test pushToDataLayer is called
   test("pushToDataLayer is called", () => {
     const href = document.createElement("A");
@@ -111,7 +136,7 @@ describe("Cookie Management", () => {
   test("trackNavigation should return false if not cookie consent", () => {
     const spy = jest.spyOn(NavigationTracker.prototype, "trackNavigation");
     window.DI.analyticsGa4.cookie.consent = false;
-    const instance = new NavigationTracker();
+    const instance = new NavigationTracker(true);
     const href = document.createElement("A");
     href.className = "govuk-footer__link";
     href.addEventListener("click", (event) => {
@@ -121,7 +146,7 @@ describe("Cookie Management", () => {
 });
 
 describe("getLinkType", () => {
-  const newInstance = new NavigationTracker();
+  const newInstance = new NavigationTracker(true);
   const action = new MouseEvent("click", {
     view: window,
     bubbles: true,
@@ -190,7 +215,7 @@ describe("getLinkType", () => {
 });
 
 describe("isExternalLink", () => {
-  const newInstance = new NavigationTracker();
+  const newInstance = new NavigationTracker(true);
 
   test("should return false for internal links", () => {
     const url = "http://localhost";
@@ -209,7 +234,7 @@ describe("isExternalLink", () => {
 });
 
 describe("isHeaderMenuBarLink", () => {
-  const newInstance = new NavigationTracker();
+  const newInstance = new NavigationTracker(true);
 
   test("should return true if link is inside the header tag", () => {
     document.body.innerHTML = `<header><a id="testLink">Link to GOV.UK</a></header>`;
@@ -217,15 +242,21 @@ describe("isHeaderMenuBarLink", () => {
     expect(newInstance.isHeaderMenuBarLink(element)).toBe(true);
   });
 
-  test("should return false if link is not inside the header tag", () => {
-    document.body.innerHTML = `<header></header><a id="testLink">Link to GOV.UK</a>`;
+  test("should return true if link is inside the nav tag", () => {
+    document.body.innerHTML = `<nav><a id="testLink">Link to GOV.UK</a></nav>`;
+    const element = document.getElementById("testLink") as HTMLElement;
+    expect(newInstance.isHeaderMenuBarLink(element)).toBe(true);
+  });
+
+  test("should return false if link is not inside the header or nav tag", () => {
+    document.body.innerHTML = `<div><a id="testLink">Link to GOV.UK</a></div>`;
     const element = document.getElementById("testLink") as HTMLElement;
     expect(newInstance.isHeaderMenuBarLink(element)).toBe(false);
   });
 });
 
 describe("isFooterLink", () => {
-  const newInstance = new NavigationTracker();
+  const newInstance = new NavigationTracker(true);
 
   test("should return true if link is inside the footer tag", () => {
     document.body.innerHTML = `<footer><a id="testLink2">Link to GOV.UK</a></footer>`;
@@ -241,7 +272,7 @@ describe("isFooterLink", () => {
 });
 
 describe("isBackLink", () => {
-  const newInstance = new NavigationTracker();
+  const newInstance = new NavigationTracker(true);
 
   test("should return true if link is a back button", () => {
     document.body.innerHTML = `<a id="testLink3" href="/welcome" class="govuk-back-link">Back</a>`;
@@ -257,7 +288,7 @@ describe("isBackLink", () => {
 });
 
 describe("getSection", () => {
-  const newInstance = new NavigationTracker();
+  const newInstance = new NavigationTracker(true);
   const action = new MouseEvent("click", {
     view: window,
     bubbles: true,

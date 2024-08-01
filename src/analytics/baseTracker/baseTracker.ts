@@ -1,6 +1,7 @@
 import { PageViewEventInterface } from "../pageViewTracker/pageViewTracker.interface";
 import { NavigationEventInterface } from "../navigationTracker/navigationTracker.interface";
 import { FormEventInterface } from "../formTracker/formTracker.interface";
+import { GTMInitInterface } from "../pageViewTracker/pageViewTracker.interface";
 
 declare global {
   interface Window {
@@ -23,9 +24,9 @@ export class BaseTracker {
     event:
       | PageViewEventInterface
       | NavigationEventInterface
-      | FormEventInterface,
+      | FormEventInterface
+      | GTMInitInterface,
   ): boolean {
-    console.log("running pushToDataLayer");
     window.dataLayer = window.dataLayer || [];
     try {
       window.dataLayer.push(event);
@@ -84,5 +85,14 @@ export class BaseTracker {
     const newUrl = new URL(url);
     const domainPath = newUrl.pathname.substring(start, end);
     return domainPath.length ? domainPath : "undefined";
+  }
+
+  //check for change links used by both navigationTracker and formChangeTracker
+  isChangeLink(element: HTMLElement): boolean {
+    if (element.tagName === "A") {
+      let anchorElement = element as HTMLAnchorElement;
+      return new URL(anchorElement.href).searchParams.get("edit") === "true";
+    }
+    return false;
   }
 }
