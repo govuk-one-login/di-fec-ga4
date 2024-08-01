@@ -60,15 +60,6 @@ export class PageViewTracker extends BaseTracker {
       localStorage.setItem("taxonomyLevel2", taxonomyLevel2);
     }
 
-    // check for persisted taxonomies
-    let taxonomyLevel2: string = parameters.taxonomy_level2;
-    if (taxonomyLevel2 === "persisted from previous page") {
-      taxonomyLevel2 = localStorage.getItem("taxonomyLevel2")!;
-    } else {
-      // if taxonomy is not "persisted from...", then store this into localStorage
-      localStorage.setItem("taxonomyLevel2", taxonomyLevel2);
-    }
-
     const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,
       page_view: {
