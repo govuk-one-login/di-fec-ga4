@@ -3,16 +3,14 @@ import { FormField } from "./formTracker.interface";
 
 export class FormTracker extends BaseTracker {
   FREE_TEXT_FIELD_TYPE = "free text field";
-  DROPDOWN_FIELD_TYPE = "drop-down list";
-  RADIO_FIELD_TYPE = "radio buttons";
 
-  constructor() {
-    super();
-  }
+  DROPDOWN_FIELD_TYPE = "drop-down list";
+
+  RADIO_FIELD_TYPE = "radio buttons";
 
   private selectedFields: FormField[] = [];
 
-  isExcludedType(element: HTMLInputElement): boolean {
+  static isExcludedType(element: HTMLInputElement): boolean {
     return (
       element.type === "hidden" ||
       element.type === "fieldset" ||
@@ -20,7 +18,7 @@ export class FormTracker extends BaseTracker {
     );
   }
 
-  getElementValue(element: HTMLInputElement): string {
+  static getElementValue(element: HTMLInputElement): string {
     const label = document.querySelector(`label[for="${element.id}"]`);
     return label?.textContent?.trim() || "undefined";
   }
@@ -35,12 +33,12 @@ export class FormTracker extends BaseTracker {
     );
 
     if (checkboxInSameGroup) {
-      checkboxInSameGroup.value += `, ${this.getElementValue(element)}`;
+      checkboxInSameGroup.value += `, ${FormTracker.getElementValue(element)}`;
     } else {
       this.selectedFields.push({
         id: element.id,
         name: element.name,
-        value: this.getElementValue(element),
+        value: FormTracker.getElementValue(element),
         type: element.type,
       });
     }
@@ -54,7 +52,7 @@ export class FormTracker extends BaseTracker {
     this.selectedFields.push({
       id: element.id,
       name: element.name,
-      value: this.getElementValue(element),
+      value: FormTracker.getElementValue(element),
       type: element.type,
     });
   }
@@ -82,7 +80,7 @@ export class FormTracker extends BaseTracker {
    *
    * @return {HTMLFormElement | null} The first HTMLFormElement found within the main content, or null if none is found.
    */
-  getFormElement(): HTMLFormElement | null {
+  static getFormElement(): HTMLFormElement | null {
     return document.querySelector("#main-content form");
   }
   /**
@@ -93,11 +91,11 @@ export class FormTracker extends BaseTracker {
    */
 
   public getFormFields(form: HTMLFormElement): FormField[] {
-    for (const element of form.elements) {
+    [...form.elements].forEach((element) => {
       const inputElement = element as HTMLInputElement;
 
-      if (this.isExcludedType(inputElement)) {
-        continue;
+      if (FormTracker.isExcludedType(inputElement)) {
+        return;
       }
 
       if (inputElement.type === "checkbox") {
@@ -109,7 +107,7 @@ export class FormTracker extends BaseTracker {
       } else {
         this.processTextElement(inputElement);
       }
-    }
+    });
 
     return this.selectedFields;
   }
@@ -123,13 +121,14 @@ export class FormTracker extends BaseTracker {
   getFieldType(elements: FormField[]): string {
     if (elements[0].type === "select-one") {
       return this.DROPDOWN_FIELD_TYPE;
-    } else if (elements[0].type === "radio") {
-      return this.RADIO_FIELD_TYPE;
-    } else if (elements[0].type === "checkbox") {
-      return elements[0].type;
-    } else {
-      return this.FREE_TEXT_FIELD_TYPE;
     }
+    if (elements[0].type === "radio") {
+      return this.RADIO_FIELD_TYPE;
+    }
+    if (elements[0].type === "checkbox") {
+      return elements[0].type;
+    }
+    return this.FREE_TEXT_FIELD_TYPE;
   }
 
   /**
@@ -138,7 +137,7 @@ export class FormTracker extends BaseTracker {
    * @param {FormField[]} elements - The array of form fields.
    * @return {string} The concatenated field values separated by a comma (if there is more than one field).
    */
-  getFieldValue(elements: FormField[]): string {
+  static getFieldValue(elements: FormField[]): string {
     let value = "";
     const separator = elements.length > 1 ? ", " : "";
     elements.forEach((element) => {
@@ -158,7 +157,7 @@ export class FormTracker extends BaseTracker {
    *
    * @return {string} The label of the field.
    */
-  getFieldLabel(): string {
+  static getFieldLabel(): string {
     let labels: HTMLCollectionOf<HTMLLegendElement | HTMLLabelElement> =
       document.getElementsByTagName("legend");
     if (!labels.length) {
@@ -167,7 +166,7 @@ export class FormTracker extends BaseTracker {
     let label: string = "";
     for (let i = 0; i < labels.length; i++) {
       if (labels[i].textContent) {
-        label += labels[i]?.textContent?.trim();
+        label += labels[i].textContent!.trim();
         if (i > 1 && i < labels.length - 1) {
           label += ", ";
         }
@@ -182,7 +181,7 @@ export class FormTracker extends BaseTracker {
    * @return {string} The heading text of the element, or "undefined" if not found.
    */
 
-  getHeadingText = (elementId: string): string => {
+  static getHeadingText(elementId: string): string {
     const commonId = elementId.split("-")[0];
     const h1OrH2WithRel = document.querySelector(
       `h1[rel="${commonId}"], h2[rel="${commonId}"]`,
@@ -196,14 +195,15 @@ export class FormTracker extends BaseTracker {
     if (firstH2?.textContent) return firstH2.textContent.trim();
 
     return "undefined";
-  };
+  }
+
   /**
    * Get the section value from the label or legend associated with the HTML form element.
    *
    * @param {FormField} element - The form field.
    * @return {string} The label or legend of the field.
    */
-  getSectionValue(element: FormField): string {
+  static getSectionValue(element: FormField): string {
     const field = document.getElementById(element.id);
     const fieldset = field?.closest("fieldset");
     const isCheckboxType = element.type === "checkbox";
@@ -217,17 +217,17 @@ export class FormTracker extends BaseTracker {
         return legendElement.textContent.trim();
       }
 
-      return this.getHeadingText(element.id);
+      return FormTracker.getHeadingText(element.id);
 
       // if it is a checkbox or radio or date not in a fieldset, then check for backup conditions
-    } else if (isCheckboxType || isRadioType || isDateType) {
-      return this.getHeadingText(element.id);
-    } else {
-      // If not within a fieldset and not a checkbox / radio button/ date/s field ,e.g free text field or dropdown check for label
-      const labelElement = document.querySelector(`label[for="${element.id}"]`);
-      if (labelElement?.textContent) {
-        return labelElement.textContent.trim();
-      }
+    }
+    if (isCheckboxType || isRadioType || isDateType) {
+      return FormTracker.getHeadingText(element.id);
+    }
+    // If not within a fieldset and not a checkbox / radio button/ date/s field ,e.g free text field or dropdown check for label
+    const labelElement = document.querySelector(`label[for="${element.id}"]`);
+    if (labelElement?.textContent) {
+      return labelElement.textContent.trim();
     }
 
     // If not within a fieldset or no legend or label found or no h1/h2 with rel attribute or no h1 or h2 then, return a "undefined" string
@@ -240,7 +240,7 @@ export class FormTracker extends BaseTracker {
    * @param {HTMLFormElement} form - The HTML form element.
    * @return {string} The submit URL or "undefined" if not found.
    */
-  getSubmitUrl(form: HTMLFormElement): string {
+  static getSubmitUrl(form: HTMLFormElement): string {
     return form.action ?? "undefined";
   }
 
@@ -250,13 +250,8 @@ export class FormTracker extends BaseTracker {
    * @param {FormField[]} fields - array of form fields
    * @return {boolean} true if all fields are valid, false otherwise
    */
-  isFormValid(fields: FormField[]): boolean {
-    for (const field of fields) {
-      if (!field.value) {
-        return false;
-      }
-    }
-    return true;
+  static isFormValid(fields: FormField[]): boolean {
+    return fields.every((field) => !!field.value);
   }
 
   /**
@@ -265,54 +260,56 @@ export class FormTracker extends BaseTracker {
    * @param {FormField[]} fields - The array of form fields to check.
    * @return {boolean} Returns true if the fields represent a date field, false otherwise.
    */
-  isDateFields(fields: FormField[]): boolean {
-    //get 3 date fields
+  static isDateFields(fields: FormField[]): boolean {
+    // get 3 date fields
     const dayField = fields.find((field) => field.id.endsWith("day"));
     const monthField = fields.find((field) => field.id.endsWith("month"));
     const yearField = fields.find((field) => field.id.endsWith("year"));
 
-    //check if we have the 3 date fields
+    // check if we have the 3 date fields
     if (!dayField || !monthField || !yearField) {
       return false;
     }
 
-    //all field ids need to be linked to the same prefix id
-    const idPrefix_dayField = dayField.id.split("-")[0];
-    const idPrefix_monthField = monthField.id.split("-")[0];
-    const idPrefix_yearField = yearField.id.split("-")[0];
+    // all field ids need to be linked to the same prefix id
+    const idPrefixDayField = dayField.id.split("-")[0];
+    const idPrefixMonthField = monthField.id.split("-")[0];
+    const idPrefixYearField = yearField.id.split("-")[0];
     if (
-      idPrefix_dayField !== idPrefix_monthField ||
-      idPrefix_dayField !== idPrefix_yearField ||
-      idPrefix_monthField !== idPrefix_yearField
+      idPrefixDayField !== idPrefixMonthField ||
+      idPrefixDayField !== idPrefixYearField ||
+      idPrefixMonthField !== idPrefixYearField
     ) {
       return false;
     }
 
     return true;
   }
+
   /**
    * Combines the date fields into a single form field.
    *
    * @param {FormField[]} fields - array of form fields
    * @return {FormField[]} array containing the combined date field
    */
-  combineDateFields(fields: FormField[]): FormField[] {
-    let newArrayFields: FormField[] = [];
+  static combineDateFields(fields: FormField[]): FormField[] {
+    const newArrayFields: FormField[] = [];
     fields.forEach((field) => {
-      //if dash is in the name
       if (field.name.includes("-")) {
-        //split the name
         const fieldName = field.name.split("-")[0];
-        if (!newArrayFields.find((field) => field.name === fieldName)) {
-          //get day month and year
+        if (
+          !newArrayFields.find(
+            (newArrayField) => newArrayField.name === fieldName,
+          )
+        ) {
           const dayField = fields.find(
-            (field) => field.id === `${fieldName}-day`,
+            (dField) => dField.id === `${fieldName}-day`,
           );
           const monthField = fields.find(
-            (field) => field.id === `${fieldName}-month`,
+            (mField) => mField.id === `${fieldName}-month`,
           );
           const yearField = fields.find(
-            (field) => field.id === `${fieldName}-year`,
+            (yField) => yField.id === `${fieldName}-year`,
           );
           if (dayField && monthField && yearField) {
             const combinedDateField: FormField = {
@@ -325,7 +322,7 @@ export class FormTracker extends BaseTracker {
           }
         }
       } else {
-        //not a date field
+        // not a date field
         newArrayFields.push(field);
       }
     });

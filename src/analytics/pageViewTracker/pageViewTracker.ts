@@ -1,3 +1,4 @@
+import logger from "loglevel";
 import { BaseTracker } from "../baseTracker/baseTracker";
 import {
   PageViewParametersInterface,
@@ -9,8 +10,11 @@ import { OptionsInterface } from "../core/core.interface";
 
 export class PageViewTracker extends BaseTracker {
   eventName: string = "page_view_ga4";
+
   disableGa4Tracking: boolean = false;
+
   enableFormErrorTracking: boolean;
+
   enablePageViewTracking: boolean;
 
   constructor(options: OptionsInterface) {
@@ -38,7 +42,7 @@ export class PageViewTracker extends BaseTracker {
       return false;
     }
 
-    //trigger form error tracking if pageView is enabled
+    // trigger form error tracking if pageView is enabled
     const errorTrigger = document.getElementsByClassName("govuk-error-message");
 
     if (errorTrigger.length && this.enableFormErrorTracking) {
@@ -63,29 +67,31 @@ export class PageViewTracker extends BaseTracker {
     const pageViewTrackerEvent: PageViewEventInterface = {
       event: this.eventName,
       page_view: {
-        language: this.getLanguage(),
-        location: this.getLocation(),
+        language: BaseTracker.getLanguage(),
+        location: BaseTracker.getLocation(),
         organisations: this.organisations,
         primary_publishing_organisation: this.primary_publishing_organisation,
-        referrer: this.getReferrer(),
+        referrer: BaseTracker.getReferrer(),
         status_code: validateParameter(parameters.statusCode.toString(), 3),
         title: validateParameter(parameters.englishPageTitle, 300),
         taxonomy_level1: validateParameter(parameters.taxonomy_level1, 100),
         taxonomy_level2: validateParameter(taxonomyLevel2, 100),
         content_id: validateParameter(parameters.content_id, 100),
-        logged_in_status: this.getLoggedInStatus(parameters.logged_in_status),
+        logged_in_status: PageViewTracker.getLoggedInStatus(
+          parameters.logged_in_status,
+        ),
         dynamic: parameters.dynamic.toString(),
-        first_published_at: this.getFirstPublishedAt(),
-        updated_at: this.getUpdatedAt(),
-        relying_party: this.getRelyingParty(),
+        first_published_at: PageViewTracker.getFirstPublishedAt(),
+        updated_at: PageViewTracker.getUpdatedAt(),
+        relying_party: PageViewTracker.getRelyingParty(),
       },
     };
 
     try {
-      this.pushToDataLayer(pageViewTrackerEvent);
+      BaseTracker.pushToDataLayer(pageViewTrackerEvent);
       return true;
     } catch (err) {
-      console.error("Error in trackOnPageLoad", err);
+      logger.error("Error in trackOnPageLoad", err);
       return false;
     }
   }
@@ -96,7 +102,7 @@ export class PageViewTracker extends BaseTracker {
    * @param {boolean} loggedInStatus - The logged in status.
    * @return {string} The string representation of the logged in status.
    */
-  getLoggedInStatus(loggedInStatus: boolean | undefined): string {
+  static getLoggedInStatus(loggedInStatus: boolean | undefined): string {
     if (loggedInStatus === undefined) {
       return "undefined";
     }
@@ -109,7 +115,7 @@ export class PageViewTracker extends BaseTracker {
    *
    * @return {string} The value of the 'govuk:first-published-at' meta tag attribute, or "undefined" if it does not exist.
    */
-  getFirstPublishedAt(): string {
+  static getFirstPublishedAt(): string {
     return (
       document
         .querySelector('meta[name="govuk:first-published-at"]')
@@ -122,7 +128,7 @@ export class PageViewTracker extends BaseTracker {
    *
    * @return {string} The value of the 'govuk:updated-at' meta tag attribute, or "undefined" if it is not found.
    */
-  getUpdatedAt(): string {
+  static getUpdatedAt(): string {
     return (
       document
         .querySelector('meta[name="govuk:updated-at"]')
@@ -135,7 +141,7 @@ export class PageViewTracker extends BaseTracker {
    *
    * @return {string} The hostname of the current document location.
    */
-  getRelyingParty(): string {
+  static getRelyingParty(): string {
     return document.location.hostname;
   }
 }

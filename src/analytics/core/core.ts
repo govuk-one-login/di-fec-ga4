@@ -1,21 +1,33 @@
+import logger from "loglevel";
 import { Cookie } from "../../cookie/cookie";
 import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
 import { FormResponseTracker } from "../formResponseTracker/formResponseTracker";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
 import { OptionsInterface } from "./core.interface";
+import { BaseTracker } from "../baseTracker/baseTracker";
 
 export class Analytics {
   gtmId: string;
+
   isDataSensitive: boolean | undefined;
+
   enableFormResponseTracking: boolean;
+
   enableNavigationTracking: boolean;
+
   enableFormChangeTracking: boolean;
+
   uaContainerId: string | undefined;
+
   pageViewTracker: PageViewTracker | undefined;
+
   navigationTracker: NavigationTracker | undefined;
+
   formChangeTracker: FormChangeTracker | undefined;
+
   cookie: Cookie | undefined;
+
   formResponseTracker: FormResponseTracker | undefined;
 
   /**
@@ -45,7 +57,7 @@ export class Analytics {
     });
 
     if (!options.disableGa4Tracking) {
-      this.pageViewTracker.pushToDataLayer({
+      BaseTracker.pushToDataLayer({
         "gtm.allowlist": ["google"],
         "gtm.blocklist": ["adm", "awct", "sp", "gclidw", "gcs", "opt"],
         "gtm.start": new Date().getTime(),
@@ -72,12 +84,10 @@ export class Analytics {
    *
    * @return {boolean} Returns true if the script was successfully loaded and appended, otherwise false.
    */
-  loadGtmScript(gtmId: string): boolean {
-    if (!gtmId) {
-      gtmId = this.gtmId;
-    }
+  loadGtmScript(gtmId?: string): boolean {
+    const defaultedGtmId = gtmId || this.gtmId;
 
-    const googleSrc = "https://www.googletagmanager.com/gtm.js?id=" + gtmId;
+    const googleSrc = `https://www.googletagmanager.com/gtm.js?id=${defaultedGtmId}`;
     const newScript = document.createElement("script");
     newScript.async = true;
     // initialise GTM
@@ -86,7 +96,7 @@ export class Analytics {
       document.body.appendChild(newScript);
       return true;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       return false;
     }
   }

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { Analytics } from "./core";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
-import { OptionsInterface } from "../core/core.interface";
+import { OptionsInterface } from "./core.interface";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
@@ -43,7 +43,7 @@ describe("should initialize the ga4 class", () => {
 
   test("tag manager script not added to document", () => {
     document.body = document.createElement("body");
-    const newInstance = new Analytics(gtmId, {
+    new Analytics(gtmId, {
       ...options,
       disableGa4Tracking: true,
     });
