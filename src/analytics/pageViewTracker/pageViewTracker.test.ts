@@ -1,13 +1,14 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import "jest-localstorage-mock";
-import { PageViewTracker } from "./pageViewTracker";
+
 import {
   PageViewParametersInterface,
   PageViewEventInterface,
 } from "./pageViewTracker.interface";
+import { PageViewTracker } from "./pageViewTracker";
+import { OptionsInterface } from "../core/core.interface";
 import { FormErrorTracker } from "../formErrorTracker/formErrorTracker";
 import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
-import { OptionsInterface } from "../core/core.interface";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
@@ -25,8 +26,8 @@ const getParameters = (
 });
 
 const options: OptionsInterface = {
-  enableGa4Tracking: false,
-  enableUaTracking: false,
+  enableGa4Tracking: true,
+  enableUaTracking: true,
   cookieDomain: "localhost",
   enableFormChangeTracking: true,
   enableFormErrorTracking: true,
@@ -37,127 +38,128 @@ const options: OptionsInterface = {
 };
 
 describe("pageViewTracker", () => {
-  const newInstance = new PageViewTracker(options);
-  const spy = jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
-  test("pageView is deactivated", () => {
-    const instance = new PageViewTracker({
-      ...options,
-      enablePageViewTracking: false,
-    });
-    instance.trackOnPageLoad(getParameters());
-    expect(instance.trackOnPageLoad).toReturnWith(false);
+  const instance = new PageViewTracker({
+    ...options,
+    enablePageViewTracking: true,
   });
+  const spy = jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
 
   test("pushToDataLayer is called", () => {
-    newInstance.trackOnPageLoad(getParameters());
-    expect(newInstance.pushToDataLayer).toBeCalled();
+    instance.trackOnPageLoad(getParameters());
+    expect(instance.pushToDataLayer).toBeCalled();
   });
 
   test("pushToDataLayer is called with the good data", () => {
     const parameters = getParameters();
     const dataLayerEvent: PageViewEventInterface = {
-      event: newInstance.eventName,
+      event: instance.eventName,
       page_view: {
-        language: newInstance.getLanguage(),
-        location: newInstance.getLocation(),
-        organisations: newInstance.organisations,
+        language: instance.getLanguage(),
+        location: instance.getLocation(),
+        organisations: instance.organisations,
         primary_publishing_organisation:
-          newInstance.primary_publishing_organisation,
-        referrer: newInstance.getReferrer(),
+          instance.primary_publishing_organisation,
+        referrer: instance.getReferrer(),
         status_code: parameters.statusCode.toString(),
         title: parameters.englishPageTitle,
         taxonomy_level1: parameters.taxonomy_level1,
         taxonomy_level2: parameters.taxonomy_level2,
         content_id: parameters.content_id,
-        logged_in_status: newInstance.getLoggedInStatus(
+        logged_in_status: instance.getLoggedInStatus(
           parameters.logged_in_status,
         ),
         dynamic: parameters.dynamic.toString(),
-        first_published_at: newInstance.getFirstPublishedAt(),
-        updated_at: newInstance.getUpdatedAt(),
-        relying_party: newInstance.getRelyingParty(),
+        first_published_at: instance.getFirstPublishedAt(),
+        updated_at: instance.getUpdatedAt(),
+        relying_party: instance.getRelyingParty(),
       },
     };
-    newInstance.trackOnPageLoad(getParameters());
-    expect(newInstance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+    instance.trackOnPageLoad(getParameters());
+    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
   });
 
-test("pushToDataLayer is called with the good data", () => {
-  const parameters = getParameters();
-  const dataLayerEvent: PageViewEventInterface = {
-    event: newInstance.eventName,
-    page_view: {
-      language: newInstance.getLanguage(),
-      location: newInstance.getLocation(),
-      organisations: newInstance.organisations,
-      primary_publishing_organisation:
-        newInstance.primary_publishing_organisation,
-      referrer: newInstance.getReferrer(),
-      status_code: parameters.statusCode.toString(),
-      title: parameters.englishPageTitle,
-      taxonomy_level1: parameters.taxonomy_level1,
-      taxonomy_level2: parameters.taxonomy_level2,
-      content_id: parameters.content_id,
-      logged_in_status: newInstance.getLoggedInStatus(
-        parameters.logged_in_status,
-      ),
-      dynamic: parameters.dynamic.toString(),
-      first_published_at: newInstance.getFirstPublishedAt(),
-      updated_at: newInstance.getUpdatedAt(),
-      relying_party: newInstance.getRelyingParty(),
-    },
-  };
-  newInstance.trackOnPageLoad(parameters);
-  expect(newInstance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
-});
+  test("pushToDataLayer is called with the good data", () => {
+    const parameters = getParameters();
+    const dataLayerEvent: PageViewEventInterface = {
+      event: instance.eventName,
+      page_view: {
+        language: instance.getLanguage(),
+        location: instance.getLocation(),
+        organisations: instance.organisations,
+        primary_publishing_organisation:
+          instance.primary_publishing_organisation,
+        referrer: instance.getReferrer(),
+        status_code: parameters.statusCode.toString(),
+        title: parameters.englishPageTitle,
+        taxonomy_level1: parameters.taxonomy_level1,
+        taxonomy_level2: parameters.taxonomy_level2,
+        content_id: parameters.content_id,
+        logged_in_status: instance.getLoggedInStatus(
+          parameters.logged_in_status,
+        ),
+        dynamic: parameters.dynamic.toString(),
+        first_published_at: instance.getFirstPublishedAt(),
+        updated_at: instance.getUpdatedAt(),
+        relying_party: instance.getRelyingParty(),
+      },
+    };
+    instance.trackOnPageLoad(parameters);
+    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+  });
 
-test("getLoggedInStatus returns the good data if logged in", () => {
-  const status = newInstance.getLoggedInStatus(true);
-  expect(status).toBe("logged in");
-});
+  test("pageView is deactivated", () => {
+    instance.enablePageViewTracking = false;
+    instance.trackOnPageLoad(getParameters());
+    expect(instance.trackOnPageLoad).toReturnWith(false);
+  });
 
-test("getLoggedInStatus returns the good data if logged out", () => {
-  const status = newInstance.getLoggedInStatus(false);
-  expect(status).toBe("logged out");
-});
+  test("getLoggedInStatus returns the good data if logged in", () => {
+    const status = instance.getLoggedInStatus(true);
+    expect(status).toBe("logged in");
+  });
 
-test("getLoggedInStatus returns the good data if loggedinstatus is undefined", () => {
-  const status = newInstance.getLoggedInStatus(undefined);
-  expect(status).toBe("undefined");
-});
+  test("getLoggedInStatus returns the good data if logged out", () => {
+    const status = instance.getLoggedInStatus(false);
+    expect(status).toBe("logged out");
+  });
 
-test("getRelyingParty returns the good data", () => {
-  const relyingParty = newInstance.getRelyingParty();
-  expect(relyingParty).toBe("localhost");
-});
+  test("getLoggedInStatus returns the good data if loggedinstatus is undefined", () => {
+    const status = instance.getLoggedInStatus(undefined);
+    expect(status).toBe("undefined");
+  });
 
-test("getFirstPublishedAt returns undefined if first published-at tag doesn't exists", () => {
-  const firstPublishedAt = newInstance.getFirstPublishedAt();
-  expect(firstPublishedAt).toBe("undefined");
-});
+  test("getRelyingParty returns the good data", () => {
+    const relyingParty = instance.getRelyingParty();
+    expect(relyingParty).toBe("localhost");
+  });
 
-test("getFirstPublishedAt returns the good data if first published-at tag exists", () => {
-  const newTag = document.createElement("meta");
-  newTag.setAttribute("name", "govuk:first-published-at");
-  newTag.setAttribute("content", "2022-09-01T00:00:00.000Z");
-  document.head.appendChild(newTag);
-  const firstPublishedAt = newInstance.getFirstPublishedAt();
-  expect(firstPublishedAt).toBe("2022-09-01T00:00:00.000Z");
-});
+  test("getFirstPublishedAt returns undefined if first published-at tag doesn't exists", () => {
+    const firstPublishedAt = instance.getFirstPublishedAt();
+    expect(firstPublishedAt).toBe("undefined");
+  });
 
-test("getUpdatedAt returns undefined if updated-at tag doesn't exists", () => {
-  const updatedAt = newInstance.getUpdatedAt();
-  expect(updatedAt).toBe("undefined");
-});
+  test("getFirstPublishedAt returns the good data if first published-at tag exists", () => {
+    const newTag = document.createElement("meta");
+    newTag.setAttribute("name", "govuk:first-published-at");
+    newTag.setAttribute("content", "2022-09-01T00:00:00.000Z");
+    document.head.appendChild(newTag);
+    const firstPublishedAt = instance.getFirstPublishedAt();
+    expect(firstPublishedAt).toBe("2022-09-01T00:00:00.000Z");
+  });
 
-test("getUpdatedAt returns the good data if updated-at tag exists", () => {
-  const newTag = document.createElement("meta");
-  newTag.setAttribute("name", "govuk:updated-at");
-  newTag.setAttribute("content", "2022-09-02T00:00:00.000Z");
-  document.head.appendChild(newTag);
-  const updatedAt = newInstance.getUpdatedAt();
-  expect(updatedAt).toBe("2022-09-02T00:00:00.000Z");
-});
+  test("getUpdatedAt returns undefined if updated-at tag doesn't exists", () => {
+    const updatedAt = instance.getUpdatedAt();
+    expect(updatedAt).toBe("undefined");
+  });
+
+  test("getUpdatedAt returns the good data if updated-at tag exists", () => {
+    const newTag = document.createElement("meta");
+    newTag.setAttribute("name", "govuk:updated-at");
+    newTag.setAttribute("content", "2022-09-02T00:00:00.000Z");
+    document.head.appendChild(newTag);
+    const updatedAt = instance.getUpdatedAt();
+    expect(updatedAt).toBe("2022-09-02T00:00:00.000Z");
+  });
 });
 
 describe("pageViewTracker test disable ga4 tracking option", () => {
