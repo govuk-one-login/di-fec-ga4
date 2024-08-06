@@ -198,7 +198,6 @@ describe("Form Change Tracker Trigger", () => {
       ...options,
       enableGa4Tracking: false,
     });
-    // const formChangeTracker = new FormChangeTracker();
 
     instance.trackOnPageLoad(getParameters());
     expect(spy).not.toHaveBeenCalled();
@@ -218,13 +217,10 @@ describe("Form Error Tracker Trigger", () => {
   });
 
   const spy = jest.spyOn(FormErrorTracker.prototype, "trackFormError");
-  // const instance = new PageViewTracker(options);
-  // const formErrorTracker = new FormErrorTracker();
   window.DI.analyticsGa4.cookie.consent = true;
   window.DI.analyticsGa4.cookie.hasCookie = true;
 
   test("trackOnPageLoad should called form error function and return false if form error message exists", () => {
-    // const spy2 = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
     document.body.innerHTML =
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
     instance.trackOnPageLoad(getParameters());
@@ -259,12 +255,7 @@ describe("Form Error Tracker Trigger", () => {
   test("FormError tracker is deactivated", () => {
     document.body.innerHTML =
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
-
-    const instance = new PageViewTracker({
-      ...options,
-      enableFormErrorTracking: false,
-    });
-
+    instance.enableFormErrorTracking = false;
     instance.trackOnPageLoad(getParameters());
     expect(formErrorTracker.trackFormError).not.toHaveBeenCalled();
   });
