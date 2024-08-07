@@ -3,6 +3,7 @@ import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
 import { FormResponseTracker } from "../formResponseTracker/formResponseTracker";
 import { NavigationTracker } from "../navigationTracker/navigationTracker";
 import { PageViewTracker } from "../pageViewTracker/pageViewTracker";
+import { SelectContentTracker } from "../selectContentTracker/selectContentTracker";
 import { OptionsInterface } from "./core.interface";
 
 export class Analytics {
@@ -11,12 +12,14 @@ export class Analytics {
   enableFormResponseTracking: boolean;
   enableNavigationTracking: boolean;
   enableFormChangeTracking: boolean;
+  enableSelectContentTracking: boolean;
   uaContainerId: string | undefined;
   pageViewTracker: PageViewTracker | undefined;
   navigationTracker: NavigationTracker | undefined;
   formChangeTracker: FormChangeTracker | undefined;
   cookie: Cookie | undefined;
   formResponseTracker: FormResponseTracker | undefined;
+  selectContentTracker: SelectContentTracker | undefined;
 
   /**
    * Initializes a new instance of the class.
@@ -33,6 +36,9 @@ export class Analytics {
     );
     this.enableNavigationTracking = Boolean(options.enableNavigationTracking);
     this.enableFormChangeTracking = Boolean(options.enableFormChangeTracking);
+    this.enableSelectContentTracking = Boolean(
+      options.enableSelectContentTracking,
+    );
 
     this.pageViewTracker = new PageViewTracker({
       enableGa4Tracking: options.enableGa4Tracking,
@@ -62,6 +68,9 @@ export class Analytics {
       );
       this.formChangeTracker = new FormChangeTracker(
         this.enableFormChangeTracking,
+      );
+      this.selectContentTracker = new SelectContentTracker(
+        this.enableSelectContentTracking,
       );
       if (this.cookie.consent) {
         this.loadGtmScript(this.gtmId);
