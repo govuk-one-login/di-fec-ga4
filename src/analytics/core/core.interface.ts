@@ -4,14 +4,14 @@ export interface AppConfigInterface {
 }
 
 export interface OptionsInterface {
-  disableGa4Tracking?: boolean;
-  disableUaTracking?: boolean;
+  enableGa4Tracking?: boolean;
   cookieDomain?: string;
+  enableUaTracking?: boolean;
   isDataSensitive?: boolean;
-  enableFormChangeTracking: boolean;
-  enableFormErrorTracking: boolean;
-  enableFormResponseTracking: boolean;
-  enableNavigationTracking: boolean;
-  enablePageViewTracking: boolean;
-  enableSelectContentTracking: boolean;
+  enableFormChangeTracking?: boolean;
+  enableFormErrorTracking?: boolean;
+  enableFormResponseTracking?: boolean;
+  enableNavigationTracking?: boolean;
+  enablePageViewTracking?: boolean;
+  enableSelectContentTracking?: boolean;
 }

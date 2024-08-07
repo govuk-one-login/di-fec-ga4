@@ -35,16 +35,18 @@ export class Analytics {
     this.enableFormChangeTracking = Boolean(options.enableFormChangeTracking);
 
     this.pageViewTracker = new PageViewTracker({
-      disableGa4Tracking: options.disableGa4Tracking,
+      enableGa4Tracking: options.enableGa4Tracking,
+      enableUaTracking: options.enableUaTracking,
       enableFormChangeTracking: options.enableFormChangeTracking,
       enableFormErrorTracking: options.enableFormErrorTracking,
       enableFormResponseTracking: options.enableFormResponseTracking,
       enableNavigationTracking: options.enableNavigationTracking,
       enablePageViewTracking: options.enablePageViewTracking,
       enableSelectContentTracking: options.enableSelectContentTracking,
+      cookieDomain: options.cookieDomain,
     });
 
-    if (!options.disableGa4Tracking) {
+    if (options.enableGa4Tracking) {
       this.pageViewTracker.pushToDataLayer({
         "gtm.allowlist": ["google"],
         "gtm.blocklist": ["adm", "awct", "sp", "gclidw", "gcs", "opt"],

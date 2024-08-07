@@ -13,9 +13,19 @@ declare global {
 
 const appInit = function (
   settings: AppConfigInterface,
-  options: OptionsInterface,
+  options: OptionsInterface = {},
 ): boolean {
-  const defaultedOptions = applyDefaults(options, { isDataSensitive: true });
+  const defaultedOptions = applyDefaults(options, {
+    isDataSensitive: true,
+    enableGa4Tracking: false,
+    enableUaTracking: false,
+    enableFormChangeTracking: true,
+    enableFormErrorTracking: true,
+    enableFormResponseTracking: true,
+    enableNavigationTracking: true,
+    enablePageViewTracking: true,
+    enableSelectContentTracking: true,
+  });
 
   try {
     window.DI.analyticsGa4 = new Analytics(
@@ -23,7 +33,7 @@ const appInit = function (
       defaultedOptions,
     );
 
-    if (!defaultedOptions.disableUaTracking) {
+    if (defaultedOptions.enableUaTracking) {
       window.DI.analyticsGa4.uaContainerId = settings.uaContainerId;
       window.DI.analyticsUa.init();
     }
