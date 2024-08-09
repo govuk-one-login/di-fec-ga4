@@ -13,7 +13,7 @@ import { FormChangeTracker } from "../formChangeTracker/formChangeTracker";
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
 const getParameters = (
-  override?: Partial<PageViewParametersInterface>,
+  override: Partial<PageViewParametersInterface> = {},
 ): PageViewParametersInterface => ({
   statusCode: 200,
   englishPageTitle: "home",
@@ -22,27 +22,37 @@ const getParameters = (
   content_id: "<e4a3603d-2d3c-4ff1-9b80-d72c1e6b7a58>",
   logged_in_status: true,
   dynamic: true,
-  ...(override || {}),
+  ...override,
 });
 
-const options: OptionsInterface = {
-  enableGa4Tracking: true,
-  enableUaTracking: true,
+const getOptions = (
+  override: Partial<OptionsInterface> = {},
+): OptionsInterface => ({
   cookieDomain: "localhost",
+  isDataSensitive: true,
+  enableGa4Tracking: true,
+  enableUaTracking: false,
   enableFormChangeTracking: true,
   enableFormErrorTracking: true,
   enableFormResponseTracking: true,
   enableNavigationTracking: true,
   enablePageViewTracking: true,
   enableSelectContentTracking: true,
-};
+  ...override,
+});
 
 describe("pageViewTracker", () => {
-  const instance = new PageViewTracker({
-    ...options,
-    enablePageViewTracking: true,
+  let instance: PageViewTracker;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
+    instance = new PageViewTracker(
+      getOptions({
+        enablePageViewTracking: true,
+      }),
+    );
   });
-  const spy = jest.spyOn(PageViewTracker.prototype, "pushToDataLayer");
 
   test("pushToDataLayer is called", () => {
     instance.trackOnPageLoad(getParameters());
@@ -108,9 +118,13 @@ describe("pageViewTracker", () => {
   });
 
   test("pageView is deactivated", () => {
-    instance.enablePageViewTracking = false;
+    instance = new PageViewTracker(
+      getOptions({
+        enablePageViewTracking: false,
+      }),
+    );
     instance.trackOnPageLoad(getParameters());
-    expect(instance.trackOnPageLoad).toReturnWith(false);
+    expect(PageViewTracker.prototype.pushToDataLayer).not.toHaveBeenCalled();
   });
 
   test("getLoggedInStatus returns the good data if logged in", () => {
@@ -166,10 +180,11 @@ describe("pageViewTracker test disable ga4 tracking option", () => {
   const spy = jest.spyOn(PageViewTracker.prototype, "trackOnPageLoad");
 
   test("pushToDataLayer should not be called", () => {
-    const instance = new PageViewTracker({
-      ...options,
-      enableGa4Tracking: false,
-    });
+    const instance = new PageViewTracker(
+      getOptions({
+        enableGa4Tracking: false,
+      }),
+    );
     instance.trackOnPageLoad(getParameters());
     expect(instance.trackOnPageLoad).toReturnWith(false);
   });
@@ -184,7 +199,7 @@ describe("Cookie Management", () => {
   test("trackOnPageLoad should return false if visitor rejects cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
     window.DI.analyticsGa4.cookie.hasCookie = true;
-    const instance = new PageViewTracker(options);
+    const instance = new PageViewTracker(getOptions());
     instance.trackOnPageLoad(getParameters());
     expect(instance.trackOnPageLoad).toReturnWith(false);
   });
@@ -194,10 +209,11 @@ describe("Form Change Tracker Trigger", () => {
   const spy = jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
 
   test("FormChange tracker is not triggered", () => {
-    const instance = new PageViewTracker({
-      ...options,
-      enableGa4Tracking: false,
-    });
+    const instance = new PageViewTracker(
+      getOptions({
+        enableGa4Tracking: false,
+      }),
+    );
 
     instance.trackOnPageLoad(getParameters());
     expect(spy).not.toHaveBeenCalled();
@@ -210,15 +226,13 @@ describe("Form Error Tracker Trigger", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    window.DI.analyticsGa4.cookie.hasCookie = true;
     window.DI.analyticsGa4.cookie.consent = true;
+    jest.spyOn(FormErrorTracker.prototype, "pushToDataLayer");
     jest.spyOn(FormErrorTracker.prototype, "trackFormError");
-    instance = new PageViewTracker(options);
+    instance = new PageViewTracker(getOptions());
     formErrorTracker = new FormErrorTracker();
   });
-
-  const spy = jest.spyOn(FormErrorTracker.prototype, "trackFormError");
-  window.DI.analyticsGa4.cookie.consent = true;
-  window.DI.analyticsGa4.cookie.hasCookie = true;
 
   test("trackOnPageLoad should called form error function and return false if form error message exists", () => {
     document.body.innerHTML =
@@ -237,10 +251,11 @@ describe("Form Error Tracker Trigger", () => {
   test("FormError tracker is activated even if pageView is disabled", () => {
     document.body.innerHTML =
       '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
-    const instance = new PageViewTracker({
-      ...options,
-      enablePageViewTracking: false,
-    });
+    const instance = new PageViewTracker(
+      getOptions({
+        enablePageViewTracking: false,
+      }),
+    );
 
     instance.trackOnPageLoad(getParameters());
     expect(formErrorTracker.trackFormError).toHaveBeenCalled();
@@ -253,11 +268,22 @@ describe("Form Error Tracker Trigger", () => {
   });
 
   test("FormError tracker is deactivated", () => {
-    document.body.innerHTML =
-      '<p id="organisationType-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select one option</p>';
-    instance.enableFormErrorTracking = false;
+    document.body.innerHTML = `
+      <main id="main-content">
+        <form>
+          <fieldset class="govuk-form-group--error">
+            <input id="organisationType-error" class="govuk-error-message"></input>
+          </fieldset>
+        </form>
+      </main>
+    `;
+    instance = new PageViewTracker(
+      getOptions({
+        enableFormErrorTracking: false,
+      }),
+    );
     instance.trackOnPageLoad(getParameters());
-    expect(formErrorTracker.trackFormError).not.toHaveBeenCalled();
+    expect(FormErrorTracker.prototype.pushToDataLayer).not.toHaveBeenCalled();
   });
 });
 
@@ -272,7 +298,7 @@ describe("Persisting taxonomy level 2 values", () => {
   });
 
   test("Taxonomy level 2 is persisted from previous page", () => {
-    const instance = new PageViewTracker(options);
+    const instance = new PageViewTracker(getOptions());
     instance.trackOnPageLoad(getParameters());
     instance.trackOnPageLoad(
       getParameters({
@@ -324,13 +350,13 @@ describe("Persisting taxonomy level 2 values", () => {
   });
 
   test("Taxonomy level 2 is saved to localStorage", () => {
-    const instance = new PageViewTracker(options);
+    const instance = new PageViewTracker(getOptions());
     instance.trackOnPageLoad(getParameters());
     expect(localStorage.getItem("taxonomyLevel2")).toBe("taxo2");
   });
 
   test("Taxonomy level 2 is not saved to localStorage if value === 'persisted from previous page'", () => {
-    const instance = new PageViewTracker(options);
+    const instance = new PageViewTracker(getOptions());
     instance.trackOnPageLoad(
       getParameters({
         taxonomy_level2: "persisted from previous page",
