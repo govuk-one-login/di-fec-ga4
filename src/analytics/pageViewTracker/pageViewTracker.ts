@@ -15,9 +15,9 @@ export class PageViewTracker extends BaseTracker {
 
   constructor(options: OptionsInterface) {
     super();
-    this.enableGa4Tracking = options.enableGa4Tracking || false;
-    this.enableFormErrorTracking = options.enableFormErrorTracking || true;
-    this.enablePageViewTracking = options.enablePageViewTracking || true;
+    this.enableGa4Tracking = options.enableGa4Tracking ?? false;
+    this.enableFormErrorTracking = options.enableFormErrorTracking ?? true;
+    this.enablePageViewTracking = options.enablePageViewTracking ?? true;
   }
 
   /**
