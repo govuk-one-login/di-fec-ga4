@@ -1,4 +1,4 @@
-# di-fec-ga4
+# Frontend Analytics
 
 Frontend Capability Team repository for GA4 integration
 
@@ -22,6 +22,7 @@ npm run pub
 ```
 
 # Installation
+
 ## Install NPM package
 
 ```bash
@@ -42,27 +43,32 @@ app.use(
 );
 ```
 
-[!WARNING] Check if the path to your node module folder is the correct one. [!WARNING]
+> [!WARNING]
+> Check if the path to your node module folder is the correct one.
 
 Set a variable `ga4ContainerId` with the value of your google tag manager id (format: `GTM-XXXXXXX`) and be sure it’s accessible to your base nunjucks template (example: `src/views/common/layout/base.njk`). You can also set the variable `uaContainerId` with the value of your google tag container id (format: `GTM-XXXXXXX`).
 
-[!NOTE] Different methods exist if you want to set this variable. Some projects use a middleware, some will prefer to use another method. [!NOTE]
+> [!NOTE]
+> Different methods exist if you want to set this variable. Some projects use a middleware, some will prefer to use another method.
 
 Add this block of code into your base nunjucks template:
 
 ```html
- <script src="/ga4-assets/analytics.js"></script>
- <script>
- window.DI.appInit({ga4ContainerId: "{{ga4ContainerId}}", uaContainerId: '{{ uaContainerId }}'})
- </script>
+<script src="/ga4-assets/analytics.js"></script>
+<script>
+  window.DI.appInit({
+    ga4ContainerId: "{{ga4ContainerId}}",
+    uaContainerId: "{{ uaContainerId }}",
+  });
+</script>
 ```
 
 - `window.DI.appInit` can take another parameter: an object of settings. That can be used if you want to disable some options. This is the property of this settings object:
 
 - `isDataSensitive` (boolean): specify if form response tracker can be collect form inputs for tracking purposes (default set to `true`, this will redact PII)
 - `disableGa4Tracking` (boolean): disable GA4 trackers
-- - `disableUaTracking` (boolean): disable Universal Analytics tracker
-`cookieDomain` (string): specify the domain the analytics consent cookie should be raised against (default is `account.gov.uk`)
+- `disableUaTracking` (boolean): disable Universal Analytics tracker
+- `cookieDomain` (string): specify the domain the analytics consent cookie should be raised against (default is `account.gov.uk`)
 
 Example of call:
 
@@ -81,9 +87,11 @@ window.DI.appInit(
 );
 ```
 
-[!NOTE] window.DI.appInit is a function loaded from analytics.js. That will create a new instance of our analytics library and store into window.DI.analyticsGa4 [!NOTE]
+> [!NOTE]
+> `window.DI.appInit` is a function loaded from `analytics.js`. That will create a new instance of our analytics library and store into window.DI.analyticsGa4
 
 # Analytics Cookie Consent
+
 The Cookie class is responsible for managing cookies consent about analytics. It provides methods and fields to handle cookie-related operations:
 
 - Set the cookie when the visitor decides to accept or reject any analytics tracking
@@ -92,22 +100,23 @@ The Cookie class is responsible for managing cookies consent about analytics. It
 - Show the element that displays a message when consent is given
 - Hide the cookie banner when the visitor wants to hide the accepted or rejected message
 
-[!NOTE] Tips: 1/ You can get analytics cookie consent status (true or false) by calling the function hasConsentForAnalytics:
+> [!TIP]
+> You can get analytics cookie consent status (true or false) by calling the function hasConsentForAnalytics:
+>`window.DI.analyticsGa4.cookie.hasConsentForAnalytics();`
 
-`window.DI.analyticsGa4.cookie.hasConsentForAnalytics();`
-
-2/ You can revoke analytics cookie consent by calling the function setBannerCookieConsent:
-
-```js
-window.DI.analyticsGa4.cookie.setBannerCookieConsent(
-  false,
-  youranalyticsdomain,
-);
-```
-[!NOTE]
+> [!TIP]
+> You can revoke analytics cookie consent by calling the function setBannerCookieConsent:
+>```js
+> window.DI.analyticsGa4.cookie.setBannerCookieConsent(
+>  false,
+>  youranalyticsdomain,
+>);
+>```
 
 # Trackers
+
 ## Page View Tracker
+
 Page view tracking allows us to see which pages are most visited, where your visitors are coming from, etc. It can be called by using the method trackOnPageLoad of the object pageViewTracker stored into the analytics library (analyticsGa4)
 
 It takes as a unique parameter an object define by :
@@ -121,6 +130,7 @@ It takes as a unique parameter an object define by :
 - `dynamic` (boolean): This parameter indicates whether the page has multiple versions and uses the same URL.
 
 Example:
+
 ```js
 window.DI.analyticsGa4.pageViewTracker.trackOnPageLoad({
   statusCode: 200,
@@ -138,7 +148,7 @@ A Nunjuck component can be used for a reusable solution. The ga4-opl component, 
 - Add the components folder of this package into your path views array.
 - Import the component into your base files.
 - Add ga4OnPageLoad function at the end of your views.
-Example:
+  Example:
 
 ```js
 {
@@ -158,6 +168,7 @@ Example:
 ```
 
 ## Navigation Tracker
+
 Navigation tracking allows us to see exactly how often each navigation link is used. It's triggered by a listener on the click event.
 
 We are tracking different types of link:
@@ -166,10 +177,11 @@ We are tracking different types of link:
 - `Generic Inbound Button`: When a user clicks on a button and it is an inbound link which is defined as any links that point to a domain that does match the domain of the current page
 - `Generic Outbound Links`: When a user clicks on a link and it is an outbound link, which is defined as any links that point to a domain that does not match the domain of the current page.
 - `Header Menu Bar`: When a user clicks on a link in the header menu
-Footer links: When a user clicks on a link within the footer
-[!NOTE] All links are automatically tracked. But if you need to track a button, your element needs to have a specific attributes "data-nav" and "data-link"(e.g: Next) [!NOTE]
+- `Footer Links`: When a user clicks on a link within the footer
+  [!NOTE] All links are automatically tracked. But if you need to track a button, your element needs to have a specific attributes "data-nav" and "data-link"(e.g: Next) [!NOTE]
 
 ## Form Response Tracker
+
 Trigger by the submission of any form, this tracker will send to GA4 some data about the form details:
 
 - Type of field
@@ -178,12 +190,14 @@ Trigger by the submission of any form, this tracker will send to GA4 some data a
 - Value of the field
 
 ### Checkbox or Radio Fields Without a Legend
+
 If a checkbox or radio field has been implemented without a legend, please follow these steps to ensure the tracker can retrieve the correct section value:
 
 - Add a rel attribute to the tag used to hold the section title.
 - Set the rel attribute value to match the id of the field.
 
 Example:
+
 ```html
 <h2 rel="consentCheckbox">Section Title</h2>
 <div class="govuk-form-group">
@@ -215,11 +229,13 @@ More information: https://govukverify.atlassian.net/wiki/spaces/DIFC/pages/38432
 (back to top)
 
 # Updating to v2
+
 In v2 all form responses are treated as sensitive by default, and specific text content is removed. This is in contrast to V1 where by default a more complex algorithm was used to determine what data to strip. This is needed to support teams who aren't confident that there can be no PII represented in their forms.
 
 If you are confident that your forms cannot contain PII and you want the original behaviour after the upgrade to v2, you will need to explicitly set the isDataSensitive flag to false.
 
 ## v1.0.0
+
 ```js
 window.DI.appInit(
   {
@@ -236,6 +252,7 @@ window.DI.appInit(
 is equivalent to...
 
 ## v2.0.0
+
 ```js
 window.DI.appInit(
   {
@@ -251,6 +268,7 @@ window.DI.appInit(
 ```
 
 # Updating to v3
+
 In v3, additional flags have been added to give a more granular level of control over the package. With these in place, the repositories using the package are provided a greater level of protection against regressions, bugs and any other feature specific issues without having to turn the entire package off.
 
 ## Existing Feature Flags
@@ -266,6 +284,7 @@ A new tracker, Select Content, has been added to track the `detail` component fr
 The new flags follow the same pattern as the global flags in terms of implementation:
 
 ### v2.0.0
+
 ```js
 window.DI.appInit(
   {
@@ -281,6 +300,7 @@ window.DI.appInit(
 ```
 
 ### v3.0.0
+
 ```js
 window.DI.appInit(
   {
