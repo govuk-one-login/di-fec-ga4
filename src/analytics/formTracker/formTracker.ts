@@ -16,6 +16,7 @@ export class FormTracker extends BaseTracker {
     return (
       element.type === "hidden" ||
       element.type === "fieldset" ||
+      element.type === "button" ||
       element.type === "submit"
     );
   }
