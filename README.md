@@ -87,8 +87,7 @@ window.DI.appInit(
 );
 ```
 
-> [!NOTE]
-> `window.DI.appInit` is a function loaded from `analytics.js`. That will create a new instance of our analytics library and store into window.DI.analyticsGa4
+> [!NOTE] > `window.DI.appInit` is a function loaded from `analytics.js`. That will create a new instance of our analytics library and store into window.DI.analyticsGa4
 
 # Analytics Cookie Consent
 
@@ -102,16 +101,17 @@ The Cookie class is responsible for managing cookies consent about analytics. It
 
 > [!TIP]
 > You can get analytics cookie consent status (true or false) by calling the function hasConsentForAnalytics:
->`window.DI.analyticsGa4.cookie.hasConsentForAnalytics();`
+> `window.DI.analyticsGa4.cookie.hasConsentForAnalytics();`
 
 > [!TIP]
 > You can revoke analytics cookie consent by calling the function setBannerCookieConsent:
->```js
+>
+> ```js
 > window.DI.analyticsGa4.cookie.setBannerCookieConsent(
->  false,
->  youranalyticsdomain,
->);
->```
+>   false,
+>   youranalyticsdomain,
+> );
+> ```
 
 # Trackers
 

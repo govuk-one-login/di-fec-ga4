@@ -122,9 +122,13 @@ describe("FormTracker", () => {
     const result = instance.isExcludedType(element);
     expect(result).toBe(true);
   });
-
   test("isExcludedType should return true for submit input type", () => {
     const element: HTMLInputElement = { type: "submit" } as HTMLInputElement;
+    const result = instance.isExcludedType(element);
+    expect(result).toBe(true);
+  });
+  test("isExcludedType should return true for button type", () => {
+    const element: HTMLInputElement = { type: "button" } as HTMLInputElement;
     const result = instance.isExcludedType(element);
     expect(result).toBe(true);
   });
