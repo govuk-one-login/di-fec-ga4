@@ -41,6 +41,17 @@ describe("navigationTracker", () => {
       expect(BaseTracker.pushToDataLayer).toBeCalled();
     });
   });
+  test("should push data into data layer if click on logo icon within core", () => {
+    const element = document.createElement("span");
+    element.className = "govuk-header__logotype-crown";
+    document.body.innerHTML = "<header></header>";
+    const header = document.getElementsByTagName("header")[0];
+    header.appendChild(element);
+    element.dispatchEvent(action);
+    element.addEventListener("click", () => {
+      expect(BaseTracker.pushToDataLayer).toBeCalled();
+    });
+  });
   // test trackNavigation return false if tracker is deactivated
   test("trackNavigation return false if tracker is deactivated", () => {
     const instance = new NavigationTracker(false);
