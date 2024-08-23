@@ -40,6 +40,8 @@ export class NavigationTracker extends BaseTracker {
     let element: HTMLLinkElement = event.target as HTMLLinkElement;
     element = NavigationTracker.getParentElementIfSpecificClass(element, [
       "govuk-header__logotype",
+      "govuk-header__logotype-crown",
+      "one-login-header__logotype",
     ]);
 
     /*

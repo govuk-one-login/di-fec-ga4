@@ -8,7 +8,7 @@
       "module": "es6",
       "moduleResolution": "node",
       "downlevelIteration": true,
-      "target": "es5",
+      "target": "es2016",
       "allowJs": true
     },
     "include": [
