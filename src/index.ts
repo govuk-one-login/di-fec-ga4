@@ -1,3 +1,4 @@
+import logger from "loglevel";
 import {
   AppConfigInterface,
   OptionsInterface,
@@ -11,7 +12,7 @@ declare global {
   }
 }
 
-const appInit = function (
+function appInit(
   settings: AppConfigInterface,
   options: OptionsInterface = {},
 ): boolean {
@@ -40,10 +41,10 @@ const appInit = function (
 
     return true;
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     return false;
   }
-};
+}
 
 window.DI = window.DI || {};
 window.DI.appInit = appInit;

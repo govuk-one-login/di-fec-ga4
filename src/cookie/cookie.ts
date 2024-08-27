@@ -12,7 +12,6 @@ export class Cookie {
   public acceptCookies = document.getElementsByName("cookiesAccept");
   public rejectCookies = document.getElementsByName("cookiesReject");
   cookieDomain: string;
-
   HIDDEN_CLASS = "govuk-!-display-none";
   SHOWN_CLASS = "govuk-!-display-block";
 
@@ -25,13 +24,15 @@ export class Cookie {
    * Initializes the object and performs necessary setup.
    */
   initialise(): void {
-    //Check if a cookie preference has been set
-    const savedCookiePreference = this.getCookie(this.COOKIES_PREFERENCES_SET);
+    // Check if a cookie preference has been set
+    const savedCookiePreference = Cookie.getCookie(
+      this.COOKIES_PREFERENCES_SET,
+    );
     if (savedCookiePreference) {
       this.consent = this.hasConsentForAnalytics();
       this.hideElement(this.cookieBannerContainer[0] as HTMLElement);
     } else {
-      //add event listeners
+      // add event listeners
       this.acceptCookies[0]?.addEventListener(
         "click",
         this.handleAcceptClickEvent.bind(this),
@@ -42,12 +43,13 @@ export class Cookie {
       );
 
       const hideButtons = Array.prototype.slice.call(this.hideCookieBanner);
-      for (const hideButton of hideButtons) {
+      hideButtons.forEach((hideButton) => {
         hideButton.addEventListener(
           "click",
           this.handleHideButtonClickEvent.bind(this),
         );
-      }
+      });
+
       this.showElement(this.cookieBannerContainer[0] as HTMLElement);
     }
   }
@@ -92,11 +94,11 @@ export class Cookie {
    * @param {string} domain - The domain where the cookie is set.
    */
   setBannerCookieConsent(analyticsConsent: boolean, domain: string): void {
-    this.setCookie(
+    Cookie.setCookie(
       this.COOKIES_PREFERENCES_SET,
       { analytics: analyticsConsent },
-      { days: 365 },
       domain,
+      365,
     );
 
     if (this.cookieBanner) {
@@ -126,13 +128,12 @@ export class Cookie {
    * @return {boolean} - Returns true if the user has given consent for analytics, false otherwise.
    */
   hasConsentForAnalytics(): boolean {
-    const cookieValue = this.getCookie(this.COOKIES_PREFERENCES_SET);
+    const cookieValue = Cookie.getCookie(this.COOKIES_PREFERENCES_SET);
 
     if (!cookieValue) {
       return false;
-    } else {
-      this.hasCookie = true;
     }
+    this.hasCookie = true;
 
     const cookieConsent = JSON.parse(decodeURIComponent(cookieValue));
     return cookieConsent ? cookieConsent.analytics === true : false;
@@ -144,8 +145,8 @@ export class Cookie {
    * @param {string} name - The name of the cookie to retrieve.
    * @return {string} The value of the cookie if found, or an empty string if not found.
    */
-  getCookie(name: string): string {
-    const nameEQ = name + "=";
+  static getCookie(name: string): string {
+    const nameEQ = `${name}=`;
     if (document.cookie) {
       const cookies = document.cookie.split(";");
       for (let i = 0, len = cookies.length; i < len; i++) {
@@ -170,24 +171,21 @@ export class Cookie {
    * @param {string} domain - The domain to which the cookie belongs.
    * @return {void} This function does not return a value.
    */
-  setCookie(name: string, values: any, options: any, domain: string): void {
-    if (typeof options === "undefined") {
-      options = {};
-    }
-    let cookieString = name + "=" + encodeURIComponent(JSON.stringify(values));
-    if (options.days) {
-      let date = new Date();
-      date.setTime(date.getTime() + options.days * 24 * 60 * 60 * 1000);
-      cookieString =
-        cookieString +
-        "; Expires=" +
-        date.toUTCString() +
-        "; Path=/; Domain=" +
-        domain;
+  static setCookie(
+    name: string,
+    values: any,
+    domain: string,
+    lifetimeInDays?: number,
+  ): void {
+    let cookieString = `${name}=${encodeURIComponent(JSON.stringify(values))}`;
+    if (lifetimeInDays) {
+      const date = new Date();
+      date.setTime(date.getTime() + lifetimeInDays * 24 * 60 * 60 * 1000);
+      cookieString = `${cookieString}; Expires=${date.toUTCString()}; Path=/; Domain=${domain}`;
     }
 
     if (document.location.protocol === "https:") {
-      cookieString = cookieString + "; Secure";
+      cookieString += "; Secure";
     }
     document.cookie = cookieString;
   }

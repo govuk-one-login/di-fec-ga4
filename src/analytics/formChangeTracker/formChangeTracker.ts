@@ -1,7 +1,8 @@
+import logger from "loglevel";
 import { validateParameter } from "../../utils/validateParameter";
 import { FormTracker } from "../formTracker/formTracker";
 import { FormEventInterface } from "../formTracker/formTracker.interface";
-import { OptionsInterface } from "../core/core.interface";
+import { BaseTracker } from "../baseTracker/baseTracker";
 
 export class FormChangeTracker extends FormTracker {
   eventName: string = "form_change_response";
@@ -32,18 +33,18 @@ export class FormChangeTracker extends FormTracker {
       return false;
     }
 
-    const form = this.getFormElement();
+    const form = FormTracker.getFormElement();
 
     if (!form) {
       return false;
     }
 
-    let element: HTMLLinkElement = event.target as HTMLLinkElement;
+    const element: HTMLLinkElement = event.target as HTMLLinkElement;
 
     // Ensure element is an <a> tag with "Change" text content and is not a lang toggle link
     if (
       element.tagName !== "A" ||
-      !this.isChangeLink(element) ||
+      !BaseTracker.isChangeLink(element) ||
       element.hasAttribute("hreflang")
     ) {
       return false;
@@ -55,30 +56,30 @@ export class FormChangeTracker extends FormTracker {
         event_name: this.eventName,
         type: "undefined",
         url: validateParameter(element.href, 500),
-        text: "change", //put static value. Waiting final documentation on form change tracker,
-        section: validateParameter(this.getSection(element), 100),
+        text: "change", // put static value. Waiting final documentation on form change tracker,
+        section: validateParameter(FormChangeTracker.getSection(element), 100),
         action: "change response",
         external: "false",
-        link_domain: this.getDomain(element.href),
-        "link_path_parts.1": this.getDomainPath(element.href, 0),
-        "link_path_parts.2": this.getDomainPath(element.href, 1),
-        "link_path_parts.3": this.getDomainPath(element.href, 2),
-        "link_path_parts.4": this.getDomainPath(element.href, 3),
-        "link_path_parts.5": this.getDomainPath(element.href, 4),
+        link_domain: BaseTracker.getDomain(element.href),
+        "link_path_parts.1": BaseTracker.getDomainPath(element.href, 0),
+        "link_path_parts.2": BaseTracker.getDomainPath(element.href, 1),
+        "link_path_parts.3": BaseTracker.getDomainPath(element.href, 2),
+        "link_path_parts.4": BaseTracker.getDomainPath(element.href, 3),
+        "link_path_parts.5": BaseTracker.getDomainPath(element.href, 4),
       },
     };
 
     try {
-      this.pushToDataLayer(formChangeTrackerEvent);
+      BaseTracker.pushToDataLayer(formChangeTrackerEvent);
       return true;
     } catch (err) {
-      console.error("Error in trackFormChange", err);
+      logger.error("Error in trackFormChange", err);
       return false;
     }
   }
 
-  getSection(element: HTMLElement): string {
-    const parentElement = element.parentElement;
+  static getSection(element: HTMLElement): string {
+    const { parentElement } = element;
 
     // Ensure the parent element exists
     if (!parentElement) {
@@ -96,11 +97,11 @@ export class FormChangeTracker extends FormTracker {
     }
     // If no matching sibling is found, check the parent element
     let parentTextContent = "";
-    for (let node of parentElement.childNodes) {
+    parentElement.childNodes.forEach((node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         parentTextContent += node.textContent?.trim() || "";
       }
-    }
+    });
     return parentTextContent || "undefined";
   }
 }

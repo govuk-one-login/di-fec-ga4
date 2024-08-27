@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { FormChangeTracker } from "./formChangeTracker";
+import { BaseTracker } from "../baseTracker/baseTracker";
 
 function createForm() {
   document.body.innerHTML = `
@@ -25,11 +26,9 @@ describe("FormChangeTracker", () => {
 
     window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
-    jest.spyOn(FormChangeTracker.prototype, "pushToDataLayer");
-    jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
-    jest.spyOn(FormChangeTracker.prototype, "isChangeLink");
-    jest.spyOn(FormChangeTracker.prototype, "getSection");
+    jest.spyOn(BaseTracker, "pushToDataLayer");
     jest.spyOn(FormChangeTracker.prototype, "initialiseEventListener");
+    jest.spyOn(FormChangeTracker.prototype, "trackFormChange");
 
     const enableFormChangeTracking = true;
     newInstance = new FormChangeTracker(enableFormChangeTracking);
@@ -52,7 +51,7 @@ describe("FormChangeTracker", () => {
   test("pushToDataLayer is called", () => {
     const { changeLink } = createForm();
     changeLink.dispatchEvent(action);
-    expect(newInstance.pushToDataLayer).toBeCalledWith({
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith({
       event: "event_data",
       event_data: {
         action: "change response",
@@ -76,7 +75,7 @@ describe("FormChangeTracker", () => {
     window.DI.analyticsGa4.cookie.consent = false;
     const { changeLink } = createForm();
     changeLink.dispatchEvent(action);
-    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
+    expect(BaseTracker.pushToDataLayer).not.toHaveBeenCalled();
   });
 
   test("trackFormChange should return false if not a change link", () => {
@@ -88,26 +87,26 @@ describe("FormChangeTracker", () => {
 
     href.dispatchEvent(action);
 
-    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
+    expect(BaseTracker.pushToDataLayer).not.toHaveBeenCalled();
   });
 
   test("trackFormChange should return true if a Change link", () => {
     const { changeLink } = createForm();
     changeLink.dispatchEvent(action);
-    expect(newInstance.pushToDataLayer).toHaveBeenCalled();
+    expect(BaseTracker.pushToDataLayer).toHaveBeenCalled();
   });
 
   test("trackFormChange should return false if it is a Lang Toggle link", () => {
     const { changeLink } = createForm();
     changeLink.setAttribute("hreflang", "en");
     changeLink.dispatchEvent(action);
-    expect(newInstance.pushToDataLayer).not.toHaveBeenCalled();
+    expect(BaseTracker.pushToDataLayer).not.toHaveBeenCalled();
   });
 
   test("should return 'undefined' if parent element does not exist", () => {
     document.body.innerHTML = `<a id="change_link" href="http://localhost?edit=true">Change</a>`;
     const href = document.getElementById("change_link") as HTMLAnchorElement;
-    expect(newInstance.getSection(href)).toBe("undefined");
+    expect(FormChangeTracker.getSection(href)).toBe("undefined");
   });
 
   test("should return text content of sibling with class 'govuk-summary-list__key'", () => {
@@ -118,7 +117,7 @@ describe("FormChangeTracker", () => {
     </div>
   `;
     const href = document.getElementById("change_link") as HTMLAnchorElement;
-    expect(newInstance.getSection(href)).toBe("Expected Section");
+    expect(FormChangeTracker.getSection(href)).toBe("Expected Section");
   });
 
   test("should check and return text content of parent element if no matching sibling found", () => {
@@ -129,7 +128,7 @@ describe("FormChangeTracker", () => {
     </div>
   `;
     const href = document.getElementById("change_link") as HTMLAnchorElement;
-    expect(newInstance.getSection(href)).toBe("Postcode");
+    expect(FormChangeTracker.getSection(href)).toBe("Postcode");
   });
 
   test("should return 'undefined' if no matching sibling found and parent has no text content", () => {
@@ -140,7 +139,7 @@ describe("FormChangeTracker", () => {
     `;
     const href = document.getElementById("change_link") as HTMLAnchorElement;
 
-    expect(newInstance.getSection(href)).toBe("undefined");
+    expect(FormChangeTracker.getSection(href)).toBe("undefined");
   });
 
   test("should return 'undefined' if summary list key has no text content", () => {
@@ -151,6 +150,6 @@ describe("FormChangeTracker", () => {
     </div>
   `;
     const href = document.getElementById("change_link") as HTMLAnchorElement;
-    expect(newInstance.getSection(href)).toBe("undefined");
+    expect(FormChangeTracker.getSection(href)).toBe("undefined");
   });
 });

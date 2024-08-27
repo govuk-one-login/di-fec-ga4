@@ -4,6 +4,7 @@ import {
   FormEventInterface,
   FormField,
 } from "../formTracker/formTracker.interface";
+import { BaseTracker } from "../baseTracker/baseTracker";
 
 window.DI = { analyticsGa4: { cookie: { consent: true } } };
 
@@ -15,11 +16,8 @@ describe("FormErrorTracker", () => {
     // Remove any existing elements from document.body if needed
     document.body.innerHTML = "";
   });
-  const spy = jest.spyOn(FormErrorTracker.prototype, "pushToDataLayer");
-  const trackFormErrorSpy = jest.spyOn(
-    FormErrorTracker.prototype,
-    "trackFormError",
-  );
+  jest.spyOn(BaseTracker, "pushToDataLayer");
+  jest.spyOn(FormErrorTracker.prototype, "trackFormError");
 
   test("trackFormError should return false if not cookie consent", () => {
     window.DI.analyticsGa4.cookie.consent = false;
@@ -187,12 +185,12 @@ describe("FormErrorTracker", () => {
     };
     instance.trackFormError();
 
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventDropdown);
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventRadio);
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventTextarea);
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventText);
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventPassword);
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEventCheckbox);
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(dataLayerEventDropdown);
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(dataLayerEventRadio);
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(dataLayerEventTextarea);
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(dataLayerEventText);
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(dataLayerEventPassword);
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(dataLayerEventCheckbox);
   });
   test("datalayer event should be defined", () => {
     window.DI.analyticsGa4.cookie.consent = true;
@@ -234,7 +232,7 @@ describe("FormErrorTracker", () => {
     };
 
     instance.trackFormError();
-    expect(instance.pushToDataLayer).toBeCalledWith(dataLayerEvent);
+    expect(BaseTracker.pushToDataLayer).toBeCalledWith(dataLayerEvent);
   });
 
   test("getErrorMessage should return error message", () => {
@@ -254,7 +252,7 @@ describe("FormErrorTracker", () => {
     const input = document.createElement("input");
     input.id = formField.id;
     document.body.appendChild(input);
-    expect(instance.getErrorMessage(formField)).toBe(
+    expect(FormErrorTracker.getErrorMessage(formField)).toBe(
       "error: this is an  error message",
     );
   });
@@ -274,9 +272,9 @@ describe("FormErrorTracker", () => {
     document.body.appendChild(errorElement);
     // Create input element
     const input = document.createElement("input");
-    input.id = formField.id + "-day";
+    input.id = `${formField.id}-day`;
     document.body.appendChild(input);
-    expect(instance.getErrorMessage(formField)).toBe(
+    expect(FormErrorTracker.getErrorMessage(formField)).toBe(
       "error: this is an  error message",
     );
   });
@@ -293,7 +291,7 @@ describe("FormErrorTracker", () => {
     const input = document.createElement("input");
     input.id = formField.id;
     document.body.appendChild(input);
-    expect(instance.getErrorMessage(formField)).toBe("undefined");
+    expect(FormErrorTracker.getErrorMessage(formField)).toBe("undefined");
   });
   test("getErrorFields should return an array of the first field in each form group in a form that have an error message", () => {
     const form = document.createElement("form");
@@ -335,7 +333,7 @@ describe("FormErrorTracker", () => {
       "</div>" +
       '  <button id="button" type="submit">submit</button>';
     document.body.appendChild(form);
-    expect(instance.getErrorFields(form)).toEqual([
+    expect(FormErrorTracker.getErrorFields()).toEqual([
       {
         id: "questionType",
         name: "questionType",

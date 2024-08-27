@@ -3,18 +3,18 @@ import { fileURLToPath } from "url";
 import TerserPlugin from "terser-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 const config = {
   entry: "./src/index.ts",
   output: {
-    path: path.resolve(__dirname, "dist/lib"),
+    path: path.resolve(dirname, "dist/lib"),
     filename: "analytics.js",
   },
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: "./src/components", to: "../components" }, //nunjuck components
+        { from: "./src/components", to: "../components" }, // nunjuck components
       ],
     }),
   ],
@@ -43,7 +43,7 @@ const config = {
           },
         },
       }),
-    ], //eslint-disable no-console
+    ], // eslint-disable no-console
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],

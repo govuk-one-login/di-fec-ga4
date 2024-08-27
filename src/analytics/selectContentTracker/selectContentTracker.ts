@@ -1,3 +1,4 @@
+import logger from "loglevel";
 import { BaseTracker } from "../baseTracker/baseTracker";
 import { SelectContentEventInterface } from "./selectContentTracker.interface";
 
@@ -11,6 +12,7 @@ export class SelectContentTracker extends BaseTracker {
     this.enableSelectContentTracking = enableSelectContentTracking;
     this.initialiseEventListener();
   }
+
   /**
    * Initialises the event listener for the document click event.
    *
@@ -34,7 +36,6 @@ export class SelectContentTracker extends BaseTracker {
    * @param {Event} event - The toggle event triggered by clicking on details element.
    * @return {boolean} Returns true if the event is successfully tracked, otherwise false.
    */
-
   trackSelectContent(event: Event): boolean {
     if (!window.DI.analyticsGa4.cookie.consent) {
       return false;
@@ -43,7 +44,7 @@ export class SelectContentTracker extends BaseTracker {
       return false;
     }
 
-    let element: HTMLDetailsElement = event.target as HTMLDetailsElement;
+    const element: HTMLDetailsElement = event.target as HTMLDetailsElement;
 
     const SelectContentEvent: SelectContentEventInterface = {
       event: this.eventType,
@@ -51,9 +52,9 @@ export class SelectContentTracker extends BaseTracker {
         event_name: "select_content",
         type: "details ui",
         url: "undefined",
-        text: this.getSummaryText(element),
+        text: SelectContentTracker.getSummaryText(element),
         section: "undefined",
-        action: this.getActionValue(element),
+        action: SelectContentTracker.getActionValue(element),
         external: "undefined",
         link_domain: "undefined",
         "link_path_parts.1": "undefined",
@@ -64,10 +65,10 @@ export class SelectContentTracker extends BaseTracker {
       },
     };
     try {
-      this.pushToDataLayer(SelectContentEvent);
+      BaseTracker.pushToDataLayer(SelectContentEvent);
       return true;
     } catch (err) {
-      console.error("Error in trackSelectContent", err);
+      logger.error("Error in trackSelectContent", err);
       return false;
     }
   }
@@ -78,8 +79,7 @@ export class SelectContentTracker extends BaseTracker {
    * @param {HTMLDetailsElement} element - The details element being toggled.
    * @return {string} The text content of the span inside details element.
    */
-
-  getSummaryText(element: HTMLDetailsElement): string {
+  static getSummaryText(element: HTMLDetailsElement): string {
     return (
       element
         ?.querySelector(".govuk-details__summary-text")
@@ -93,8 +93,7 @@ export class SelectContentTracker extends BaseTracker {
    * @param {HTMLDetailsElement} element - The details element being toggled.
    * @return {string} State of details element: "open", "closed".
    */
-
-  getActionValue(element: HTMLDetailsElement): string {
+  static getActionValue(element: HTMLDetailsElement): string {
     return element.open ? "opened" : "closed";
   }
 }
