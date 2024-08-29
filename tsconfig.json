@@ -1,17 +1,15 @@
 {
-    "compilerOptions": {
-      "outDir": "./dist/lib/",
-      "sourceMap": true,
-      "strict": true,
-      "noImplicitReturns": true,
-      "noImplicitAny": true,
-      "module": "es6",
-      "moduleResolution": "node",
-      "downlevelIteration": true,
-      "target": "es5",
-      "allowJs": true
-    },
-    "include": [
-        "./src/**/*"
-    ]
+  "compilerOptions": {
+    "outDir": "./dist/lib/",
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "target": "ES5",
+    "allowJs": true
+  },
+  "include": ["./src/**/*"]
 }
