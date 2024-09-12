@@ -224,7 +224,7 @@ describe("isExternalLink", () => {
   new NavigationTracker(true);
 
   test("should return false for internal links", () => {
-    const url = "http://localhost";
+    const url = "http://account.gov.uk";
     expect(NavigationTracker.isExternalLink(url)).toBe(false);
   });
 
