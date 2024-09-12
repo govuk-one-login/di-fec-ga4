@@ -157,13 +157,15 @@ export class NavigationTracker extends BaseTracker {
    */
   static isExternalLink(url: string): boolean {
     const signinAccountUkUrl = "signin.account.gov.uk";
+    const signinAccountUkUrlStaging = "signin.staging.account.gov.uk";
     if (!url) {
       return false;
     }
 
     if (
       url.includes(window.location.hostname) ||
-      url.includes(signinAccountUkUrl)
+      url.includes(signinAccountUkUrl) ||
+      url.includes(signinAccountUkUrlStaging)
     ) {
       return false;
     }
