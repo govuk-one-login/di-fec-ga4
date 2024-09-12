@@ -235,7 +235,7 @@ describe("isExternalLink", () => {
 
   test("should return false for signin account links in staging", () => {
     const url = "http://signin.staging.account.gov.uk/cookies";
-    expect(newInstance.isExternalLink(url)).toBe(false);
+    expect(NavigationTracker.isExternalLink(url)).toBe(false);
   });
 
   test("should return true for external links", () => {
