@@ -224,12 +224,17 @@ describe("isExternalLink", () => {
   new NavigationTracker(true);
 
   test("should return false for internal links", () => {
-    const url = "http://localhost";
+    const url = "http://account.gov.uk";
     expect(NavigationTracker.isExternalLink(url)).toBe(false);
   });
 
   test("should return false for signin account links", () => {
     const url = "http://signin.account.gov.uk/cookies";
+    expect(NavigationTracker.isExternalLink(url)).toBe(false);
+  });
+
+  test("should return false for signin account links in staging", () => {
+    const url = "http://signin.staging.account.gov.uk/cookies";
     expect(NavigationTracker.isExternalLink(url)).toBe(false);
   });
 
