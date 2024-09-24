@@ -20,9 +20,6 @@
     "type": "git",
     "url": "git+https://github.com/govuk-one-login/di-fec-ga4.git"
   },
-  "files": [
-    "lib"
-  ],
   "keywords": [
     "govuk-one-login",
     "gds",
