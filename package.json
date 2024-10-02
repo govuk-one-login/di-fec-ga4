@@ -5,7 +5,7 @@
   "main": "lib/analytics.js",
   "type": "module",
   "exports": {
-    ".": "./dist/lib/analytics.js"
+    ".": "./lib/analytics.js"
   },
   "scripts": {
     "build": "npm ci && npm run prettier && webpack --config webpack.config.js --mode production",
